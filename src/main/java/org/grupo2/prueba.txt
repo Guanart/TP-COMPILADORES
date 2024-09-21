@@ -1,0 +1,43 @@
+a_1 := 35;
+b := "Hola mundo!";
+contador := 0;
+x := 10.5;
+y := 20;
+resultado := 0;
+
+IF (x > y) {
+    resultado := 1;
+    WRITE "X es mayor que Y";
+} ELSE {
+    resultado := 0;
+    WRITE "X es menor o igual que Y";
+}
+ENDIF
+
+WHILE (contador < 10) {
+    contador += 1;
+    WRITE "Contador: ", contador;
+}
+ENDWHILE
+
+FOR (i += 1 INTEGER i = 1; i <= 10;) {
+    WRITE "Iteración ", i;
+    i += 1;
+}
+ENDFOR
+
+FOREACH elemento IN [1, 2, 3, 4, 5] {
+    WRITE "Elemento actual: ", elemento;
+}
+ENDWHILE
+
+RANGE(1, 10);
+floatVariable := 3.14;
+integerVariable := 100;
+stringVariable := "Prueba de cadena";
+@
+OPLIST [+ [a;b][2;3;5]];
+
+// Comentario de prueba
+</ Esto es otro comentario />
+
