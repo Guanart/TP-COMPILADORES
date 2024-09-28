@@ -15,6 +15,7 @@ import java.io.IOException;
 public class ResultadoCompilacion {
     @FXML
     private TextArea codeTextArea;
+    private final Utils utils = new Utils();
 
     @FXML
     public void initialize() {
@@ -27,17 +28,17 @@ public class ResultadoCompilacion {
         String contenidoACompilar = codeTextArea.getText();
         FXMLLoader fxmlLoader = new FXMLLoader(ResultadoCompilacion.class.getResource("/com/grupo2/tpteo1grupo2/hello-view.fxml"));
         Parent newRoot = fxmlLoader.load();
-        Scene resultadoCompilacion = new Scene(newRoot, 550, 550);
+        Scene resultadoCompilacion = new Scene(newRoot, 600, 700);
 
-// Crear la transición de deslizamiento hacia la izquierda para la escena actual
-        TranslateTransition slideOut = new TranslateTransition(Duration.millis(500), currentStage.getScene().getRoot());
+        // Crear la transición de deslizamiento hacia la derecha para la escena actual
+        TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), currentStage.getScene().getRoot());
         slideOut.setFromX(0);
-        slideOut.setToX(-currentStage.getScene().getWidth());
+        slideOut.setToX(currentStage.getScene().getWidth());
 
-// Crear la transición de deslizamiento desde la derecha para la nueva escena
-        newRoot.translateXProperty().set(currentStage.getScene().getWidth());
-        TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), newRoot);
-        slideIn.setFromX(currentStage.getScene().getWidth());
+// Crear la transición de deslizamiento desde la izquierda para la nueva escena
+        newRoot.translateXProperty().set(-currentStage.getScene().getWidth());
+        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), newRoot);
+        slideIn.setFromX(-currentStage.getScene().getWidth());
         slideIn.setToX(0);
 
 // Configurar el cambio de escena después de la transición de deslizamiento de salida
@@ -45,9 +46,14 @@ public class ResultadoCompilacion {
             currentStage.setScene(resultadoCompilacion);
             slideIn.play();
         });
+        currentStage.setOnCloseRequest(event -> this.exitApplication(null));
 
         slideOut.play();
 
 
+    }
+
+    private void exitApplication(Object o) {
+        this.utils.borrarArchivoTemporal();
     }
 }

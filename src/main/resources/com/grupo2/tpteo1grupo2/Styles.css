@@ -35,6 +35,15 @@
     -fx-translate-y: 0;
 }
 
+.iconbutton:hover{
+    -fx-translate-y: -3px;
+}
+
+.iconbutton:pressed{
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
 #codeTextArea {
     -fx-background-radius: 20;
     -fx-background-color: #444E67;

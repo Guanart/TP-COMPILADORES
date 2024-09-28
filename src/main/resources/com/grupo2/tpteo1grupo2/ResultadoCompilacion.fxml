@@ -7,7 +7,7 @@
 <?import javafx.scene.image.Image?>
 <StackPane xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: #F5EACF;" stylesheets="@Styles.css" fx:controller="com.grupo2.tpteo1grupo2.ResultadoCompilacion">
     <VBox alignment="TOP_CENTER" style="-fx-padding: 20;">
-        <HBox alignment="CENTER_LEFT" onMouseClicked="#onNavBack">
+        <HBox alignment="CENTER_LEFT" onMouseClicked="#onNavBack" styleClass="iconbutton">
             <ImageView fitHeight="24" fitWidth="24" preserveRatio="true" >
                 <Image url="@back.png"/>
             </ImageView>
@@ -16,7 +16,7 @@
         <Label text="Resultado de la compilación" fx:id="h1compilador" style="-fx-font-size: 32; -fx-font-weight: bold;"/>
 
         <!-- TextArea de código-->
-        <TextArea fx:id="codeTextArea" promptText="Ingrese su código aquí..." prefWidth="500" prefHeight="600"
+        <TextArea fx:id="codeTextArea" promptText="Ingrese su código aquí..." prefWidth="405" prefHeight="600" editable="false"
                   style="-fx-background-color: #444E67; -fx-text-fill: white; -fx-font-family: 'monospace';">
             <HBox.margin>
                 <Insets top="20" bottom="20"/>
