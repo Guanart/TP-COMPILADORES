@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<StackPane xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: #F5EACF;" stylesheets="@Styles.css" fx:controller="com.grupo2.tpteo1grupo2.ResultadoCompilacion">
+    <VBox alignment="TOP_CENTER" style="-fx-padding: 20;">
+        <HBox alignment="CENTER_LEFT" onMouseClicked="#onNavBack">
+            <ImageView fitHeight="24" fitWidth="24" preserveRatio="true" >
+                <Image url="@back.png"/>
+            </ImageView>
+        </HBox>
+
+        <Label text="Resultado de la compilación" fx:id="h1compilador" style="-fx-font-size: 32; -fx-font-weight: bold;"/>
+
+        <!-- TextArea de código-->
+        <TextArea fx:id="codeTextArea" promptText="Ingrese su código aquí..." prefWidth="500" prefHeight="600"
+                  style="-fx-background-color: #444E67; -fx-text-fill: white; -fx-font-family: 'monospace';">
+            <HBox.margin>
+                <Insets top="20" bottom="20"/>
+            </HBox.margin>
+        </TextArea>
+
+        <HBox alignment="CENTER_RIGHT">
+            <Label text="Grupo 2" style="-fx-font-size: 16;" fx:id="grupotext">
+                <HBox.margin>
+                    <Insets top="20"/>
+                </HBox.margin>
+            </Label>
+        </HBox>
+    </VBox>
+</StackPane>
