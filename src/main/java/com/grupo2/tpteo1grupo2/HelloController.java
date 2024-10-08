@@ -43,7 +43,6 @@ public class HelloController extends Component {
     @FXML
     protected void onCompilar() throws IOException {
         if (codeTextArea == null) {
-            System.out.println("codeTextArea no está inicializado.");
             return;
         }
 
@@ -110,7 +109,6 @@ public class HelloController extends Component {
             String contenido = fileUpload.readFile(selectedFile.getAbsolutePath());
             codeTextArea.setText(contenido);
         } else {
-            System.out.println("No se seleccionó ningún archivo.");
         }
     }
 

@@ -27,12 +27,9 @@ public class Utils {
         // Verificar si el archivo existe y luego intentar borrarlo
         if (outputFile.exists()) {
             if (outputFile.delete()) {
-                System.out.println("El archivo fue borrado con éxito.");
             } else {
-                System.out.println("No se pudo borrar el archivo.");
             }
         } else {
-            System.out.println("El archivo no existe.");
         }
     }
 
