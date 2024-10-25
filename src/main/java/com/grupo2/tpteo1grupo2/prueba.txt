@@ -31,11 +31,13 @@ FOREACH elemento IN [1, 2, 3, 4, 5] {
 }
 ENDWHILE
 
+bin := 0b011;
+
 RANGE(1, 10);
 floatVariable := 3.14;
 integerVariable := 100;
 stringVariable := "Prueba de cadena";
-@
+
 OPLIST [+ [a;b][2;3;5]];
 
 // Comentario de prueba

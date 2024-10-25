@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 public class HelloApplication extends Application {
@@ -21,6 +22,17 @@ public class HelloApplication extends Application {
             stage.setTitle("Compilador Grupo 2");
             stage.setScene(scene);
             stage.show(); // Mostrar la escena primero
+
+            /*
+            SymbolTableGenerator prueba = new SymbolTableGenerator();
+
+            String inputFilePath = "ts.txt"; // Cambia esta ruta por la ruta real de tu archivo
+            String outputFilePath = "tabla_de_simbolos.csv";
+
+            // Leer archivo y generar tabla de símbolos
+            List<SymbolTableGenerator.Symbol> symbols = prueba.parseFile(inputFilePath);
+            prueba.saveToCSV(symbols, outputFilePath);
+             */
 
             HelloController controller = fxmlLoader.getController(); // Obtener el controlador desde el FXMLLoader
             stage.setOnCloseRequest(event -> controller.exitApplication(null));

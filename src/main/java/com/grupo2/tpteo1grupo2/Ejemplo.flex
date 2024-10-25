@@ -1,6 +1,38 @@
-import java_cup.runtime.Symbol;
+package com.grupo2.tpteo1grupo2;
+import java_cup.sym;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
 
 %%
+
+%{
+    private String resultados;
+    private Resultado resultado;
+    String nombreArchivo;
+    public static void guardarEnArchivo(String contenido, String nombreArchivo) {
+      try (FileWriter escritor = new FileWriter(nombreArchivo)) {
+        escritor.write(contenido);
+      } catch (IOException e) {
+      }
+    }
+%}
+
+%init{
+    resultados = "";
+    nombreArchivo = "output.txt";
+    resultado = Resultado.getInstance();
+%init}
+
+%eof{
+    resultado.setContenido(resultados);
+    guardarEnArchivo(resultado.getContenido(), nombreArchivo);
+    SymbolTableGenerator prueba = new SymbolTableGenerator();
+    String outputFilePath = "tabla_de_simbolos.csv";
+    List<SymbolTableGenerator.Symbol> symbols = prueba.parseFile(nombreArchivo);
+    prueba.saveToCSV(symbols, outputFilePath);
+%eof}
 
 /*%cupsym Simbolo*/
 %cup 
@@ -35,44 +67,42 @@ COMENTARIO_LINEA = {AUX_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{SI
 %%
 
 <YYINITIAL> {
-"FOR"                   {System.out.println("Token FOR encontrado, Lexema "+yytext());}
-"IF"                    {System.out.println("Token IF encontrado, Lexema "+yytext());}
-"ELSE"                  {System.out.println("Token ELSE encontrado, Lexema "+yytext());}
-"ENDIF"                 {System.out.println("Token ENDIF encontrado, Lexema "+yytext());}
-"WHILE"                 {System.out.println("Token WHILE encontrado, Lexema "+yytext());}
-"FOREACH"               {System.out.println("Token FOREACH encontrado, Lexema "+yytext());}
-"ENDWHILE"              {System.out.println("Token ENDWHILE encontrado, Lexema "+yytext());}
-"ENDFOR"                {System.out.println("Token ENDFOR encontrado, Lexema "+yytext());}
-"WRITE"                 {System.out.println("Token WRITE encontrado, Lexema "+yytext());}
-"FLOAT"                 {System.out.println("Token FLOAT encontrado, Lexema "+yytext());}
-"INTEGER"               {System.out.println("Token INTEGER encontrado, Lexema "+yytext());}
-"STRING"                {System.out.println("Token STRING encontrado, Lexema "+yytext());}
-"BOOLEAN"               {System.out.println("Token BOOLEAN encontrado, Lexema "+yytext());}
-"RANGE"                 {System.out.println("Token RANGE encontrado, Lexema "+yytext());}
-"TRUE"                  {System.out.println("Token TRUE encontrado, Lexema "+yytext());}
-"FALSE"                 {System.out.println("Token FALSE encontrado, Lexema "+yytext());}
-"OPLIST"                {System.out.println("Token OPLIST encontrado, Lexema "+yytext());}
-{ID}	{System.out.println("Token ID encontrado, Lexema "+ yytext());}
-{CONST_INT}	{System.out.println("Token CONST_INT, encontrado Lexema "+ yytext());}
-{CONST_REAL}	{System.out.println("Token CONST_REAL, encontrado Lexema "+ yytext());}
-{CONST_STRING}      {System.out.println("Token CONST_STRING encontrado, Lexema "+ yytext());}
-{CONST_B}           {System.out.println("Token CONST_B encontrado, Lexema "+ yytext());}
-{OP_LOGICO}         {System.out.println("Token OP_LOGICO encontrado, Lexema "+ yytext());}
-{OP_ARITMETICO}     {System.out.println("Token OP_ARITMETICO encontrado, Lexema "+ yytext());}
-{CON_LOGICO}        {System.out.println("Token CON_LOGICO encontrado, Lexema "+ yytext());}
-{OPLIST}            {System.out.println("Token OPLIST encontrado, Lexema "+ yytext());}
-"::="	{System.out.println("Token ASIGN encontrado, Lexema "+yytext());}
-":="	{System.out.println("Token DECLARATION encontrado, Lexema "+yytext());}
-"DECLARE.SECTION"       {System.out.println("Token DECLARE.SECTION encontrado, Lexema "+yytext());}
-"ENDDECLARE.SECTION"    {System.out.println("Token ENDDECLARE.SECTION encontrado, Lexema "+yytext());}
-"PROGRAM.SECTION"       {System.out.println("Token PROGRAM.SECTION encontrado, Lexema "+yytext());}
-"ENDPROGRAM.SECTION"    {System.out.println("Token ENDPROGRAM.SECTION encontrado, Lexema "+yytext());}
-{SIMBOLO}               {System.out.println("Token SIMBOLO encontrado, Lexema "+yytext());}
-{COMENTARIO_BLOQUE}               {System.out.println("Token COMENTARIO encontrado, Lexema "+yytext());}
-{COMENTARIO_LINEA}               {System.out.println("Token COMENTARIO encontrado, Lexema "+yytext());}
+"FOR"                   { resultados += "Token FOR encontrado, Lexema " + yytext() + "\n"; }
+"IF"                    { resultados += "Token IF encontrado, Lexema " + yytext() + "\n"; }
+"ELSE"                  { resultados += "Token ELSE encontrado, Lexema " + yytext() + "\n"; }
+"ENDIF"                 { resultados += "Token ENDIF encontrado, Lexema " + yytext() + "\n"; }
+"WHILE"                 { resultados += "Token WHILE encontrado, Lexema " + yytext() + "\n"; }
+"FOREACH"               { resultados += "Token FOREACH encontrado, Lexema " + yytext() + "\n"; }
+"ENDWHILE"              { resultados += "Token ENDWHILE encontrado, Lexema " + yytext() + "\n"; }
+"ENDFOR"                { resultados += "Token ENDFOR encontrado, Lexema " + yytext() + "\n"; }
+"WRITE"                 { resultados += "Token WRITE encontrado, Lexema " + yytext() + "\n"; }
+"FLOAT"                 { resultados += "Token FLOAT encontrado, Lexema " + yytext() + "\n"; }
+"INTEGER"               { resultados += "Token INTEGER encontrado, Lexema " + yytext() + "\n"; }
+"STRING"                { resultados += "Token STRING encontrado, Lexema " + yytext() + "\n"; }
+"BOOLEAN"               { resultados += "Token BOOLEAN encontrado, Lexema " + yytext() + "\n"; }
+"RANGE"                 { resultados += "Token RANGE encontrado, Lexema " + yytext() + "\n"; }
+"TRUE"                  { resultados += "Token TRUE encontrado, Lexema " + yytext() + "\n"; }
+"FALSE"                 { resultados += "Token FALSE encontrado, Lexema " + yytext() + "\n"; }
+"OPLIST"                { resultados += "Token OPLIST encontrado, Lexema " + yytext() + "\n"; }
+{ID}                    { resultados += "Token ID encontrado, Lexema " + yytext() + "\n"; }
+{CONST_INT}             { resultados += "Token CONST_INT encontrado, Lexema " + yytext() + "\n"; }
+{CONST_REAL}            { resultados += "Token CONST_REAL encontrado, Lexema " + yytext() + "\n"; }
+{CONST_STRING}          { resultados += "Token CONST_STRING encontrado, Lexema " + yytext() + "\n"; }
+{CONST_B}               { resultados += "Token CONST_B encontrado, Lexema " + yytext() + "\n"; }
+{OP_LOGICO}             { resultados += "Token OP_LOGICO encontrado, Lexema " + yytext() + "\n"; }
+{OP_ARITMETICO}         { resultados += "Token OP_ARITMETICO encontrado, Lexema " + yytext() + "\n"; }
+{CON_LOGICO}            { resultados += "Token CON_LOGICO encontrado, Lexema " + yytext() + "\n"; }
+"::="                   { resultados += "Token ASIGN encontrado, Lexema " + yytext() + "\n"; }
+":="                    { resultados += "Token DECLARATION encontrado, Lexema " + yytext() + "\n"; }
+"DECLARE.SECTION"       { resultados += "Token DECLARE.SECTION encontrado, Lexema " + yytext() + "\n"; }
+"ENDDECLARE.SECTION"    { resultados += "Token ENDDECLARE.SECTION encontrado, Lexema " + yytext() + "\n"; }
+"PROGRAM.SECTION"       { resultados += "Token PROGRAM.SECTION encontrado, Lexema " + yytext() + "\n"; }
+"ENDPROGRAM.SECTION"    { resultados += "Token ENDPROGRAM.SECTION encontrado, Lexema " + yytext() + "\n"; }
+{SIMBOLO}               { resultados += "Token SIMBOLO encontrado, Lexema " + yytext() + "\n"; }
+{COMENTARIO_BLOQUE}     {}
+{COMENTARIO_LINEA}      {}
 /* whitespace */
-{WhiteSpace}                   { /* ignore */ }
+{WhiteSpace}            {}
 
-[^] { throw new Error("Caracter no permitido: " + yytext() + "> en la linea " + yyline); }
-
+[^] { throw new Error("Caracter no permitido: " + yytext() + " en la linea " + yyline); }
 }
