@@ -6,7 +6,12 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <StackPane xmlns:fx="http://javafx.com/fxml" style="-fx-background-color: #F5EACF;" stylesheets="@Styles.css" fx:controller="com.grupo2.tpteo1grupo2.ResultadoCompilacion">
-    <VBox alignment="TOP_CENTER" style="-fx-padding: 20;">
+    <VBox alignment="TOP_CENTER" style="-fx-padding: 20;" prefWidth="600" prefHeight="700"
+          maxWidth="Infinity" maxHeight="Infinity"
+          VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" AnchorPane.topAnchor="0.0"
+          AnchorPane.rightAnchor="0.0"
+          AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="0.0">
         <HBox alignment="CENTER_LEFT" onMouseClicked="#onNavBack" styleClass="iconbutton">
             <ImageView fitHeight="24" fitWidth="24" preserveRatio="true" >
                 <Image url="@back.png"/>

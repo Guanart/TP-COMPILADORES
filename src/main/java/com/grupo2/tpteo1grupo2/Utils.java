@@ -41,4 +41,12 @@ public class Utils {
         alert.showAndWait();
     }
 
+    void mostrarBadToken() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Caracter no permitido");
+        alert.setHeaderText(null);
+        alert.setContentText("Por favor, revise el texto ingresado");
+        alert.showAndWait();
+    }
+
 }

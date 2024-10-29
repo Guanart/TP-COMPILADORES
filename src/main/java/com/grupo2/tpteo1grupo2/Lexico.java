@@ -15,6 +15,7 @@ import java.util.List;
  */
 public class Lexico implements java_cup.runtime.Scanner {
 
+  private final Utils utils = new Utils();
   /** This character denotes the end of file */
   public static final int YYEOF = -1;
 
@@ -798,8 +799,10 @@ public class Lexico implements java_cup.runtime.Scanner {
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
-          case 1: 
-            { throw new Error("Caracter no permitido: " + yytext() + " en la linea " + yyline);
+          case 1:
+            { resultados = "";
+              this.utils.mostrarBadToken();
+              throw new RuntimeException();
             } 
             // fall through
           case 34: break;

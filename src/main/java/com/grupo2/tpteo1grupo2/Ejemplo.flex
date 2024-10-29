@@ -10,6 +10,7 @@ import java.util.List;
 %{
     private String resultados;
     private Resultado resultado;
+    private final Utils utils = new Utils();
     String nombreArchivo;
     public static void guardarEnArchivo(String contenido, String nombreArchivo) {
       try (FileWriter escritor = new FileWriter(nombreArchivo)) {
@@ -104,5 +105,5 @@ COMENTARIO_LINEA = {AUX_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{SI
 /* whitespace */
 {WhiteSpace}            {}
 
-[^] { throw new Error("Caracter no permitido: " + yytext() + " en la linea " + yyline); }
+[^] { resultados = ""; this.utils.mostrarBadToken(); throw new RuntimeException() }
 }

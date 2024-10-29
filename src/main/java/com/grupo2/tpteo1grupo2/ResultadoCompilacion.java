@@ -1,6 +1,7 @@
 package com.grupo2.tpteo1grupo2;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,6 +21,13 @@ public class ResultadoCompilacion {
     @FXML
     public void initialize() {
         codeTextArea.setText(Resultado.getInstance().getContenido());
+        /*
+        Platform.runLater(() -> {
+            Stage stage = (Stage) codeTextArea.getScene().getWindow();
+            stage.setWidth(800);
+            stage.setHeight(600);
+        });
+        */
     }
     @FXML
     public void onNavBack(MouseEvent mouseEvent) throws IOException {
@@ -47,6 +55,7 @@ public class ResultadoCompilacion {
             slideIn.play();
         });
         currentStage.setOnCloseRequest(event -> this.exitApplication(null));
+        codeTextArea.setText(contenidoACompilar);
 
         slideOut.play();
 

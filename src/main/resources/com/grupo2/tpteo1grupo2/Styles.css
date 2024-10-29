@@ -71,3 +71,11 @@
     -fx-font-family: "Agbalumo", system-ui;
 }
 
+.root {
+    -fx-pref-width: 100%;
+    -fx-pref-height: 100%;
+}
+.vbox {
+    -fx-fill-width: true;
+    -fx-fill-height: true;
+}

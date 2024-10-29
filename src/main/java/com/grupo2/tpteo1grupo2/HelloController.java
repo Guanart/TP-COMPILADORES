@@ -41,6 +41,50 @@ public class HelloController extends Component {
     }
 
     @FXML
+    public void initialize() {
+
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        File file = new File(tempDir, "prueba.txt");
+
+        // Crear el archivo si no existe
+        if (!file.exists()) {
+            try (FileWriter writer = new FileWriter(file)) {
+                writer.write("");
+            } catch (IOException e) {
+                e.printStackTrace();
+                this.utils.mostrarAlertError();
+                return;
+            }
+        }
+
+        StringBuilder content = new StringBuilder();
+
+        // Leer el archivo
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            this.utils.mostrarAlertError();
+        }
+
+        String fileContent = content.toString();
+        codeTextArea.setText(fileContent);
+
+        /*
+        Platform.runLater(() -> {
+            Stage stage = (Stage) codeTextArea.getScene().getWindow();
+            stage.setWidth(800);
+            stage.setHeight(600);
+        });
+
+         */
+        // currentStage = (Stage) codeTextArea.getScene().getWindow();
+    }
+
+    @FXML
     protected void onCompilar() throws IOException {
         if (codeTextArea == null) {
             return;
@@ -67,6 +111,7 @@ public class HelloController extends Component {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloController.class.getResource("/com/grupo2/tpteo1grupo2/ResultadoCompilacion.fxml"));
         Parent newRoot = fxmlLoader.load();
         Scene resultadoCompilacion = new Scene(newRoot, 600, 700);
+
 
         // Crear la transición de deslizamiento hacia la izquierda para la escena actual
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), currentStage.getScene().getRoot());
