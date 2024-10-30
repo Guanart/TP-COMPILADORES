@@ -1,45 +1,36 @@
-a_1 := 35;
-b := "Hola mundo!";
-contador := 0;
-x := 10.5;
-y := 20;
-resultado := 0;
+DECLARE.SECTION
+[var1, var2, mensaje] := [INT, FLOAT, STRING]
+[contador, limite] := [INT, INT]
+ENDDECLARE.SECTION
 
-IF (x > y) {
-    resultado := 1;
-    WRITE "X es mayor que Y";
-} ELSE {
-    resultado := 0;
-    WRITE "X es menor o igual que Y";
-}
+PROGRAM.SECTION
+//* Asignaciones numï¿½ricas y de string *//
+var1 ::= 15
+var2 ::= 99.9
+mensaje ::= "Hola Mundo"
+
+//* Declaraciï¿½n de un ciclo WHILE *//
+WHILE (var1 < limite)
+    contador ::= contador + 1
+    IF (contador >= 10) THEN
+        write "Contador alcanzo el lï¿½mite"
+        mensaje ::= "Lï¿½mite alcanzado"
+    ELSE
+        write contador //* Muestra el valor de contador *//
+    ENDIF
+ENDWHILE
+
+//* Condiciones y operaciones con constantes bin *//
+var3 ::= 0b1101
+IF (var3 < 16 && var2 >= 10.5) THEN
+    write var3
 ENDIF
 
-WHILE (contador < 10) {
-    contador += 1;
-    WRITE "Contador: ", contador;
-}
-ENDWHILE
+//* Salidas de prueba *//
+write mensaje
+write 123.45
+write 0b1011
+write var2
+ENDPROGRAM.SECTION
 
-FOR (i += 1 INTEGER i = 1; i <= 10;) {
-    WRITE "Iteración ", i;
-    i += 1;
-}
-ENDFOR
-
-FOREACH elemento IN [1, 2, 3, 4, 5] {
-    WRITE "Elemento actual: ", elemento;
-}
-ENDWHILE
-
-bin := 0b011;
-
-RANGE(1, 10);
-floatVariable := 3.14;
-integerVariable := 100;
-stringVariable := "Prueba de cadena";
-
-OPLIST [+ [a;b][2;3;5]];
-
-// Comentario de prueba
-</ Esto es otro comentario />
 

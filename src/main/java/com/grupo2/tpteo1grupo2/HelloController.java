@@ -115,14 +115,14 @@ public class HelloController extends Component {
 
         // Crear la transición de deslizamiento hacia la izquierda para la escena actual
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), currentStage.getScene().getRoot());
-        slideOut.setFromX(0);
-        slideOut.setToX(-currentStage.getScene().getWidth());
+        //slideOut.setFromX(0);
+        //slideOut.setToX(-currentStage.getScene().getWidth());
 
         // Crear la transición de deslizamiento desde la derecha para la nueva escena
-        newRoot.translateXProperty().set(currentStage.getScene().getWidth());
+        //newRoot.translateXProperty().set(currentStage.getScene().getWidth());
         TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), newRoot);
-        slideIn.setFromX(currentStage.getScene().getWidth());
-        slideIn.setToX(0);
+        //slideIn.setFromX(currentStage.getScene().getWidth());
+        //slideIn.setToX(0);
 
         // Configurar el cambio de escena después de la transición de deslizamiento de salida
         slideOut.setOnFinished(event -> {

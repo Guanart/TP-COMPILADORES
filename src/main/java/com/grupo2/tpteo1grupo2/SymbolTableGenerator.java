@@ -9,9 +9,9 @@ public class SymbolTableGenerator {
         String nombre;
         String valor;
         String token;
-        int longitud;
+        Integer longitud; // Cambiado a Integer para permitir valores nulos
 
-        public Symbol(String nombre, String valor, String token, int longitud) {
+        public Symbol(String nombre, String valor, String token, Integer longitud) {
             this.nombre = nombre;
             this.valor = valor;
             this.token = token;
@@ -39,9 +39,13 @@ public class SymbolTableGenerator {
                         nombre = "_" + removeQuotes(lexema);
                     }
 
+                    // Calcular el valor de `valor` y `longitud` según el token
+                    String valor = token.equals("CONST_B") ? convertBinaryToDecimal(lexema) : lexema;
+                    Integer longitud = token.equals("CONST_STRING") ? lexema.length() : null;
+
                     if (lexema != null && !symbolsMap.containsKey(nombre)) {
                         // Añadir un nuevo símbolo a la tabla
-                        Symbol symbol = new Symbol(nombre, token.startsWith("CONST") ? lexema : "", token, lexema.length());
+                        Symbol symbol = new Symbol(nombre, valor, token, longitud);
                         symbolsMap.put(nombre, symbol);
                     }
                 }
@@ -51,6 +55,18 @@ public class SymbolTableGenerator {
         }
 
         return new ArrayList<>(symbolsMap.values());
+    }
+
+    // Convierte un valor binario a su valor decimal
+    private String convertBinaryToDecimal(String lexema) {
+        if (lexema.startsWith("0b")) {
+            try {
+                return String.valueOf(Integer.parseInt(lexema.substring(2), 2));
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return lexema;
     }
 
     public String removeQuotes(String input) {
@@ -85,8 +101,9 @@ public class SymbolTableGenerator {
 
             // Escribir cada símbolo
             for (Symbol symbol : symbols) {
-                writer.printf("%s,%s,%s,%d%n",
-                        symbol.nombre, symbol.valor, symbol.token, symbol.longitud);
+                writer.printf("%s,%s,%s,%s%n",
+                        symbol.nombre, symbol.valor, symbol.token,
+                        symbol.longitud != null ? symbol.longitud : "");
             }
 
             System.out.println("Tabla de símbolos generada exitosamente.");

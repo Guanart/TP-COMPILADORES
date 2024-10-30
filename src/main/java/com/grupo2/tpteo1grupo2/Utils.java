@@ -49,4 +49,27 @@ public class Utils {
         alert.showAndWait();
     }
 
+    void mostrarStringLimit() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Limite CTE_STRING");
+        alert.setHeaderText(null);
+        alert.setContentText("Una constante de string puede tener hasta 30 caracteres unicamente");
+        alert.showAndWait();
+    }
+
+    void mostrarRealLimit() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Limite CTE_REAL");
+        alert.setHeaderText(null);
+        alert.setContentText("Una constante real puede valer hasta 1000.0");
+        alert.showAndWait();
+    }
+
+    void mostrarIntLimit() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Limite CTE_INT");
+        alert.setHeaderText(null);
+        alert.setContentText("Una constante natural puede valer hasta 1000");
+        alert.showAndWait();
+    }
 }
