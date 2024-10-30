@@ -4,17 +4,17 @@ DECLARE.SECTION
 ENDDECLARE.SECTION
 
 PROGRAM.SECTION
-//* Asignaciones num�ricas y de string *//
+//* Asignaciones numericas y de string *//
 var1 ::= 15
 var2 ::= 99.9
 mensaje ::= "Hola Mundo"
 
-//* Declaraci�n de un ciclo WHILE *//
+//* Declaracion de un ciclo WHILE *//
 WHILE (var1 < limite)
     contador ::= contador + 1
     IF (contador >= 10) THEN
-        write "Contador alcanzo el l�mite"
-        mensaje ::= "L�mite alcanzado"
+        write "Contador alcanzo el limite"
+        mensaje ::= "Limite alcanzado"
     ELSE
         write contador //* Muestra el valor de contador *//
     ENDIF

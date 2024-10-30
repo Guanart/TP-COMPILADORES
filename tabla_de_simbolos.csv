@@ -1,38 +1,22 @@
 NOMBRE,VALOR,TOKEN,LONGITUD
-a_1,a_1,ID,
-_35,35,CONST_INT,
-b,b,ID,
-_Hola mundo!,"Hola mundo!",CONST_STRING,13
+var1,var1,ID,
+var2,var2,ID,
+mensaje,mensaje,ID,
+INT,INT,ID,
 contador,contador,ID,
-_0,0,CONST_INT,
-x,x,ID,
-_10.5,10.5,CONST_REAL,
-y,y,ID,
-_20,20,CONST_INT,
-resultado,resultado,ID,
+limite,limite,ID,
+_15,15,CONST_INT,
+_99.9,99.9,CONST_REAL,
+_Hola Mundo,"Hola Mundo",CONST_STRING,12
 _1,1,CONST_INT,
-_X es mayor que Y,"X es mayor que Y",CONST_STRING,18
-_X es menor o igual que Y,"X es menor o igual que Y",CONST_STRING,26
 _10,10,CONST_INT,
-_Contador: ,"Contador: ",CONST_STRING,12
-FOR,FOR,ID,
-i,i,ID,
-_Iteraci�n ,"Iteraci�n ",CONST_STRING,12
-FOREACH,FOREACH,ID,
-elemento,elemento,ID,
-IN,IN,ID,
-_2,2,CONST_INT,
-_3,3,CONST_INT,
-_4,4,CONST_INT,
-_5,5,CONST_INT,
-_Elemento actual: ,"Elemento actual: ",CONST_STRING,19
-bin,bin,ID,
-_0b011,3,CONST_B,
-RANGE,RANGE,ID,
-floatVariable,floatVariable,ID,
-_3.14,3.14,CONST_REAL,
-integerVariable,integerVariable,ID,
-_100,100,CONST_INT,
-stringVariable,stringVariable,ID,
-_Prueba de cadena,"Prueba de cadena",CONST_STRING,18
-a,a,ID,
+THEN,THEN,ID,
+write,write,ID,
+_Contador alcanzo el limite,"Contador alcanzo el limite",CONST_STRING,28
+_Limite alcanzado,"Limite alcanzado",CONST_STRING,18
+var3,var3,ID,
+_0b1101,13,CONST_B,
+_16,16,CONST_INT,
+_10.5,10.5,CONST_REAL,
+_123.45,123.45,CONST_REAL,
+_0b1011,11,CONST_B,

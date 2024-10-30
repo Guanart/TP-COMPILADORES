@@ -55,7 +55,7 @@ Token CONST_INT encontrado, Lexema: 10
 Token CERRAR_PARENTESIS encontrado, Lexema )
 Token ID encontrado, Lexema THEN
 Token ID encontrado, Lexema write
-Token CONST_STRING encontrado, Lexema: "Contador alcanzo limite"
+Token CONST_STRING encontrado, Lexema: "Contador alcanzo el limite"
 Token ID encontrado, Lexema mensaje
 Token ASIGN encontrado, Lexema ::=
 Token CONST_STRING encontrado, Lexema: "Limite alcanzado"
