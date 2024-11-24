@@ -793,7 +793,7 @@ public class Lexico implements java_cup.runtime.Scanner {
           case 4: 
             { int valor = Integer.parseInt(yytext());
     if (valor > MAX_CONST_INT) {
-        throw new Error("Error: CONST_INT fuera de límite (" + valor + " > " + MAX_CONST_INT + ")");
+        resultados = ""; this.utils.mostrarIntLimit(); throw new RuntimeException();
     } else {
         resultados += "Token CONST_INT encontrado, Lexema: " + yytext() + "\n";
     }
@@ -863,7 +863,7 @@ public class Lexico implements java_cup.runtime.Scanner {
           case 17: 
             { double valor = Double.parseDouble(yytext());
     if (valor > MAX_CONST_REAL) {
-        resultados = ""; this.utils.mostrarBadToken(); throw new RuntimeException();
+        resultados = ""; this.utils.mostrarRealLimit(); throw new RuntimeException();
     } else {
         resultados += "Token CONST_REAL encontrado, Lexema: " + yytext() + "\n";
     }
@@ -881,7 +881,7 @@ public class Lexico implements java_cup.runtime.Scanner {
     valor = valor.substring(1, valor.length() - 1);
 
     if (valor.length() > 30) {
-        resultados = ""; this.utils.mostrarBadToken(); throw new RuntimeException();
+        resultados = ""; this.utils.mostrarStringLimit(); throw new RuntimeException();
     } else {
         resultados += "Token CONST_STRING encontrado, Lexema: " + yytext() + "\n";
     }
