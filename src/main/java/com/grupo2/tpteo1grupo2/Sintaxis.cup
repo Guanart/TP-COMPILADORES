@@ -1,0 +1,116 @@
+package com.grupo2.tpteo1grupo2;
+import java.util.ArrayList;
+import java.util.List;
+import java_cup.runtime.*;
+
+parser code
+{:
+    public void syntax_error(Symbol s) {
+        System.out.println("Error en la linea " + (s.right+1) + " columna " + s.left + ". "
+            + s + " no reconocido valor " + s.value );
+    }
+:}
+
+action code
+{:
+:}
+
+/*Declaracion de Terminales */
+terminal IF, THEN, ELSE, ENDIF, WHILE, ENDWHILE, ENDFOR, WRITE, FLOAT, INTEGER, STRING, OPLIST, ID, CONST_INT, CONST_REAL,
+CONST_STRING, CONST_B, OP_MENOR, OP_MAYOR, OP_IGUAL, OP_MENOR_IGUAL, OP_MAYOR_IGUAL, OP_SUMA, OP_RESTA, OP_MULT, OP_DIV, CON_LOGICO, ASIGN, DECLARATION, DECLARE_SECTION,
+ENDDECLARE_SECTION, PROGRAM_SECTION, ENDPROGRAM_SECTION, ABRIR_PARENTESIS, CERRAR_PARENTESIS, ABRIR_LLAVE, CERRAR_LLAVE,
+ABRIR_CORCHETE, CERRAR_CORCHETE, PUNTO_Y_COMA, ADMIRACION, INTERROGACION, COMA;
+
+/*Declaracion de No Terminales*/
+non terminal pgm, declare_sec, declaracion_n, program_sec, sentencia_n, program_write, sentencia_write, write_constante, declaracion,
+    declaracion_aux, type, sentencia, asignacion, decision, iteracion, condicion, comparacion, comparador, expresion, termino, factor, escritura,
+    parametro_escritura, oplist, oplist_operaciones, oplist_const, const_numerica;
+
+start with pgm;
+
+pgm::= declare_sec program_sec {:System.out.println("Regla 0: pgm ; Compilación completa");:}
+        | program_write {:System.out.println("Regla 1: pgm = PROGRAM WRITE; Compilación completa");:};
+
+declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:System.out.println("Regla 2: DECLARE_SEC = " + ds + " DECLARACIONES " + es);:};
+
+declaracion_n::= declaracion_n declaracion {:System.out.println("Regla 3: DECLARACIONES = DECLARACIONES DECLARACION");:}
+        | declaracion {:System.out.println("Regla 4: DECLARACIONES = DECLARACION");:};
+
+program_sec::= PROGRAM_SECTION:ps sentencia_n ENDPROGRAM_SECTION:es {:System.out.println("Regla 5: PROGRAM_SEC = " + ps + " SENTENCIAS " + es);:};
+
+sentencia_n::= sentencia_n sentencia {:System.out.println("Regla 6: SENTENCIAS = SENTENCIAS SENTENCIA");:}
+        | sentencia {:System.out.println("Regla 7: SENTENCIAS = SENTENCIA");:};
+
+program_write::= PROGRAM_SECTION sentencia_write ENDPROGRAM_SECTION {:System.out.println("Regla 8: PROGRAM WRITE = PROGRAM_SECTION SENTENCIA_WRITE ENDPROGRAM_SECTION");:};
+
+sentencia_write::= sentencia_write write_constante {:System.out.println("Regla 9: SENTENCIA WRITE = SENTENCIA_WRITE WRITE_CONSTANTE");:}
+        | write_constante {:System.out.println("Regla 10: SENTENCIA WRITE = WRITE_CONSTANTE");:};
+
+write_constante::= WRITE:w CONST_STRING:c {:System.out.println("Regla 11: WRITE CONSTANTE = " + w+c);:};
+
+declaracion::= ABRIR_CORCHETE:ac ID:id COMA:coma declaracion_aux:da COMA type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 12: DECLARATION = " + ac + id + coma + da + coma + type + cc);:}
+        | ABRIR_CORCHETE:ac ID:id CERRAR_CORCHETE DECLARATION:dec ABRIR_CORCHETE type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 13: DECLARATION = " + ac + id + cc + dec + ac + type + cc);:};
+
+declaracion_aux::= ID:id COMA:coma declaracion_aux:da COMA type:t {:System.out.println("Regla 14: DECLARATION_AUX = " + id + coma + da + coma + t); RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString(); :}
+        | CERRAR_CORCHETE:cc DECLARATION:d ABRIR_CORCHETE:aco {:System.out.println("Regla 15: DECLARATION_AUX = " + cc + d + aco ); RESULT = cc.toString() + d.toString() + aco.toString(); :};
+
+type::= FLOAT:f {:System.out.println("Regla 16: TYPE = " + f); RESULT=f; :}
+        | INTEGER:i {:System.out.println("Regla 17: TYPE = " + i); RESULT=i;:}
+        | STRING:s {:System.out.println("Regla 18: TYPE = " + s); RESULT=s;:};
+
+sentencia::= asignacion {:System.out.println("Regla 19: SENTENCIA = ASIGNACION");:}
+        | iteracion {:System.out.println("Regla 20: SENTENCIA = ITERACION");:}
+        | decision {:System.out.println("Regla 21: SENTENCIA = DECISION");:}
+        | escritura {:System.out.println("Regla 22: SENTENCIA = ESCRITURA");:}
+        | oplist {:System.out.println("Regla 23: SENTENCIA = OPLIST");:};
+
+asignacion::= ID:id ASIGN:a expresion {:System.out.println("Regla 24: ASIGNACION = " + id + a + " EXPRESION ");:}
+        | ID:id ASIGN:a CONST_STRING:cs {:System.out.println("Regla 25: ASIGNACION = " + id + a + cs);:};
+
+decision::= IF:i ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ELSE:el sentencia_n ENDIF:endif {:System.out.println("Regla 26: DECISION = " + i + ap + " CONDICION " + cp + t + " SENTENCIAS " + el + " SENTENCIAS " + endif);  :}
+        | IF:i ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ENDIF:endif {:System.out.println("Regla 27: DECISION = " + i + ap + " CONDICION " + cp + t + " SENTENCIAS " + endif);:};
+
+iteracion::= WHILE:w ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ENDWHILE:ew {:System.out.println("Regla 28: ITERACION = " + w + ap + " CONDICION " + cp + t + " SENTENCIAS " +  ew);:};
+
+condicion::= comparacion {:System.out.println("Regla 29: CONDICION = COMPARACION");:}
+        | comparacion comparador:c comparacion {:System.out.println("Regla 30: CONDICION = COMPARACION " + c + " COMPARACION");:};
+
+comparacion::= expresion comparador:c expresion {:System.out.println("Regla 31: COMPARACION = EXPRESION " + c + " EXPRESION");:}
+        | ABRIR_PARENTESIS:ap comparacion CERRAR_PARENTESIS:cp {:System.out.println("Regla 32: COMPARACION = " + ap + " COMPARACION " + cp);:};
+
+comparador::= OP_MAYOR:ma {:System.out.println("Regla 33: COMPARADO = " + ma); RESULT=ma; :}
+        | OP_MENOR:me {:System.out.println("Regla 34: COMPARADO = " + me); RESULT=me; :}
+        | OP_IGUAL:i {:System.out.println("Regla 35: COMPARADO = " + i); RESULT=i; :}
+        | OP_MENOR_IGUAL:mei {:System.out.println("Regla 36: COMPARADO = " + mei); RESULT=mei; :}
+        | OP_MAYOR_IGUAL:mai {:System.out.println("Regla 37: COMPARADO = " + mai); RESULT=mai; :};
+
+expresion::= expresion OP_SUMA:os termino {:System.out.println("Regla 38: EXPRESION = EXPRESION " + os + " TERMINO"); :}
+        | expresion OP_RESTA:or termino {:System.out.println("Regla 39: EXPRESION = EXPRESION " + or + " TERMINO");:}
+        | termino:t {:System.out.println("Regla 40: EXPRESION = TERMINO");:};
+
+termino::= termino OP_MULT:om factor {:System.out.println("Regla 41: TERMINO = TERMINO " + om +" FACTOR");:}
+        | termino OP_DIV:od factor {:System.out.println("Regla 42: TERMINO = TERMINO " + od + " FACTOR");:}
+        | factor {:System.out.println("Regla 43: TERMINO = FACTOR"); :};
+
+factor::= ABRIR_PARENTESIS:a expresion:e CERRAR_PARENTESIS:c {:System.out.println("Regla 44: FACTOR = " +a + "EXPRESION" + c);:}
+        | ID:id {:System.out.println("Regla 45: FACTOR = " + id);:}
+        | const_numerica:cn {:System.out.println("Regla 46: FACTOR = " + cn);:};
+
+escritura::= WRITE:w parametro_escritura:param {:System.out.println("Regla 47: ESCRITURA = " + w + param);:};
+
+parametro_escritura::= ID:id {:System.out.println("Regla 48: VARIABLE valor = " + id); RESULT=id; :}
+        | const_numerica:const_numerica {:System.out.println("Regla 49: CONSTANTE NUMÉRICA valor = " + const_numerica); RESULT=const_numerica; :}
+        | CONST_STRING:const_string {:System.out.println("Regla 50: CONSTANTE STRING valor = " + const_string); RESULT=const_string; :};
+
+oplist::= OPLIST ABRIR_CORCHETE oplist_operaciones ABRIR_CORCHETE ID PUNTO_Y_COMA ID CERRAR_CORCHETE ABRIR_CORCHETE oplist_const CERRAR_CORCHETE CERRAR_CORCHETE {:System.out.println("Regla 51: oplist");:};
+
+oplist_operaciones::= OP_SUMA {:System.out.println("Regla 52: oplist_operaciones");:}
+        | OP_MULT {:System.out.println("Regla 53: oplist_operaciones");:};
+
+oplist_const::= oplist_const PUNTO_Y_COMA const_numerica {:System.out.println("Regla 54: oplist_const");:}
+        | const_numerica {:System.out.println("Regla 55: oplist_const");:};
+
+const_numerica::= CONST_B:const_b {:System.out.println("Regla 56: CONSTANTE BINARIA valor = " + const_b); RESULT=const_b;:}
+        | CONST_REAL:const_real {:System.out.println("Regla 57: CONSTANTE REAL valor = " + const_real); RESULT=const_real; :}
+        | CONST_INT:const_int {: System.out.println("Regla 58: CONSTANTE ENTERA valor = " + const_int); RESULT=const_int; :};
+

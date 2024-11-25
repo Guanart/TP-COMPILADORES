@@ -1,5 +1,5 @@
 package com.grupo2.tpteo1grupo2;
-import java_cup.sym;
+import java_cup.runtime.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
@@ -70,8 +70,17 @@ INTERROGACION = \?
 COMA = \,
 
 CONST_STRING = \"([^\"\n\r])*\"
-OP_LOGICO = <=|>=|<>|<|>|=
-OP_ARITMETICO = \+|-|\*|\/
+
+OP_MAYOR_IGUAL = >=
+OP_MENOR_IGUAL = <=
+OP_MAYOR = >
+OP_MENOR = <
+OP_IGUAL = =
+
+OP_SUMA = \+
+OP_RESTA = \-
+OP_MULT = \*
+OP_DIV = \/
 //OPLIST = (OPLIST) \[ (\+ | \* )  \[ {ID} \; {ID} \] \[ ( {CONST_INT} | { CONST_REAL} )  (\;  ({CONST_INT}|{CONST_REAL}))*  \]  \]
 IN_COMENTARIO = \/\/\*
 FIN_COMENTARIO = \*\/\/
@@ -82,18 +91,19 @@ COMENTARIO_BLOQUE1 = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{S
 %%
 
 <YYINITIAL> {
-"IF"                    { resultados += "Token IF encontrado, Lexema " + yytext() + "\n"; }
-"ELSE"                  { resultados += "Token ELSE encontrado, Lexema " + yytext() + "\n"; }
-"ENDIF"                 { resultados += "Token ENDIF encontrado, Lexema " + yytext() + "\n"; }
-"WHILE"                 { resultados += "Token WHILE encontrado, Lexema " + yytext() + "\n"; }
-"ENDWHILE"              { resultados += "Token ENDWHILE encontrado, Lexema " + yytext() + "\n"; }
-"ENDFOR"                { resultados += "Token ENDFOR encontrado, Lexema " + yytext() + "\n"; }
-"WRITE"                 { resultados += "Token WRITE encontrado, Lexema " + yytext() + "\n"; }
-"FLOAT"                 { resultados += "Token FLOAT encontrado, Lexema " + yytext() + "\n"; }
-"INTEGER"               { resultados += "Token INTEGER encontrado, Lexema " + yytext() + "\n"; }
-"STRING"                { resultados += "Token STRING encontrado, Lexema " + yytext() + "\n"; }
-"OPLIST"                { resultados += "Token OPLIST encontrado, Lexema " + yytext() + "\n"; }
-{ID}                    { resultados += "Token ID encontrado, Lexema " + yytext() + "\n"; }
+"IF"                    { resultados += "Token IF encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.IF, yytext()); }
+"THEN"                    { resultados += "Token IF encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.IF, yytext()); }
+"ELSE"                  { resultados += "Token ELSE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ELSE, yytext()); }
+"ENDIF"                 { resultados += "Token ENDIF encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDIF, yytext()); }
+"WHILE"                 { resultados += "Token WHILE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.WHILE, yytext()); }
+"ENDWHILE"              { resultados += "Token ENDWHILE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDWHILE, yytext()); }
+"ENDFOR"                { resultados += "Token ENDFOR encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDFOR, yytext()); }
+"WRITE"                 { resultados += "Token WRITE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.WRITE, yytext()); }
+"FLOAT"                 { resultados += "Token FLOAT encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.FLOAT, yytext()); }
+"INTEGER"               { resultados += "Token INTEGER encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.INTEGER, yytext()); }
+"STRING"                { resultados += "Token STRING encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.STRING, yytext()); }
+"OPLIST"                { resultados += "Token OPLIST encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OPLIST, yytext()); }
+{ID}                    { resultados += "Token ID encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ID, yytext()); }
 
 {CONST_INT} {
     int valor = Integer.parseInt(yytext());
@@ -101,6 +111,7 @@ COMENTARIO_BLOQUE1 = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{S
         resultados = ""; this.utils.mostrarIntLimit(); throw new RuntimeException();
     } else {
         resultados += "Token CONST_INT encontrado, Lexema: " + yytext() + "\n";
+        return new Symbol(sym.CONST_INT, yytext());
     }
 }
 
@@ -110,6 +121,7 @@ COMENTARIO_BLOQUE1 = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{S
         resultados = ""; this.utils.mostrarRealLimit(); throw new RuntimeException();
     } else {
         resultados += "Token CONST_REAL encontrado, Lexema: " + yytext() + "\n";
+        return new Symbol(sym.CONST_REAL, yytext());
     }
 }
 
@@ -122,30 +134,41 @@ COMENTARIO_BLOQUE1 = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{S
         resultados = ""; this.utils.mostrarStringLimit(); throw new RuntimeException();
     } else {
         resultados += "Token CONST_STRING encontrado, Lexema: " + yytext() + "\n";
+        return new Symbol(sym.CONST_STRING, yytext());
     }
 }
 
-{CONST_B}               { resultados += "Token CONST_B encontrado, Lexema " + yytext() + "\n"; }
-{OP_LOGICO}             { resultados += "Token OP_LOGICO encontrado, Lexema " + yytext() + "\n"; }
-{OP_ARITMETICO}         { resultados += "Token OP_ARITMETICO encontrado, Lexema " + yytext() + "\n"; }
-{CON_LOGICO}            { resultados += "Token CON_LOGICO encontrado, Lexema " + yytext() + "\n"; }
-"::="                   { resultados += "Token ASIGN encontrado, Lexema " + yytext() + "\n"; }
-":="                    { resultados += "Token DECLARATION encontrado, Lexema " + yytext() + "\n"; }
-"DECLARE.SECTION"       { resultados += "Token DECLARE.SECTION encontrado, Lexema " + yytext() + "\n"; }
-"ENDDECLARE.SECTION"    { resultados += "Token ENDDECLARE.SECTION encontrado, Lexema " + yytext() + "\n"; }
-"PROGRAM.SECTION"       { resultados += "Token PROGRAM.SECTION encontrado, Lexema " + yytext() + "\n"; }
-"ENDPROGRAM.SECTION"    { resultados += "Token ENDPROGRAM.SECTION encontrado, Lexema " + yytext() + "\n"; }
+{CONST_B}               { resultados += "Token CONST_B encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CONST_B, yytext()); }
 
-{ABRIR_PARENTESIS}   { resultados += "Token ABRIR_PARENTESIS encontrado, Lexema " + yytext() + "\n"; }
-{CERRAR_PARENTESIS}  { resultados += "Token CERRAR_PARENTESIS encontrado, Lexema " + yytext() + "\n"; }
-{ABRIR_LLAVE}        { resultados += "Token ABRIR_LLAVE encontrado, Lexema " + yytext() + "\n"; }
-{CERRAR_LLAVE}       { resultados += "Token CERRAR_LLAVE encontrado, Lexema " + yytext() + "\n"; }
-{ABRIR_CORCHETE}     { resultados += "Token ABRIR_CORCHETE encontrado, Lexema " + yytext() + "\n"; }
-{CERRAR_CORCHETE}    { resultados += "Token CERRAR_CORCHETE encontrado, Lexema " + yytext() + "\n"; }
-{PUNTO_Y_COMA}       { resultados += "Token PUNTO_Y_COMA encontrado, Lexema " + yytext() + "\n"; }
-{ADMIRACION}         { resultados += "Token ADMIRACION encontrado, Lexema " + yytext() + "\n"; }
-{INTERROGACION}      { resultados += "Token INTERROGACION encontrado, Lexema " + yytext() + "\n"; }
-{COMA}               { resultados += "Token COMA encontrado, Lexema " + yytext() + "\n"; }
+{OP_MAYOR_IGUAL}             { resultados += "Token OP_MAYOR_IGUAL encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_MAYOR_IGUAL, yytext()); }
+{OP_MENOR_IGUAL}             { resultados += "Token OP_MENOR_IGUAL encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_MENOR_IGUAL, yytext()); }
+{OP_MAYOR}             { resultados += "Token OP_MAYOR encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_MAYOR, yytext()); }
+{OP_MENOR}             { resultados += "Token OP_MENOR encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_MENOR, yytext()); }
+{OP_IGUAL}             { resultados += "Token OP_IGUAL encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_IGUAL, yytext()); }
+
+{OP_SUMA}         { resultados += "Token OP_SUMA encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_SUMA, yytext()); }
+{OP_RESTA}         { resultados += "Token OP_RESTA encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_RESTA, yytext()); }
+{OP_MULT}         { resultados += "Token OP_MULT encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_MULT, yytext()); }
+{OP_DIV}         { resultados += "Token OP_DIV encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.OP_DIV, yytext()); }
+
+{CON_LOGICO}            { resultados += "Token CON_LOGICO encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CON_LOGICO, yytext()); }
+"::="                   { resultados += "Token ASIGN encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ASIGN, yytext()); }
+":="                    { resultados += "Token DECLARATION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.DECLARATION, yytext()); }
+"DECLARE.SECTION"       { resultados += "Token DECLARE.SECTION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.DECLARE_SECTION, yytext()); }
+"ENDDECLARE.SECTION"    { resultados += "Token ENDDECLARE.SECTION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDDECLARE_SECTION, yytext()); }
+"PROGRAM.SECTION"       { resultados += "Token PROGRAM.SECTION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.PROGRAM_SECTION, yytext()); }
+"ENDPROGRAM.SECTION"    { resultados += "Token ENDPROGRAM.SECTION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDPROGRAM_SECTION, yytext()); }
+
+{ABRIR_PARENTESIS}   { resultados += "Token ABRIR_PARENTESIS encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ABRIR_PARENTESIS, yytext()); }
+{CERRAR_PARENTESIS}  { resultados += "Token CERRAR_PARENTESIS encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CERRAR_PARENTESIS, yytext()); }
+{ABRIR_LLAVE}        { resultados += "Token ABRIR_LLAVE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ABRIR_LLAVE, yytext()); }
+{CERRAR_LLAVE}       { resultados += "Token CERRAR_LLAVE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CERRAR_LLAVE, yytext()); }
+{ABRIR_CORCHETE}     { resultados += "Token ABRIR_CORCHETE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ABRIR_CORCHETE, yytext()); }
+{CERRAR_CORCHETE}    { resultados += "Token CERRAR_CORCHETE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CERRAR_CORCHETE, yytext()); }
+{PUNTO_Y_COMA}       { resultados += "Token PUNTO_Y_COMA encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.PUNTO_Y_COMA, yytext()); }
+{ADMIRACION}         { resultados += "Token ADMIRACION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ADMIRACION, yytext()); }
+{INTERROGACION}      { resultados += "Token INTERROGACION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.INTERROGACION, yytext()); }
+{COMA}               { resultados += "Token COMA encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.COMA, yytext()); }
 
 {COMENTARIO_BLOQUE}     {}
 {COMENTARIO_BLOQUE1}     {}
