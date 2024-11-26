@@ -46,6 +46,11 @@ public class SymbolTableGenerator {
                         nombre = "_" + removeQuotes(lexema);
                     }
 
+                    // Reemplazo los espacios en blanco por guion bajo en el nombre de las constantes string
+                    if (token.startsWith("CONST_STRING")) {
+                        nombre = nombre.replace(" ", "_");
+                    }
+
                     // Calcular el valor de `valor` y `longitud` según el token
                     String valor = token.equals("CONST_B") ? convertBinaryToDecimal(lexema) : lexema;
                     Integer longitud = token.equals("CONST_STRING") ? lexema.length() : null;
