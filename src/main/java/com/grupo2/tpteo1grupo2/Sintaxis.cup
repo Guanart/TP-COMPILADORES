@@ -6,8 +6,8 @@ import java_cup.runtime.*;
 parser code
 {:
     public void syntax_error(Symbol s) {
-        System.out.println("Error en la linea " + (s.right+1) + " columna " + s.left + ". "
-            + s + " no reconocido valor " + s.value );
+        System.out.println("Error en la linea " + (s.right+1) + " columna " + (s.left+1) + ". "
+            + s + " no reconocido, VALOR: " + s.value );
     }
 :}
 
@@ -16,14 +16,14 @@ action code
 :}
 
 /*Declaracion de Terminales */
-terminal IF, THEN, ELSE, ENDIF, WHILE, ENDWHILE, ENDFOR, WRITE, FLOAT, INTEGER, STRING, OPLIST, ID, CONST_INT, CONST_REAL,
-CONST_STRING, CONST_B, OP_MENOR, OP_MAYOR, OP_IGUAL, OP_MENOR_IGUAL, OP_MAYOR_IGUAL, OP_SUMA, OP_RESTA, OP_MULT, OP_DIV, CON_LOGICO, ASIGN, DECLARATION, DECLARE_SECTION,
+terminal IF, THEN, ELSE, ENDIF, WHILE, ENDWHILE, ENDFOR, WRITE, FLOAT, INTEGER, STRING, OPLIST, ID, CONST_INT, CONST_REAL, CON_OR, CON_AND,
+CONST_STRING, CONST_B, OP_MENOR, OP_MAYOR, OP_IGUAL, OP_MENOR_IGUAL, OP_MAYOR_IGUAL, OP_SUMA, OP_RESTA, OP_MULT, OP_DIV, ASIGN, DECLARACION, DECLARE_SECTION,
 ENDDECLARE_SECTION, PROGRAM_SECTION, ENDPROGRAM_SECTION, ABRIR_PARENTESIS, CERRAR_PARENTESIS, ABRIR_LLAVE, CERRAR_LLAVE,
 ABRIR_CORCHETE, CERRAR_CORCHETE, PUNTO_Y_COMA, ADMIRACION, INTERROGACION, COMA;
 
 /*Declaracion de No Terminales*/
 non terminal pgm, declare_sec, declaracion_n, program_sec, sentencia_n, program_write, sentencia_write, write_constante, declaracion,
-    declaracion_aux, type, sentencia, asignacion, decision, iteracion, condicion, comparacion, comparador, expresion, termino, factor, escritura,
+    declaracion_aux, type, sentencia, asignacion, decision, iteracion, condicion, comparacion, comparador, conector, expresion, termino, factor, escritura,
     parametro_escritura, oplist, oplist_operaciones, oplist_const, const_numerica;
 
 start with pgm;
@@ -48,11 +48,10 @@ sentencia_write::= sentencia_write write_constante {:System.out.println("Regla 9
 
 write_constante::= WRITE:w CONST_STRING:c {:System.out.println("Regla 11: WRITE CONSTANTE = " + w+c);:};
 
-declaracion::= ABRIR_CORCHETE:ac ID:id COMA:coma declaracion_aux:da COMA type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 12: DECLARATION = " + ac + id + coma + da + coma + type + cc);:}
-        | ABRIR_CORCHETE:ac ID:id CERRAR_CORCHETE DECLARATION:dec ABRIR_CORCHETE type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 13: DECLARATION = " + ac + id + cc + dec + ac + type + cc);:};
+declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 12: DECLARATION = " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
 
-declaracion_aux::= ID:id COMA:coma declaracion_aux:da COMA type:t {:System.out.println("Regla 14: DECLARATION_AUX = " + id + coma + da + coma + t); RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString(); :}
-        | CERRAR_CORCHETE:cc DECLARATION:d ABRIR_CORCHETE:aco {:System.out.println("Regla 15: DECLARATION_AUX = " + cc + d + aco ); RESULT = cc.toString() + d.toString() + aco.toString(); :};
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da  type:t COMA {:System.out.println("Regla 14: DECLARACION_AUX = " + id + coma + da + coma + t); RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString(); :}
+        | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:System.out.println("Regla 15: DECLARACION_AUX = " + cc2 + d + aco ); RESULT = cc2.toString() + d.toString() + aco.toString(); :};
 
 type::= FLOAT:f {:System.out.println("Regla 16: TYPE = " + f); RESULT=f; :}
         | INTEGER:i {:System.out.println("Regla 17: TYPE = " + i); RESULT=i;:}
@@ -68,12 +67,15 @@ asignacion::= ID:id ASIGN:a expresion {:System.out.println("Regla 24: ASIGNACION
         | ID:id ASIGN:a CONST_STRING:cs {:System.out.println("Regla 25: ASIGNACION = " + id + a + cs);:};
 
 decision::= IF:i ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ELSE:el sentencia_n ENDIF:endif {:System.out.println("Regla 26: DECISION = " + i + ap + " CONDICION " + cp + t + " SENTENCIAS " + el + " SENTENCIAS " + endif);  :}
-        | IF:i ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ENDIF:endif {:System.out.println("Regla 27: DECISION = " + i + ap + " CONDICION " + cp + t + " SENTENCIAS " + endif);:};
+        | IF:i1 ABRIR_PARENTESIS:ap1 condicion CERRAR_PARENTESIS:cp1 THEN:t1 sentencia_n ENDIF:endif1 {:System.out.println("Regla 27: DECISION = " + i1 + ap1 + " CONDICION " + cp1 + t1 + " SENTENCIAS " + endif1);:};
 
 iteracion::= WHILE:w ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ENDWHILE:ew {:System.out.println("Regla 28: ITERACION = " + w + ap + " CONDICION " + cp + t + " SENTENCIAS " +  ew);:};
 
 condicion::= comparacion {:System.out.println("Regla 29: CONDICION = COMPARACION");:}
-        | comparacion comparador:c comparacion {:System.out.println("Regla 30: CONDICION = COMPARACION " + c + " COMPARACION");:};
+        | comparacion conector:c comparacion {:System.out.println("Regla 30: CONDICION = COMPARACION " + c + " COMPARACION");:};
+
+conector::= CON_AND {:System.out.println("Regla 1234124: conector = CON_AND");:}
+        | CON_OR {:System.out.println("Regla 1234124: conector = CON_OR");:};
 
 comparacion::= expresion comparador:c expresion {:System.out.println("Regla 31: COMPARACION = EXPRESION " + c + " EXPRESION");:}
         | ABRIR_PARENTESIS:ap comparacion CERRAR_PARENTESIS:cp {:System.out.println("Regla 32: COMPARACION = " + ap + " COMPARACION " + cp);:};

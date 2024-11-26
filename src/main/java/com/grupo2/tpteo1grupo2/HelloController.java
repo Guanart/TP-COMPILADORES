@@ -100,9 +100,9 @@ public class HelloController extends Component {
             File tempDir = new File(System.getProperty("java.io.tmpdir"));
             FileReader f = new FileReader(new File(tempDir, "prueba.txt"));
             Lexico Lexer = new Lexico(f);
-            //parser sintaxis = new parser(Lexer);
-            //sintaxis.parse();
-            Lexer.next_token();
+            parser sintaxis = new parser(Lexer);
+            sintaxis.parse();
+            //Lexer.next_token();
 
         } catch (FileNotFoundException ex) {
             this.utils.mostrarAlertError();

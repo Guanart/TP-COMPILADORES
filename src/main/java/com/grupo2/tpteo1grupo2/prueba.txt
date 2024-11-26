@@ -1,36 +1,33 @@
-DECLARE.SECTION
-[var1, var2, mensaje] := [INT, FLOAT, STRING]
-[contador, limite] := [INT, INT]
-ENDDECLARE.SECTION
+DECLARE_SECTION
+[var1,var2]:=[INTEGER,STRING]
+ENDDECLARE_SECTION
 
-PROGRAM.SECTION
+PROGRAM_SECTION
 //* Asignaciones numericas y de string *//
 var1 ::= 15
 var2 ::= 99.9
 mensaje ::= "Hola Mundo"
 
 //* Declaracion de un ciclo WHILE *//
-WHILE (var1 < limite)
+WHILE (var1 < limite) THEN
     contador ::= contador + 1
     IF (contador >= 10) THEN
-        write "Contador alcanzo el limite"
+        WRITE "Contador alcanzo el limite"
         mensaje ::= "Limite alcanzado"
     ELSE
-        write contador //* Muestra el valor de contador *//
+        WRITE contador //* Muestra el valor de contador *//
     ENDIF
 ENDWHILE
 
 //* Condiciones y operaciones con constantes bin *//
 var3 ::= 0b1101
-IF (var3 < 16 && var2 >= 10.5) THEN
-    write var3
+IF ((var3 < 16) && (var2 >= 10.5)) THEN
+    WRITE var3
 ENDIF
 
 //* Salidas de prueba *//
-write mensaje
-write 123.45
-write 0b1011
-write var2
-ENDPROGRAM.SECTION
-
-
+WRITE mensaje
+WRITE 123.45
+WRITE 0b1011
+WRITE var2
+ENDPROGRAM_SECTION
