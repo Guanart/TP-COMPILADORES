@@ -1,0 +1,69 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TPTEO1Grupo2:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TPTEO1Grupo2_jar</output-path>
+    <root id="archive" name="TPTEO1Grupo2.jar">
+      <element id="module-output" name="TPTEO1Grupo2" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/fxmisc/wellbehaved/wellbehavedfx/0.3.3/wellbehavedfx-0.3.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.6/javafx-graphics-17.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-media/17.0.6/javafx-media-17.0.6-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/almasb/fxgl-gameplay/11.17/fxgl-gameplay-11.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/gluonhq/attach/util/4.0.9/util-4.0.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-media/17.0.6/javafx-media-17.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/kordamp/ikonli/ikonli-javafx/12.3.1/ikonli-javafx-12.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib/1.5.10/kotlin-stdlib-1.5.10-modular.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/fxmisc/richtext/richtextfx/0.11.3/richtextfx-0.11.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/gluonhq/attach/audio/4.0.9/audio-4.0.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-annotations/2.12.1/jackson-annotations-2.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/13.0/annotations-13.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.6/javafx-base-17.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.6/javafx-base-17.0.6-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/almasb/fxgl-entity/11.17/fxgl-entity-11.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/gluonhq/attach/lifecycle/4.0.9/lifecycle-4.0.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/synedra/validatorfx/0.5.0/validatorfx-0.5.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/kordamp/bootstrapfx/bootstrapfx-core/0.4.0/bootstrapfx-core-0.4.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.12.1/jackson-databind-2.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.6/javafx-controls-17.0.6-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-core/2.12.1/jackson-core-2.12.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.6/javafx-controls-17.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/almasb/fxgl-core/11.17/fxgl-core-11.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/kotlin/kotlin-stdlib-common/1.5.10/kotlin-stdlib-common-1.5.10.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/vbmacher/java-cup/11b/java-cup-11b.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/main/java/com/grupo2/tpteo1grupo2/java-cup-11.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/almasb/fxgl-scene/11.17/fxgl-scene-11.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/reactfx/reactfx/2.0-M5/reactfx-2.0-M5.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.6/javafx-fxml-17.0.6-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/controlsfx/controlsfx/11.2.1/controlsfx-11.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.6/javafx-graphics-17.0.6-mac-aarch64.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/fxmisc/undo/undofx/2.1.1/undofx-2.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/almasb/fxgl/11.17/fxgl-11.17.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/fxmisc/flowless/flowless/0.7.3/flowless-0.7.3.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.6/javafx-fxml-17.0.6.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/kordamp/ikonli/ikonli-core/12.3.1/ikonli-core-12.3.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/gluonhq/attach/storage/4.0.9/storage-4.0.9.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/dlsc/formsfx/formsfx-core/11.6.0/formsfx-core-11.6.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/github/almasb/fxgl-io/11.17/fxgl-io-11.17.jar" path-in-jar="/" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx-swt.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.base.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.controls.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.fxml.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.graphics.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.media.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.properties" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.swing.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/javafx.web.jar" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libdecora_sse.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libfxplugins.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libglass.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libglib-lite.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libgstreamer-lite.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libjavafx_font.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libjavafx_iio.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libjfxmedia_avf.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libjfxmedia.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libjfxwebkit.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libprism_common.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libprism_es2.dylib" />
+      <element id="file-copy" path="$USER_HOME$/Downloads/macos javafx-sdk-23.0.1/lib/libprism_sw.dylib" />
+    </root>
+  </artifact>
+</component>

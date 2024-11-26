@@ -41,6 +41,14 @@ public class Utils {
         alert.showAndWait();
     }
 
+    void mostrarSintaxisError(){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText("Error de sintaxis. Por favor, comprueba la sintaxis");
+        alert.showAndWait();
+    }
+
     void mostrarBadToken() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Caracter no permitido");
