@@ -10,12 +10,19 @@ public class SymbolTableGenerator {
         String valor;
         String token;
         Integer longitud; // Cambiado a Integer para permitir valores nulos
+        String tipo;
 
-        public Symbol(String nombre, String valor, String token, Integer longitud) {
+        public Symbol(String nombre, String valor, String token, Integer longitud, String tipo) {
             this.nombre = nombre;
             this.valor = valor;
             this.token = token;
             this.longitud = longitud;
+            this.tipo = tipo != null? tipo : "-";
+        }
+
+        @Override
+        public String toString() {
+            return (nombre + valor + token + (longitud!=null? longitud.toString() : "") + tipo);
         }
     }
 
@@ -45,7 +52,7 @@ public class SymbolTableGenerator {
 
                     if (lexema != null && !symbolsMap.containsKey(nombre)) {
                         // Añadir un nuevo símbolo a la tabla
-                        Symbol symbol = new Symbol(nombre, valor, token, longitud);
+                        Symbol symbol = new Symbol(nombre, valor, token, longitud, null);
                         symbolsMap.put(nombre, symbol);
                     }
                 }
@@ -97,17 +104,82 @@ public class SymbolTableGenerator {
     public void saveToCSV(List<Symbol> symbols, String filePath) {
         try (PrintWriter writer = new PrintWriter(new File(filePath))) {
             // Escribir encabezado
-            writer.println("NOMBRE,VALOR,TOKEN,LONGITUD");
+            writer.println("NOMBRE,VALOR,TOKEN,LONGITUD,TIPO");
 
-            // Escribir cada símbolo
-            for (Symbol symbol : symbols) {
-                writer.printf("%s,%s,%s,%s%n",
-                        symbol.nombre, symbol.valor, symbol.token,
-                        symbol.longitud != null ? symbol.longitud : "");
+            if (symbols != null) {
+                // Escribir cada símbolo
+                for (Symbol symbol : symbols) {
+                    writer.printf("%s,%s,%s,%s,%s%n",
+                            symbol.nombre, symbol.valor, symbol.token,
+                            symbol.longitud != null ? symbol.longitud : "",
+                            symbol.tipo);
+                }
             }
 
             System.out.println("Tabla de símbolos generada exitosamente.");
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void editTypes(String typesPath, String filePath) {
+        try {
+            // Leer el archivo CSV original
+            List<String> lines = java.nio.file.Files.readAllLines(java.nio.file.Paths.get(filePath));
+            ArrayList<Symbol> id_types = new ArrayList<>();
+
+            // Leer los tipos desde typesPath
+            try (BufferedReader br = new BufferedReader(new FileReader(typesPath))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.contains("NOMBRE,TIPO")) {
+                        continue; // Saltar la cabecera
+                    }
+                    String[] partes = line.split(",");
+                    if (partes.length >= 2) {
+                        Symbol linea = new Symbol(partes[0], null, null, null, partes[1]);
+                        id_types.add(linea);
+                    }
+                }
+            }
+
+
+            // Actualizar el archivo original con los nuevos tipos
+            StringBuilder updatedContent = new StringBuilder();
+            for (String line : lines) {
+                if (line.contains("NOMBRE,VALOR,TOKEN,LONGITUD,TIPO")) {
+                    updatedContent.append(line).append("\n"); // Mantener la cabecera
+                    continue;
+                }
+
+                String[] partes = line.split(",");
+                if (partes.length >= 5) { // Asegurar que hay suficientes columnas
+                    String nombre = partes[0];
+                    boolean actualizado = false;
+
+                    // Buscar si hay un Symbol con el mismo nombre
+                    for (Symbol symbol : id_types) {
+                        if (symbol.nombre.equals(nombre)) {
+                            partes[4] = symbol.tipo; // Actualizar el campo tipo
+                            break;
+                        } else {
+                            partes[4] = "-";
+                        }
+                    }
+
+                    line = String.join(",", partes);
+                }
+                updatedContent.append(line).append("\n");
+            }
+
+            // Escribir el contenido actualizado al archivo
+            try (PrintWriter writer = new PrintWriter(new File(filePath))) {
+                writer.write(updatedContent.toString());
+            }
+
+            System.out.println("Archivo actualizado exitosamente.");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

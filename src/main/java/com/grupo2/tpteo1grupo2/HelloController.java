@@ -134,6 +134,8 @@ public class HelloController extends Component {
         currentStage.setOnCloseRequest(event -> this.exitApplication(null));
 
         slideOut.play();
+        SymbolTableGenerator prueba = new SymbolTableGenerator();
+        prueba.editTypes("nombres_tipos.csv","tabla_de_simbolos.csv");
     }else {
             this.utils.mostrarAlertError();
         }

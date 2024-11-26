@@ -23,16 +23,12 @@ public class HelloApplication extends Application {
             stage.setScene(scene);
             stage.show(); // Mostrar la escena primero
 
-            /*
-            SymbolTableGenerator prueba = new SymbolTableGenerator();
 
-            String inputFilePath = "ts.txt"; // Cambia esta ruta por la ruta real de tu archivo
+            SymbolTableGenerator prueba = new SymbolTableGenerator();
             String outputFilePath = "tabla_de_simbolos.csv";
 
             // Leer archivo y generar tabla de símbolos
-            List<SymbolTableGenerator.Symbol> symbols = prueba.parseFile(inputFilePath);
-            prueba.saveToCSV(symbols, outputFilePath);
-             */
+            prueba.saveToCSV(null, outputFilePath);
 
             HelloController controller = fxmlLoader.getController(); // Obtener el controlador desde el FXMLLoader
             stage.setOnCloseRequest(event -> controller.exitApplication(null));

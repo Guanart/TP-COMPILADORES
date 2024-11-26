@@ -2,6 +2,13 @@ package com.grupo2.tpteo1grupo2;
 import java.util.ArrayList;
 import java.util.List;
 import java_cup.runtime.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.io.*;
+import java.nio.file.*;
+
 
 parser code
 {:
@@ -9,6 +16,30 @@ parser code
         System.out.println("Error en la linea " + (s.right+1) + " columna " + (s.left+1) + ". "
             + s + " no reconocido, VALOR: " + s.value );
     }
+   public void actualizarTipo(String nombre, String tipo) {
+       // Nombre del archivo común para todos los nombres-tipos
+       String archivo = "nombres_tipos.csv";
+
+       try {
+           // Realizar append al archivo con la nueva línea
+           try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) {
+               writer.write(nombre + "," + tipo + "\n");
+           }
+
+           System.out.println("Archivo actualizado: " + archivo);
+
+       } catch (IOException e) {
+           System.err.println("Error al actualizar el archivo CSV: " + e.getMessage());
+       }
+   }
+   public void nuevoCsv(){
+        String archivo = "nombres_tipos.csv";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
+            writer.write("NOMBRE,TIPO\n"); // Sobrescribe y escribe la cabecera
+        } catch (IOException e) {
+                     System.err.println("Error al actualizar el archivo CSV: " + e.getMessage());
+        }
+   }
 :}
 
 action code
@@ -48,10 +79,13 @@ sentencia_write::= sentencia_write write_constante {:System.out.println("Regla 9
 
 write_constante::= WRITE:w CONST_STRING:c {:System.out.println("Regla 11: WRITE CONSTANTE = " + w+c);:};
 
-declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 12: DECLARATION = " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
+declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 12: DECLARATION = " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());
+            parser.actualizarTipo(id.toString(), type.toString());:};
 
-declaracion_aux::= COMA:coma ID:id declaracion_aux:da  type:t COMA {:System.out.println("Regla 14: DECLARACION_AUX = " + id + coma + da + coma + t); RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString(); :}
-        | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:System.out.println("Regla 15: DECLARACION_AUX = " + cc2 + d + aco ); RESULT = cc2.toString() + d.toString() + aco.toString(); :};
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da  type:t COMA {:System.out.println("Regla 14: DECLARACION_AUX = " + id + coma + da + coma + t); RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString();
+        parser.actualizarTipo(id.toString(), t.toString());:}
+        | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:System.out.println("Regla 15: DECLARACION_AUX = " + cc2 + d + aco ); RESULT = cc2.toString() + d.toString() + aco.toString();
+        parser.nuevoCsv();:};
 
 type::= FLOAT:f {:System.out.println("Regla 16: TYPE = " + f); RESULT=f; :}
         | INTEGER:i {:System.out.println("Regla 17: TYPE = " + i); RESULT=i;:}
