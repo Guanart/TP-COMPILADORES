@@ -97,6 +97,15 @@ public class HelloController extends Component {
             this.utils.crearArchivo(contenidoACompilar);
         try {
 
+            String archivoAux = "nombres_tipos.csv";
+            File file = new File(archivoAux);
+            if (file.exists()) {
+                if (!file.delete()) {
+                    System.err.println("No se pudo eliminar el archivo existente: " + archivoAux);
+                    return;
+                }
+            }
+
             File tempDir = new File(System.getProperty("java.io.tmpdir"));
             FileReader f = new FileReader(new File(tempDir, "prueba.txt"));
             Lexico Lexer = new Lexico(f);

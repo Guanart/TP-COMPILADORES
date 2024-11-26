@@ -19,14 +19,50 @@ parser code
         System.out.println("Error en la linea " + (s.right+1) + " columna " + (s.left+1) + ". "
             + s + " no reconocido, VALOR: " + s.value );
     }
-   public void actualizarTipo(String nombre, String tipo) {
+
+   public void actualizarTipo(String RESULT) {
        // Nombre del archivo común para todos los nombres-tipos
        String archivo = "nombres_tipos.csv";
+       System.out.println("Procesando RESULT: " + RESULT);
 
        try {
-           // Realizar append al archivo con la nueva línea
-           try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) {
-               writer.write(nombre + "," + tipo + "\n");
+           // Verificar si el archivo existe
+           File file = new File(archivo);
+           boolean archivoExiste = file.exists();
+
+           // Abrir el archivo para escribir (con append)
+           try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+               // Si el archivo no existía, escribir la cabecera
+               if (!archivoExiste) {
+                   writer.write("NOMBRE,TIPO\n");
+               }
+
+               // Parsear RESULT
+               String[] partes = RESULT.split(":="); // Separar por `:=`
+               if (partes.length != 2) {
+                   System.err.println("Formato inválido en RESULT: " + RESULT);
+                   return;
+               }
+
+               // Procesar la lista de variables y tipos
+               String variablesStr = partes[0].trim(); // [var5, var6, var7, var8, var9]
+               String tiposStr = partes[1].trim(); // [STRING, FLOAT, INTEGER, FLOAT, STRING]
+
+               // Remover corchetes y dividir por comas
+               String[] variables = variablesStr.replace("[", "").replace("]", "").split(",");
+               String[] tipos = tiposStr.replace("[", "").replace("]", "").split(",");
+
+               if (variables.length != tipos.length) {
+                   System.err.println("Las listas de variables y tipos no coinciden en longitud.");
+                   return;
+               }
+
+               // Escribir cada variable con su tipo en el archivo
+               for (int i = 0; i < variables.length; i++) {
+                   String nombre = variables[i].trim();
+                   String tipo = tipos[i].trim();
+                   writer.write(nombre + "," + tipo + "\n");
+               }
            }
 
            System.out.println("Archivo actualizado: " + archivo);
@@ -35,15 +71,8 @@ parser code
            System.err.println("Error al actualizar el archivo CSV: " + e.getMessage());
        }
    }
-   public void nuevoCsv(){
-        String archivo = "nombres_tipos.csv";
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo))) {
-            writer.write("NOMBRE,TIPO\n"); // Sobrescribe y escribe la cabecera
-        } catch (IOException e) {
-                     System.err.println("Error al actualizar el archivo CSV: " + e.getMessage());
-        }
 
-   }
+
 :}
 
 action code
@@ -89,12 +118,11 @@ sentencia_write::= sentencia_write write_constante {:reglas += "Regla 09: SENTEN
 write_constante::= WRITE:w CONST_STRING:c {:reglas += "Regla 11: WRITE CONSTANTE --> " + w + " " + c + "\n";:};
 
 declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
-    parser.actualizarTipo(id.toString(), type.toString());:};
+    RESULT = ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString();
+    parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
 
-declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + t + coma + " " + "\n"; RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";
-    parser.actualizarTipo(id.toString(), t.toString());:}
-    | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:reglas += "Regla 14: DECLARACION_AUX --> " + cc2 + d + aco + "\n"; RESULT = cc2.toString() + d.toString() + aco.toString();
-    parser.nuevoCsv();:};
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + t + coma + " " + "\n"; RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";:}
+    | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:reglas += "Regla 14: DECLARACION_AUX --> " + cc2 + d + aco + "\n"; RESULT = cc2.toString() + d.toString() + aco.toString();:};
 
 type::= FLOAT:f {:reglas += "Regla 15: TYPE --> " + f + "\n"; RESULT=f; :}
     | INTEGER:i {:reglas += "Regla 16: TYPE --> " + i + "\n"; RESULT=i;:}
