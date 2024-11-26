@@ -12,6 +12,7 @@ import java.nio.file.*;
 
 parser code
 {:
+
     public void syntax_error(Symbol s) {
         System.out.println("Error en la linea " + (s.right+1) + " columna " + (s.left+1) + ". "
             + s + " no reconocido, VALOR: " + s.value );
@@ -39,11 +40,13 @@ parser code
         } catch (IOException e) {
                      System.err.println("Error al actualizar el archivo CSV: " + e.getMessage());
         }
+
    }
 :}
 
 action code
 {:
+public String reglas;
 :}
 
 /*Declaracion de Terminales */
@@ -59,94 +62,93 @@ non terminal pgm, declare_sec, declaracion_n, program_sec, sentencia_n, program_
 
 start with pgm;
 
-pgm::= declare_sec program_sec {:System.out.println("Regla 0: pgm ; Compilación completa");:}
-        | program_write {:System.out.println("Regla 1: pgm = PROGRAM WRITE; Compilación completa");:};
+pgm::= declare_sec program_sec {:reglas += "Regla 0: pgm ; Compilación completa\n";:}
+    | program_write {:reglas += "Regla 1: pgm = PROGRAM WRITE; Compilación completa\n";:};
 
-declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:System.out.println("Regla 2: DECLARE_SEC = " + ds + " DECLARACIONES " + es);:};
+declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:reglas += "Regla 2: DECLARE_SEC = " + ds + " DECLARACIONES " + es + "\n";:};
 
-declaracion_n::= declaracion_n declaracion {:System.out.println("Regla 3: DECLARACIONES = DECLARACIONES DECLARACION");:}
-        | declaracion {:System.out.println("Regla 4: DECLARACIONES = DECLARACION");:};
+declaracion_n::= declaracion_n declaracion {:reglas += "Regla 3: DECLARACIONES = DECLARACIONES DECLARACION\n";:}
+    | declaracion {:reglas += "Regla 4: DECLARACIONES = DECLARACION\n";:};
 
-program_sec::= PROGRAM_SECTION:ps sentencia_n ENDPROGRAM_SECTION:es {:System.out.println("Regla 5: PROGRAM_SEC = " + ps + " SENTENCIAS " + es);:};
+program_sec::= PROGRAM_SECTION:ps sentencia_n ENDPROGRAM_SECTION:es {:reglas += "Regla 5: PROGRAM_SEC = " + ps + " SENTENCIAS " + es + "\n";:};
 
-sentencia_n::= sentencia_n sentencia {:System.out.println("Regla 6: SENTENCIAS = SENTENCIAS SENTENCIA");:}
-        | sentencia {:System.out.println("Regla 7: SENTENCIAS = SENTENCIA");:};
+sentencia_n::= sentencia_n sentencia {:reglas += "Regla 6: SENTENCIAS = SENTENCIAS SENTENCIA\n";:}
+    | sentencia {:reglas += "Regla 7: SENTENCIAS = SENTENCIA\n";:};
 
-program_write::= PROGRAM_SECTION sentencia_write ENDPROGRAM_SECTION {:System.out.println("Regla 8: PROGRAM WRITE = PROGRAM_SECTION SENTENCIA_WRITE ENDPROGRAM_SECTION");:};
+program_write::= PROGRAM_SECTION sentencia_write ENDPROGRAM_SECTION {:reglas += "Regla 8: PROGRAM WRITE = PROGRAM_SECTION SENTENCIA_WRITE ENDPROGRAM_SECTION\n";:};
 
-sentencia_write::= sentencia_write write_constante {:System.out.println("Regla 9: SENTENCIA WRITE = SENTENCIA_WRITE WRITE_CONSTANTE");:}
-        | write_constante {:System.out.println("Regla 10: SENTENCIA WRITE = WRITE_CONSTANTE");:};
+sentencia_write::= sentencia_write write_constante {:reglas += "Regla 9: SENTENCIA WRITE = SENTENCIA_WRITE WRITE_CONSTANTE\n";:}
+    | write_constante {:reglas += "Regla 10: SENTENCIA WRITE = WRITE_CONSTANTE\n";:};
 
-write_constante::= WRITE:w CONST_STRING:c {:System.out.println("Regla 11: WRITE CONSTANTE = " + w+c);:};
+write_constante::= WRITE:w CONST_STRING:c {:reglas += "Regla 11: WRITE CONSTANTE = " + w + c + "\n";:};
 
-declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:System.out.println("Regla 12: DECLARATION = " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());
-            parser.actualizarTipo(id.toString(), type.toString());:};
+declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION = " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
+    parser.actualizarTipo(id.toString(), type.toString());:};
 
-declaracion_aux::= COMA:coma ID:id declaracion_aux:da  type:t COMA {:System.out.println("Regla 14: DECLARACION_AUX = " + id + coma + da + coma + t); RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString();
-        parser.actualizarTipo(id.toString(), t.toString());:}
-        | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:System.out.println("Regla 15: DECLARACION_AUX = " + cc2 + d + aco ); RESULT = cc2.toString() + d.toString() + aco.toString();
-        parser.nuevoCsv();:};
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:reglas += "Regla 14: DECLARACION_AUX = " + id + coma + da + coma + t + "\n"; RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString();
+    parser.actualizarTipo(id.toString(), t.toString());:}
+    | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:reglas += "Regla 15: DECLARACION_AUX = " + cc2 + d + aco + "\n"; RESULT = cc2.toString() + d.toString() + aco.toString();
+    parser.nuevoCsv();:};
 
-type::= FLOAT:f {:System.out.println("Regla 16: TYPE = " + f); RESULT=f; :}
-        | INTEGER:i {:System.out.println("Regla 17: TYPE = " + i); RESULT=i;:}
-        | STRING:s {:System.out.println("Regla 18: TYPE = " + s); RESULT=s;:};
+type::= FLOAT:f {:reglas += "Regla 16: TYPE = " + f + "\n"; RESULT=f; :}
+    | INTEGER:i {:reglas += "Regla 17: TYPE = " + i + "\n"; RESULT=i;:}
+    | STRING:s {:reglas += "Regla 18: TYPE = " + s + "\n"; RESULT=s;:};
 
-sentencia::= asignacion {:System.out.println("Regla 19: SENTENCIA = ASIGNACION");:}
-        | iteracion {:System.out.println("Regla 20: SENTENCIA = ITERACION");:}
-        | decision {:System.out.println("Regla 21: SENTENCIA = DECISION");:}
-        | escritura {:System.out.println("Regla 22: SENTENCIA = ESCRITURA");:}
-        | oplist {:System.out.println("Regla 23: SENTENCIA = OPLIST");:};
+sentencia::= asignacion {:reglas += "Regla 19: SENTENCIA = ASIGNACION\n";:}
+    | iteracion {:reglas += "Regla 20: SENTENCIA = ITERACION\n";:}
+    | decision {:reglas += "Regla 21: SENTENCIA = DECISION\n";:}
+    | escritura {:reglas += "Regla 22: SENTENCIA = ESCRITURA\n";:}
+    | oplist {:reglas += "Regla 23: SENTENCIA = OPLIST\n";:};
 
-asignacion::= ID:id ASIGN:a expresion {:System.out.println("Regla 24: ASIGNACION = " + id + a + " EXPRESION ");:}
-        | ID:id ASIGN:a CONST_STRING:cs {:System.out.println("Regla 25: ASIGNACION = " + id + a + cs);:};
+asignacion::= ID:id ASIGN:a expresion {:reglas += "Regla 24: ASIGNACION = " + id + a + " EXPRESION \n";:}
+    | ID:id ASIGN:a CONST_STRING:cs {:reglas += "Regla 25: ASIGNACION = " + id + a + cs + "\n";:};
 
-decision::= IF:i ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ELSE:el sentencia_n ENDIF:endif {:System.out.println("Regla 26: DECISION = " + i + ap + " CONDICION " + cp + t + " SENTENCIAS " + el + " SENTENCIAS " + endif);  :}
-        | IF:i1 ABRIR_PARENTESIS:ap1 condicion CERRAR_PARENTESIS:cp1 THEN:t1 sentencia_n ENDIF:endif1 {:System.out.println("Regla 27: DECISION = " + i1 + ap1 + " CONDICION " + cp1 + t1 + " SENTENCIAS " + endif1);:};
+decision::= IF:i ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ELSE:el sentencia_n ENDIF:endif {:reglas += "Regla 26: DECISION = " + i + ap + " CONDICION " + cp + t + " SENTENCIAS " + el + " SENTENCIAS " + endif + "\n";:}
+    | IF:i1 ABRIR_PARENTESIS:ap1 condicion CERRAR_PARENTESIS:cp1 THEN:t1 sentencia_n ENDIF:endif1 {:reglas += "Regla 27: DECISION = " + i1 + ap1 + " CONDICION " + cp1 + t1 + " SENTENCIAS " + endif1 + "\n";:};
 
-iteracion::= WHILE:w ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ENDWHILE:ew {:System.out.println("Regla 28: ITERACION = " + w + ap + " CONDICION " + cp + t + " SENTENCIAS " +  ew);:};
+iteracion::= WHILE:w ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ENDWHILE:ew {:reglas += "Regla 28: ITERACION = " + w + ap + " CONDICION " + cp + t + " SENTENCIAS " + ew + "\n";:};
 
-condicion::= comparacion {:System.out.println("Regla 29: CONDICION = COMPARACION");:}
-        | comparacion conector:c comparacion {:System.out.println("Regla 30: CONDICION = COMPARACION " + c + " COMPARACION");:};
+condicion::= comparacion {:reglas += "Regla 29: CONDICION = COMPARACION\n";:}
+    | comparacion conector:c comparacion {:reglas += "Regla 30: CONDICION = COMPARACION " + c + " COMPARACION\n";:};
 
-conector::= CON_AND {:System.out.println("Regla 1234124: conector = CON_AND");:}
-        | CON_OR {:System.out.println("Regla 1234124: conector = CON_OR");:};
+conector::= CON_AND {:reglas += "Regla 1234124: conector = CON_AND\n";:}
+    | CON_OR {:reglas += "Regla 1234124: conector = CON_OR\n";:};
 
-comparacion::= expresion comparador:c expresion {:System.out.println("Regla 31: COMPARACION = EXPRESION " + c + " EXPRESION");:}
-        | ABRIR_PARENTESIS:ap comparacion CERRAR_PARENTESIS:cp {:System.out.println("Regla 32: COMPARACION = " + ap + " COMPARACION " + cp);:};
+comparacion::= expresion comparador:c expresion {:reglas += "Regla 31: COMPARACION = EXPRESION " + c + " EXPRESION\n";:}
+    | ABRIR_PARENTESIS:ap comparacion CERRAR_PARENTESIS:cp {:reglas += "Regla 32: COMPARACION = " + ap + " COMPARACION " + cp + "\n";:};
 
-comparador::= OP_MAYOR:ma {:System.out.println("Regla 33: COMPARADO = " + ma); RESULT=ma; :}
-        | OP_MENOR:me {:System.out.println("Regla 34: COMPARADO = " + me); RESULT=me; :}
-        | OP_IGUAL:i {:System.out.println("Regla 35: COMPARADO = " + i); RESULT=i; :}
-        | OP_MENOR_IGUAL:mei {:System.out.println("Regla 36: COMPARADO = " + mei); RESULT=mei; :}
-        | OP_MAYOR_IGUAL:mai {:System.out.println("Regla 37: COMPARADO = " + mai); RESULT=mai; :};
+comparador::= OP_MAYOR:ma {:reglas += "Regla 33: COMPARADO = " + ma + "\n"; RESULT=ma; :}
+    | OP_MENOR:me {:reglas += "Regla 34: COMPARADO = " + me + "\n"; RESULT=me; :}
+    | OP_IGUAL:i {:reglas += "Regla 35: COMPARADO = " + i + "\n"; RESULT=i; :}
+    | OP_MENOR_IGUAL:mei {:reglas += "Regla 36: COMPARADO = " + mei + "\n"; RESULT=mei; :}
+    | OP_MAYOR_IGUAL:mai {:reglas += "Regla 37: COMPARADO = " + mai + "\n"; RESULT=mai; :};
 
-expresion::= expresion OP_SUMA:os termino {:System.out.println("Regla 38: EXPRESION = EXPRESION " + os + " TERMINO"); :}
-        | expresion OP_RESTA:or termino {:System.out.println("Regla 39: EXPRESION = EXPRESION " + or + " TERMINO");:}
-        | termino:t {:System.out.println("Regla 40: EXPRESION = TERMINO");:};
+expresion::= expresion OP_SUMA:os termino {:reglas += "Regla 38: EXPRESION = EXPRESION " + os + " TERMINO\n"; :}
+    | expresion OP_RESTA:or termino {:reglas += "Regla 39: EXPRESION = EXPRESION " + or + " TERMINO\n";:}
+    | termino:t {:reglas += "Regla 40: EXPRESION = TERMINO\n";:};
 
-termino::= termino OP_MULT:om factor {:System.out.println("Regla 41: TERMINO = TERMINO " + om +" FACTOR");:}
-        | termino OP_DIV:od factor {:System.out.println("Regla 42: TERMINO = TERMINO " + od + " FACTOR");:}
-        | factor {:System.out.println("Regla 43: TERMINO = FACTOR"); :};
+termino::= termino OP_MULT:om factor {:reglas += "Regla 41: TERMINO = TERMINO " + om + " FACTOR\n";:}
+    | termino OP_DIV:od factor {:reglas += "Regla 42: TERMINO = TERMINO " + od + " FACTOR\n";:}
+    | factor {:reglas += "Regla 43: TERMINO = FACTOR\n"; :};
 
-factor::= ABRIR_PARENTESIS:a expresion:e CERRAR_PARENTESIS:c {:System.out.println("Regla 44: FACTOR = " +a + "EXPRESION" + c);:}
-        | ID:id {:System.out.println("Regla 45: FACTOR = " + id);:}
-        | const_numerica:cn {:System.out.println("Regla 46: FACTOR = " + cn);:};
+factor::= ABRIR_PARENTESIS:a expresion:e CERRAR_PARENTESIS:c {:reglas += "Regla 44: FACTOR = " + a + "EXPRESION" + c + "\n";:}
+    | ID:id {:reglas += "Regla 45: FACTOR = " + id + "\n";:}
+    | const_numerica:cn {:reglas += "Regla 46: FACTOR = " + cn + "\n";:};
 
-escritura::= WRITE:w parametro_escritura:param {:System.out.println("Regla 47: ESCRITURA = " + w + param);:};
+escritura::= WRITE:w parametro_escritura:param {:reglas += "Regla 47: ESCRITURA = " + w + param + "\n";:};
 
-parametro_escritura::= ID:id {:System.out.println("Regla 48: VARIABLE valor = " + id); RESULT=id; :}
-        | const_numerica:const_numerica {:System.out.println("Regla 49: CONSTANTE NUMÉRICA valor = " + const_numerica); RESULT=const_numerica; :}
-        | CONST_STRING:const_string {:System.out.println("Regla 50: CONSTANTE STRING valor = " + const_string); RESULT=const_string; :};
+parametro_escritura::= ID:id {:reglas += "Regla 48: VARIABLE valor = " + id + "\n"; RESULT=id; :}
+    | const_numerica:const_numerica {:reglas += "Regla 49: CONSTANTE NUMÉRICA valor = " + const_numerica + "\n"; RESULT=const_numerica; :}
+    | CONST_STRING:const_string {:reglas += "Regla 50: CONSTANTE STRING valor = " + const_string + "\n"; RESULT=const_string; :};
 
-oplist::= OPLIST ABRIR_CORCHETE oplist_operaciones ABRIR_CORCHETE ID PUNTO_Y_COMA ID CERRAR_CORCHETE ABRIR_CORCHETE oplist_const CERRAR_CORCHETE CERRAR_CORCHETE {:System.out.println("Regla 51: oplist");:};
+oplist::= OPLIST ABRIR_CORCHETE oplist_operaciones ABRIR_CORCHETE ID PUNTO_Y_COMA ID CERRAR_CORCHETE ABRIR_CORCHETE oplist_const CERRAR_CORCHETE CERRAR_CORCHETE {:reglas += "Regla 51: oplist\n";:};
 
-oplist_operaciones::= OP_SUMA {:System.out.println("Regla 52: oplist_operaciones");:}
-        | OP_MULT {:System.out.println("Regla 53: oplist_operaciones");:};
+oplist_operaciones::= OP_SUMA {:reglas += "Regla 52: oplist_operaciones\n";:}
+    | OP_MULT {:reglas += "Regla 53: oplist_operaciones\n";:};
 
-oplist_const::= oplist_const PUNTO_Y_COMA const_numerica {:System.out.println("Regla 54: oplist_const");:}
-        | const_numerica {:System.out.println("Regla 55: oplist_const");:};
+oplist_const::= oplist_const PUNTO_Y_COMA const_numerica {:reglas += "Regla 54: oplist_const\n";:}
+    | const_numerica {:reglas += "Regla 55: oplist_const\n";:};
 
-const_numerica::= CONST_B:const_b {:System.out.println("Regla 56: CONSTANTE BINARIA valor = " + const_b); RESULT=const_b;:}
-        | CONST_REAL:const_real {:System.out.println("Regla 57: CONSTANTE REAL valor = " + const_real); RESULT=const_real; :}
-        | CONST_INT:const_int {: System.out.println("Regla 58: CONSTANTE ENTERA valor = " + const_int); RESULT=const_int; :};
-
+const_numerica::= CONST_B:const_b {:reglas += "Regla 56: CONSTANTE BINARIA valor = " + const_b + "\n"; RESULT=const_b;:}
+    | CONST_REAL:const_real {:reglas += "Regla 57: CONSTANTE REAL valor = " + const_real + "\n"; RESULT=const_real; :}
+    | CONST_INT:const_int {:reglas += "Regla 58: CONSTANTE ENTERA valor = " + const_int + "\n"; RESULT=const_int; :};
