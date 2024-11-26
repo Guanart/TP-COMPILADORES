@@ -47,6 +47,11 @@ parser code
 action code
 {:
 public String reglas;
+
+public String getReglas() {
+    return reglas;
+}
+
 :}
 
 /*Declaracion de Terminales */
