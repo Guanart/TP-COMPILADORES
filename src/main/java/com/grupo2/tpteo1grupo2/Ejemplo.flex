@@ -63,11 +63,7 @@ ABRIR_CORCHETE = \[
 CERRAR_CORCHETE = \]
 ABRIR_PARENTESIS = \(
 CERRAR_PARENTESIS = \)
-ABRIR_LLAVE = \{
-CERRAR_LLAVE = \}
 PUNTO_Y_COMA = \;
-ADMIRACION = \!
-INTERROGACION = \?
 COMA = \,
 
 CONST_STRING = \"([^\"\n\r])*\"
@@ -82,10 +78,9 @@ OP_SUMA = \+
 OP_RESTA = \-
 OP_MULT = \*
 OP_DIV = \/
-//OPLIST = (OPLIST) \[ (\+ | \* )  \[ {ID} \; {ID} \] \[ ( {CONST_INT} | { CONST_REAL} )  (\;  ({CONST_INT}|{CONST_REAL}))*  \]  \]
 IN_COMENTARIO = \/\/\*
 FIN_COMENTARIO = \*\/\/
-SIMBOLO = {ABRIR_PARENTESIS} | {CERRAR_PARENTESIS} | {ABRIR_LLAVE} | {CERRAR_LLAVE} | {ABRIR_CORCHETE} | {CERRAR_CORCHETE} | {PUNTO_Y_COMA} | {ADMIRACION} | {INTERROGACION} | {COMA}
+SIMBOLO = {ABRIR_PARENTESIS} | {CERRAR_PARENTESIS} | {ABRIR_CORCHETE} | {CERRAR_CORCHETE} | {PUNTO_Y_COMA} | {COMA}
 COMENTARIO_BLOQUE = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{SIMBOLO})* {FIN_COMENTARIO}
 COMENTARIO_BLOQUE1 = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{SIMBOLO}|{COMENTARIO_BLOQUE})* {FIN_COMENTARIO}
 
@@ -102,7 +97,6 @@ COMENTARIO_BLOQUE1 = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{S
 "ENDIF"                 { resultados += "Token ENDIF encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDIF, yytext()); }
 "WHILE"                 { resultados += "Token WHILE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.WHILE, yytext()); }
 "ENDWHILE"              { resultados += "Token ENDWHILE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDWHILE, yytext()); }
-"ENDFOR"                { resultados += "Token ENDFOR encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ENDFOR, yytext()); }
 "WRITE"                 { resultados += "Token WRITE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.WRITE, yytext()); }
 "FLOAT"                 { resultados += "Token FLOAT encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.FLOAT, yytext()); }
 "INTEGER"               { resultados += "Token INTEGER encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.INTEGER, yytext()); }
@@ -164,13 +158,9 @@ COMENTARIO_BLOQUE1 = {IN_COMENTARIO} ({LETRA}|{DIGITO}|{ESPACIO}|{WhiteSpace}|{S
 
 {ABRIR_PARENTESIS}   { resultados += "Token ABRIR_PARENTESIS encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ABRIR_PARENTESIS, yytext()); }
 {CERRAR_PARENTESIS}  { resultados += "Token CERRAR_PARENTESIS encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CERRAR_PARENTESIS, yytext()); }
-{ABRIR_LLAVE}        { resultados += "Token ABRIR_LLAVE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ABRIR_LLAVE, yytext()); }
-{CERRAR_LLAVE}       { resultados += "Token CERRAR_LLAVE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CERRAR_LLAVE, yytext()); }
 {ABRIR_CORCHETE}   { resultados += "Token ABRIR_CORCHETE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ABRIR_CORCHETE, yytext()); }
 {CERRAR_CORCHETE}    { resultados += "Token CERRAR_CORCHETE encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.CERRAR_CORCHETE, yytext()); }
 {PUNTO_Y_COMA}       { resultados += "Token PUNTO_Y_COMA encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.PUNTO_Y_COMA, yytext()); }
-{ADMIRACION}         { resultados += "Token ADMIRACION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.ADMIRACION, yytext()); }
-{INTERROGACION}      { resultados += "Token INTERROGACION encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.INTERROGACION, yytext()); }
 {COMA}               { resultados += "Token COMA encontrado, Lexema " + yytext() + "\n"; return new Symbol(sym.COMA, yytext()); }
 
 {COMENTARIO_BLOQUE}     {}
