@@ -90,7 +90,7 @@ write_constante::= WRITE:w CONST_STRING:c {:reglas += "Regla 11: WRITE CONSTANTE
 declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION = " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
     parser.actualizarTipo(id.toString(), type.toString());:};
 
-declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:reglas += "Regla 14: DECLARACION_AUX = " + id + coma + da + coma + t + "\n"; RESULT=id.toString()+coma.toString()+da.toString()+coma.toString()+t.toString();
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:reglas += "Regla 14: DECLARACION_AUX = " + coma + id  + da + t + coma + "\n"; RESULT=coma.toString()+id.toString()+da.toString()+t.toString()+coma.toString();
     parser.actualizarTipo(id.toString(), t.toString());:}
     | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:reglas += "Regla 15: DECLARACION_AUX = " + cc2 + d + aco + "\n"; RESULT = cc2.toString() + d.toString() + aco.toString();
     parser.nuevoCsv();:};

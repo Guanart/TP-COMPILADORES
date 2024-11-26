@@ -20,6 +20,7 @@ public class ResultadoCompilacion {
 
     @FXML
     public void initialize() {
+
         codeTextArea.setText(Resultado.getInstance().getContenido());
         /*
         Platform.runLater(() -> {

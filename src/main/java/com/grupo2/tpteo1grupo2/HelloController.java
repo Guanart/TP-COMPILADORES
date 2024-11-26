@@ -102,7 +102,9 @@ public class HelloController extends Component {
             Lexico Lexer = new Lexico(f);
             parser sintaxis = new parser(Lexer);
             sintaxis.parse();
-            System.out.println(sintaxis.getReglas());
+            String reglas = sintaxis.getReglas();
+            reglas = reglas.replace("null", "");
+            Resultado.getInstance().setContenido(reglas);
             //Lexer.next_token();
 
         } catch (FileNotFoundException ex) {
