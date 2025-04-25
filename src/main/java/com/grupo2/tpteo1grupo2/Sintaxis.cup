@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.io.*;
 import java.nio.file.*;
 
+import com.grupo2.tpteo1grupo2.clases.*;
+
 
 parser code
 {:
@@ -91,9 +93,24 @@ CONST_STRING, CONST_B, OP_MENOR, OP_MAYOR, OP_IGUAL, OP_MENOR_IGUAL, OP_MAYOR_IG
 ENDDECLARE_SECTION, PROGRAM_SECTION, ENDPROGRAM_SECTION, ABRIR_PARENTESIS, CERRAR_PARENTESIS, ABRIR_CORCHETE, CERRAR_CORCHETE, PUNTO_Y_COMA, COMA;
 
 /*Declaracion de No Terminales*/
-non terminal pgm, declare_sec, declaracion_n, program_sec, sentencia_n, program_write, sentencia_write, write_constante, declaracion,
-    declaracion_aux, type, sentencia, asignacion, decision, iteracion, condicion, comparacion, comparador, conector, expresion, termino, factor, escritura,
-    parametro_escritura, oplist, oplist_operaciones, oplist_const, const_numerica;
+non terminal NodoPrograma pgm;
+non terminal List<NodoSentencia> sentemcia_n;
+non terminal NodoSentencia sentencia;
+non terminal NodoExpresion expresion, termino, factor;
+non terminal NodoAsignacion asignacion;
+non terminal NodoExpresionBooleana condicion, comparacion;
+non terminal NodoIf decision;
+non terminal NodoCiclo iteracion;
+
+/* Necesitariamos crear clases java para las cosas que nos faltan, como:
+ - Declaraciones
+ - OPLIST
+ - Write
+ - ?
+*/
+
+non terminal declare_sec, declaracion_n, program_sec, program_write, sentencia_write, write_constante, declaracion,
+    declaracion_aux, type, comparador, conector, escritura, parametro_escritura, oplist, oplist_operaciones, oplist_const, const_numerica;
 
 start with pgm;
 

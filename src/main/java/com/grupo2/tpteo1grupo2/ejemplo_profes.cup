@@ -1,0 +1,104 @@
+package pruebaast;
+
+import pruebaast.ast.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import java_cup.runtime.*;
+
+parser code
+{:
+    /**Metodo al que se llama automaticamente ante algun error sintactico.*/
+    public void syntax_error(Symbol s){
+        System.out.println("Error en la linea " + (s.right+1) + " columna " + s.left + ". "
+            + s + " no reconocido. valor " + s.value );
+    }
+
+
+    public Nodo padre;
+
+:}
+
+action code
+{:
+    public String resultado="";
+public List<NodoSentencia> a ;
+public int contadorAvg = 0;
+
+:}
+
+terminal mas ,menos, eol, dividido, por, parentesisA, parentesisC, inicio, fin, and,not,or;
+terminal llaveA, llaveC, asigna, distinto, menorigual, mayorigual, menor, mayor, igual;
+terminal corcheteA, corcheteC, palabraavg, coma, palabraif, palabraelse;
+terminal palabrawhile, write;
+terminal String id, constString, cte ;
+
+non terminal NodoPrograma pgm;
+non terminal List<NodoSentencia> sentencias;
+non terminal NodoSentencia sentencia;
+non terminal NodoExpresion expresion, termino, factor;
+non terminal NodoAsignacion sentenciaasig;
+non terminal NodoExpresionBooleana condicion,comparacion;
+non terminal NodoIf sentenciaif, sentenciaifsin, sentenciasel;
+non terminal NodoCiclo sentenciaciclo;
+non terminal NodoExpresion expresiones;
+
+precedence left or;
+precedence left and;
+precedence left not;
+
+start with pgm;
+
+
+pgm ::= sentencias:s {:
+                RESULT = new NodoPrograma(s);
+                System.out.println("programa");
+                System.out.println(RESULT);
+            :}
+          ;
+
+sentencias ::= sentencias:ss sentencia:s {:
+                   ss.add(s);
+                   RESULT = ss;
+                   System.out.println("sentencia");
+               :}
+             | sentencia:s {:a = new ArrayList<NodoSentencia>();
+                             a.add(s);
+                             RESULT = a;
+                            System.out.println("crea y agrega sentencia");
+
+               :}
+ /* se puede reemplazar la ultima regla por lambda
+             |  {:RESULT = new ArrayList<NodoSentencia>(); :}  */
+             ;
+
+sentencia ::=  sentenciaasig:sas {: RESULT = sas; :}
+    | sentenciasel:sif  {: RESULT = sif; :}
+    | sentenciaciclo:sic  {: RESULT = sic; :}
+    ;
+
+
+sentenciaasig ::=  id:id asigna expresion:e eol {: RESULT= new NodoAsignacion(new NodoIdentificador(id), e); System.out.println("sentenciaasig");:};
+
+
+expresion ::= expresion:a mas termino:b {: RESULT = new NodoSuma(a, b);System.out.println("E+T"); :}
+    | termino:a  {: RESULT = a; System.out.println("E es T");:}
+    ;
+
+
+termino ::= termino:a por factor:b {: RESULT = new NodoMultiplicacion(a, b);System.out.println("T es T*F");:}
+    | factor:a {: RESULT = a; System.out.println("T es F");:}
+    ;
+
+
+factor ::=  id:id {: RESULT =new NodoIdentificador(id);System.out.println("id");:}
+    | cte:cte     {: RESULT =new NodoConstante(Integer.parseInt(cte)); System.out.println("cte");:}
+    | palabraavg corcheteA expresiones:exs corcheteC {:
+      RESULT = new NodoDivision(exs, new NodoConstante(contadorAvg));
+      System.out.println("palabraavg");:};
+
+expresiones ::= expresion:ex {:  RESULT=ex; contadorAvg++;
+                System.out.println("expresion id");:}
+    | expresiones:ee coma expresion:e {: RESULT= new NodoSuma(ee,e); contadorAvg++;
+      System.out.println("expresionesrecursiva"); :};
