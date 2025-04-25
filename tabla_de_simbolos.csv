@@ -1,0 +1,36 @@
+NOMBRE,VALOR,TOKEN,LONGITUD,TIPO
+var1,var1,ID,,INTEGER
+var2,var2,ID,,STRING
+var3,var3,ID,,INTEGER
+var4,var4,ID,,FLOAT
+marcos,marcos,ID,,INTEGER
+var5,var5,ID,,STRING
+var6,var6,ID,,FLOAT
+var7,var7,ID,,INTEGER
+var8,var8,ID,,FLOAT
+var9,var9,ID,,STRING
+_15,15,CONST_INT,,-
+_99.9,99.9,CONST_REAL,,-
+mensaje,mensaje,ID,,-
+_Hola_Mundo,"Hola Mundo",CONST_STRING,12,-
+limite,limite,ID,,-
+contador,contador,ID,,-
+_1,1,CONST_INT,,-
+_10,10,CONST_INT,,-
+_Contador_alcanzo_el_limite,"Contador alcanzo el limite",CONST_STRING,28,-
+_Limite_alcanzado,"Limite alcanzado",CONST_STRING,18,-
+_98.9,98.9,CONST_REAL,,-
+_2,2,CONST_INT,,-
+_5,5,CONST_INT,,-
+_20,20,CONST_INT,,-
+_Limite_alcanzado_:),"Limite alcanzado :)",CONST_STRING,21,-
+a,a,ID,,-
+b,b,ID,,-
+_3,3,CONST_INT,,-
+_0b1101,13,CONST_B,,-
+_9,9,CONST_INT,,-
+_234,234,CONST_INT,,-
+_53,53,CONST_INT,,-
+_123,123,CONST_INT,,-
+_123.45,123.45,CONST_REAL,,-
+_0b1011,11,CONST_B,,-

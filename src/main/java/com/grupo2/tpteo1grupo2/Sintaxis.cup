@@ -1,0 +1,188 @@
+package com.grupo2.tpteo1grupo2;
+import java.util.ArrayList;
+import java.util.List;
+import java_cup.runtime.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.io.*;
+import java.nio.file.*;
+
+
+parser code
+{:
+
+    public String getReglas(){return action_obj.getReglas();}
+
+    public void syntax_error(Symbol s) {
+        System.out.println("Error en la linea " + (s.right+1) + " columna " + (s.left+1) + ". "
+            + s + " no reconocido, VALOR: " + s.value );
+    }
+
+   public void actualizarTipo(String RESULT) {
+       // Nombre del archivo común para todos los nombres-tipos
+       String archivo = "nombres_tipos.csv";
+       System.out.println("Procesando RESULT: " + RESULT);
+
+       try {
+           // Verificar si el archivo existe
+           File file = new File(archivo);
+           boolean archivoExiste = file.exists();
+
+           // Abrir el archivo para escribir (con append)
+           try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+               // Si el archivo no existía, escribir la cabecera
+               if (!archivoExiste) {
+                   writer.write("NOMBRE,TIPO\n");
+               }
+
+               // Parsear RESULT
+               String[] partes = RESULT.split(":="); // Separar por `:=`
+               if (partes.length != 2) {
+                   System.err.println("Formato inválido en RESULT: " + RESULT);
+                   return;
+               }
+
+               // Procesar la lista de variables y tipos
+               String variablesStr = partes[0].trim(); // [var5, var6, var7, var8, var9]
+               String tiposStr = partes[1].trim(); // [STRING, FLOAT, INTEGER, FLOAT, STRING]
+
+               // Remover corchetes y dividir por comas
+               String[] variables = variablesStr.replace("[", "").replace("]", "").split(",");
+               String[] tipos = tiposStr.replace("[", "").replace("]", "").split(",");
+
+               if (variables.length != tipos.length) {
+                   System.err.println("Las listas de variables y tipos no coinciden en longitud.");
+                   return;
+               }
+
+               // Escribir cada variable con su tipo en el archivo
+               for (int i = 0; i < variables.length; i++) {
+                   String nombre = variables[i].trim();
+                   String tipo = tipos[i].trim();
+                   writer.write(nombre + "," + tipo + "\n");
+               }
+           }
+
+           System.out.println("Archivo actualizado: " + archivo);
+
+       } catch (IOException e) {
+           System.err.println("Error al actualizar el archivo CSV: " + e.getMessage());
+       }
+   }
+
+
+:}
+
+action code
+{:
+public String reglas;
+
+public String getReglas() {
+    return reglas;
+}
+
+:}
+
+/*Declaracion de Terminales */
+terminal IF, THEN, ELSE, ENDIF, WHILE, ENDWHILE, WRITE, FLOAT, INTEGER, STRING, OPLIST, ID, CONST_INT, CONST_REAL, CON_OR, CON_AND,
+CONST_STRING, CONST_B, OP_MENOR, OP_MAYOR, OP_IGUAL, OP_MENOR_IGUAL, OP_MAYOR_IGUAL, OP_SUMA, OP_RESTA, OP_MULT, OP_DIV, ASIGN, DECLARACION, DECLARE_SECTION,
+ENDDECLARE_SECTION, PROGRAM_SECTION, ENDPROGRAM_SECTION, ABRIR_PARENTESIS, CERRAR_PARENTESIS, ABRIR_CORCHETE, CERRAR_CORCHETE, PUNTO_Y_COMA, COMA;
+
+/*Declaracion de No Terminales*/
+non terminal pgm, declare_sec, declaracion_n, program_sec, sentencia_n, program_write, sentencia_write, write_constante, declaracion,
+    declaracion_aux, type, sentencia, asignacion, decision, iteracion, condicion, comparacion, comparador, conector, expresion, termino, factor, escritura,
+    parametro_escritura, oplist, oplist_operaciones, oplist_const, const_numerica;
+
+start with pgm;
+
+pgm::= declare_sec program_sec {:reglas += "Regla 00: pgm ; Compilación completa\n";:}
+    | program_write {:reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
+
+declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
+
+declaracion_n::= declaracion_n declaracion {:reglas += "Regla 03: DECLARACIONES --> DECLARACIONES DECLARACION\n";:}
+    | declaracion {:reglas += "Regla 04: DECLARACIONES --> DECLARACION\n";:};
+
+program_sec::= PROGRAM_SECTION:ps sentencia_n ENDPROGRAM_SECTION:es {:reglas += "Regla 05: PROGRAM_SEC --> " + ps + " SENTENCIAS " + es + "\n";:};
+
+sentencia_n::= sentencia_n sentencia {:reglas += "Regla 06: SENTENCIAS --> SENTENCIAS SENTENCIA\n";:}
+    | sentencia {:reglas += "Regla 07: SENTENCIAS --> SENTENCIA\n";:};
+
+program_write::= PROGRAM_SECTION sentencia_write ENDPROGRAM_SECTION {:reglas += "Regla 08: PROGRAM WRITE --> PROGRAM_SECTION SENTENCIA_WRITE ENDPROGRAM_SECTION\n";:};
+
+sentencia_write::= sentencia_write write_constante {:reglas += "Regla 09: SENTENCIA WRITE --> SENTENCIA_WRITE WRITE_CONSTANTE\n";:}
+    | write_constante {:reglas += "Regla 10: SENTENCIA WRITE --> WRITE_CONSTANTE\n";:};
+
+write_constante::= WRITE:w CONST_STRING:c {:reglas += "Regla 11: WRITE CONSTANTE --> " + w + " " + c + "\n";:};
+
+declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
+    RESULT = ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString();
+    parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
+
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + t + coma + " " + "\n"; RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";:}
+    | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:reglas += "Regla 14: DECLARACION_AUX --> " + cc2 + d + aco + "\n"; RESULT = cc2.toString() + d.toString() + aco.toString();:};
+
+type::= FLOAT:f {:reglas += "Regla 15: TYPE --> " + f + "\n"; RESULT=f; :}
+    | INTEGER:i {:reglas += "Regla 16: TYPE --> " + i + "\n"; RESULT=i;:}
+    | STRING:s {:reglas += "Regla 17: TYPE --> " + s + "\n"; RESULT=s;:};
+
+sentencia::= asignacion {:reglas += "Regla 18: SENTENCIA --> ASIGNACION\n";:}
+    | iteracion {:reglas += "Regla 19: SENTENCIA --> ITERACION\n";:}
+    | decision {:reglas += "Regla 20: SENTENCIA --> DECISION\n";:}
+    | escritura {:reglas += "Regla 21: SENTENCIA --> ESCRITURA\n";:}
+    | oplist {:reglas += "Regla 22: SENTENCIA --> OPLIST\n";:};
+
+asignacion::= ID:id ASIGN:a expresion {:reglas += "Regla 23: ASIGNACION --> " + id + " " + a + " EXPRESION \n";:}
+    | ID:id ASIGN:a CONST_STRING:cs {:reglas += "Regla 24: ASIGNACION --> " + id + " " + a + " " + cs + "\n";:};
+
+decision::= IF:i ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ELSE:el sentencia_n ENDIF:endif {:reglas += "Regla 25: DECISION --> " + i + " " + ap + " CONDICION " + cp + " " + t + " SENTENCIAS " + el + " SENTENCIAS " + endif + "\n";:}
+    | IF:i1 ABRIR_PARENTESIS:ap1 condicion CERRAR_PARENTESIS:cp1 THEN:t1 sentencia_n ENDIF:endif1 {:reglas += "Regla 26: DECISION --> " + i1 + " " + ap1 + " CONDICION " + cp1 + " " + t1 + " SENTENCIAS " + endif1 + "\n";:};
+
+iteracion::= WHILE:w ABRIR_PARENTESIS:ap condicion CERRAR_PARENTESIS:cp THEN:t sentencia_n ENDWHILE:ew {:reglas += "Regla 27: ITERACION --> " + w + " " + ap + " CONDICION " + cp + " " + t + " SENTENCIAS " + ew + "\n";:};
+
+condicion::= comparacion {:reglas += "Regla 28: CONDICION --> COMPARACION\n";:}
+    | comparacion conector comparacion {:reglas += "Regla 29: CONDICION --> COMPARACION CONECTOR COMPARACION\n";:};
+
+conector::= CON_AND {:reglas += "Regla 30: CONECTOR --> CON_AND\n";:}
+    | CON_OR {:reglas += "Regla 31: CONECTOR --> CON_OR\n";:};
+
+comparacion::= expresion comparador:c expresion {:reglas += "Regla 32: COMPARACION --> EXPRESION " + c + " EXPRESION\n";:}
+    | ABRIR_PARENTESIS:ap comparacion CERRAR_PARENTESIS:cp {:reglas += "Regla 33: COMPARACION --> " + ap + " COMPARACION " + cp + "\n";:};
+
+comparador::= OP_MAYOR:ma {:reglas += "Regla 34: COMPARADOR --> " + ma + "\n"; RESULT=ma; :}
+    | OP_MENOR:me {:reglas += "Regla 35: COMPARADOR --> " + me + "\n"; RESULT=me; :}
+    | OP_IGUAL:i {:reglas += "Regla 36: COMPARADOR --> " + i + "\n"; RESULT=i; :}
+    | OP_MENOR_IGUAL:mei {:reglas += "Regla 37: COMPARADOR --> " + mei + "\n"; RESULT=mei; :}
+    | OP_MAYOR_IGUAL:mai {:reglas += "Regla 38: COMPARADOR --> " + mai + "\n"; RESULT=mai; :};
+
+expresion::= expresion OP_SUMA:os termino {:reglas += "Regla 39: EXPRESION --> EXPRESION " + os + " TERMINO\n"; :}
+    | expresion OP_RESTA:or termino {:reglas += "Regla 40: EXPRESION --> EXPRESION " + or + " TERMINO\n";:}
+    | termino:t {:reglas += "Regla 41: EXPRESION --> TERMINO\n";:};
+
+termino::= termino OP_MULT:om factor {:reglas += "Regla 42: TERMINO --> TERMINO " + om + " FACTOR\n";:}
+    | termino OP_DIV:od factor {:reglas += "Regla 43: TERMINO --> TERMINO " + od + " FACTOR\n";:}
+    | factor {:reglas += "Regla 44: TERMINO --> FACTOR\n"; :};
+
+factor::= ABRIR_PARENTESIS:a expresion:e CERRAR_PARENTESIS:c {:reglas += "Regla 44: FACTOR --> " + a + " EXPRESION " + c + "\n";:}
+    | ID:id {:reglas += "Regla 45: FACTOR --> " + id + "\n";:}
+    | const_numerica:cn {:reglas += "Regla 46: FACTOR --> " + cn + "\n";:};
+
+escritura::= WRITE:w parametro_escritura:param {:reglas += "Regla 47: ESCRITURA --> " + w + " " + param + "\n";:};
+
+parametro_escritura::= ID:id {:reglas += "Regla 48: VARIABLE --> " + id + "\n"; RESULT=id; :}
+    | const_numerica:const_numerica {:reglas += "Regla 49: CONSTANTE NUMÉRICA --> " + const_numerica + "\n"; RESULT=const_numerica; :}
+    | CONST_STRING:const_string {:reglas += "Regla 50: CONSTANTE STRING --> " + const_string + "\n"; RESULT=const_string; :};
+
+oplist::= OPLIST:ol ABRIR_CORCHETE:ac oplist_operaciones:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:reglas += "Regla 51: OPLIST --> " + ol + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
+
+oplist_operaciones::= OP_SUMA:os {:reglas += "Regla 52: OPLIST_OPERACIONES --> " + os + "\n"; RESULT=os; :}
+    | OP_MULT:om {:reglas += "Regla 53: OPLIST_OPERACIONES --> " + om + "\n"; RESULT=om; :};
+
+oplist_const::= oplist_const:oc PUNTO_Y_COMA:pyc const_numerica:cons {:reglas += "Regla 54: OPLIST_CONST --> " + oc + pyc + cons + "\n"; RESULT=oc.toString() + pyc.toString() + cons.toString(); :}
+    | const_numerica:cn {:reglas += "Regla 55: OPLIST_CONST --> " + cn + "\n"; RESULT=cn; :};
+
+const_numerica::= CONST_B:const_b {:reglas += "Regla 56: CONSTANTE BINARIA --> " + const_b + "\n"; RESULT=const_b;:}
+    | CONST_REAL:const_real {:reglas += "Regla 57: CONSTANTE REAL --> " + const_real + "\n"; RESULT=const_real; :}
+    | CONST_INT:const_int {:reglas += "Regla 58: CONSTANTE ENTERA --> " + const_int + "\n"; RESULT=const_int; :};

@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Agbalumo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.cdnfonts.com/css/cascadia-code');
+.outer-button {
+    -fx-background-color: black;
+    -fx-background-radius: 50px; /* Cambiado para hacer el borde más redondeado */
+    -fx-pref-height: 40px !important; /* Alto del botón */
+    -fx-padding: 0;
+    -fx-pref-width: 175px !important; /* Ancho del botón */
+}
+
+.inner-button {
+    -fx-background-color: #FBBA41; /* amarillo */
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-background-radius: 50px; /* Cambiado para hacer el botón más redondeado */
+    -fx-border-radius: 50px; /* Igual que background-radius para mantener consistencia */
+    -fx-padding: 16px; /* Ajusta si deseas modificar el espacio interno */
+    -fx-translate-x: -2px;
+    -fx-translate-y: -2px;
+    -fx-transition: -fx-translate-x 0.1s, -fx-translate-y 0.1s;
+}
+
+.button-text {
+    -fx-font-size: 15px;
+    -fx-font-family: "Noto Sans", sans-serif;
+}
+
+.inner-button:hover {
+    -fx-translate-y: -3px;
+}
+
+.inner-button:pressed {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+.iconbutton:hover{
+    -fx-translate-y: -3px;
+}
+
+.iconbutton:pressed{
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+#codeTextArea {
+    -fx-background-radius: 20;
+    -fx-background-color: #444E67;
+    -fx-text-fill: #C99B43 !important;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Cascadia Code', sans-serif !important;
+}
+#codeTextArea .content{
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-background-color: #444E67;
+}
+
+#h1compilador{
+    -fx-font-family: "Agbalumo", system-ui;
+}
+
+#contenedorboton{
+    -fx-pref-height: 40px !important; /* Alto del botón */
+    -fx-pref-width: 175px !important; /* Ancho del botón */
+    -fx-padding: 15px;
+}
+
+#grupotext{
+    -fx-font-family: "Agbalumo", system-ui;
+}
+
+.root {
+    -fx-pref-width: 100%;
+    -fx-pref-height: 100%;
+}
+.vbox {
+    -fx-fill-width: true;
+    -fx-fill-height: true;
+}

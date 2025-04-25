@@ -1,0 +1,40 @@
+DECLARE_SECTION
+[var1,var2]:=[INTEGER,STRING]
+[var3,var4,marcos]:=[INTEGER,FLOAT,INTEGER]
+[var5,var6,var7,var8,var9]:=[STRING,FLOAT,INTEGER,FLOAT,STRING]
+ENDDECLARE_SECTION
+
+PROGRAM_SECTION
+//* Asignaciones numericas y de string //* comentario multilinea de 1 nivel *//  *//
+var1 ::= 15
+var2 ::= 99.9
+mensaje ::= "Hola Mundo"
+
+//* Declaracion de un ciclo WHILE *//
+WHILE (var1 < limite) THEN
+    contador ::= contador + 1
+    IF (contador >= 10) THEN
+        WRITE "Contador alcanzo el limite"
+        mensaje ::= "Limite alcanzado"
+        IF ((var2 = (98.9 + 1)/2 * 5) && (var1 * 2 + 1 >= 20)) THEN
+            WRITE "Limite alcanzado :)"
+        ELSE
+            OPLIST [* [a;b] [10;3;3;5]]
+        ENDIF
+    ELSE
+        WRITE contador //* Muestra el valor de contador *//
+    ENDIF
+ENDWHILE
+
+var3 ::= 0b1101
+WRITE var3
+
+OPLIST [+ [a;b] [2;3;5;9;234;53;2;123;3]]
+OPLIST [+ [a;b] [20]]
+
+//* Salidas de prueba *// //* Salidas de prueba *//
+WRITE mensaje
+WRITE 123.45
+WRITE 0b1011
+WRITE var2
+ENDPROGRAM_SECTION
