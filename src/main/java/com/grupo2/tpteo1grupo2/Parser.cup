@@ -164,12 +164,19 @@ sentencia_n::= sentencia_n:ss sentencia:s {:ss.add(s);
                     RESULT = listaSentencias;
                     reglas += "Regla 07: SENTENCIAS --> SENTENCIA\n";:};
 
-program_write::= PROGRAM_SECTION sentencia_write ENDPROGRAM_SECTION {:reglas += "Regla 08: PROGRAM WRITE --> PROGRAM_SECTION SENTENCIA_WRITE ENDPROGRAM_SECTION\n";:};
+program_write::= PROGRAM_SECTION sentencia_write:sws ENDPROGRAM_SECTION {:  RESULT = sws;
+                                                                            reglas += "Regla 08: PROGRAM WRITE --> PROGRAM_SECTION SENTENCIA_WRITE ENDPROGRAM_SECTION\n";:};
 
-sentencia_write::= sentencia_write write_constante {:reglas += "Regla 09: SENTENCIA WRITE --> SENTENCIA_WRITE WRITE_CONSTANTE\n";:}
-    | write_constante {:reglas += "Regla 10: SENTENCIA WRITE --> WRITE_CONSTANTE\n";:};
+sentencia_write::= sentencia_write:sws write_constante:sw {:sws.add(sw);
+                                                            RESULT = sws;
+                                                            reglas += "Regla 09: SENTENCIA WRITE --> SENTENCIA_WRITE WRITE_CONSTANTE\n";:}
+    | write_constante:sw {: listaSentencias = new ArrayList<NodoSentencia>();
+                            listaSentencias.add(sw);
+                            RESULT = listaSentencias;
+                            reglas += "Regla 10: SENTENCIA WRITE --> WRITE_CONSTANTE\n";:};
 
-write_constante::= WRITE:w CONST_STRING:c {:reglas += "Regla 11: WRITE CONSTANTE --> " + w + " " + c + "\n";:};
+write_constante::= WRITE:w CONST_STRING:c {:RESULT = new NodoEscritura(new NodoConstanteString(c.toString()));
+                                            reglas += "Regla 11: WRITE CONSTANTE --> " + w + " " + c + "\n";:};
 
 declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
     RESULT = ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString();
