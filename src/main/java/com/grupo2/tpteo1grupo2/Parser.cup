@@ -117,6 +117,21 @@ public NodoExpresionBinaria operacionOplist(NodoExpresion izquierda, NodoExpresi
     }
 }
 
+public ArrayList<NodoDeclaracion> listaDeclaraciones = new ArrayList<NodoDeclaracion>();
+public ArrayList<NodoIdentificador> listaIdDeclareSec = new ArrayList<NodoIdentificador>();
+public ArrayList<NodoTipo> listaTipoDeclareSec = new ArrayList<NodoTipo>();
+
+public ArrayList<NodoDeclaracion> combinarIdTipo() {
+    ArrayList<NodoDeclaracion> output = new ArrayList<NodoDeclaracion>();
+    for (int i = 0; i < listaIdDeclareSec.size(); i++) {
+        NodoDeclaracion nodo = new NodoDeclaracion(
+                        listaIdDeclareSec.get(i),
+                        listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i));
+        output.add(nodo);
+    }
+    return output;
+}
+
 :}
 
 /*Declaracion de Terminales */
@@ -178,16 +193,32 @@ sentencia_write::= sentencia_write:sws write_constante:sw {:sws.add(sw);
 write_constante::= WRITE:w CONST_STRING:c {:RESULT = new NodoEscritura(new NodoConstanteString(c.toString()));
                                             reglas += "Regla 11: WRITE CONSTANTE --> " + w + " " + c + "\n";:};
 
-declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
-    RESULT = ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString();
-    parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
 
-declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + t + coma + " " + "\n"; RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";:}
-    | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:reglas += "Regla 14: DECLARACION_AUX --> " + cc2 + d + aco + "\n"; RESULT = cc2.toString() + d.toString() + aco.toString();:};
+
+declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
+    listaIdDeclareSec.add(new NodoIdentificador(id));
+    listaTipoDeclareSec.add(new NodoTipo(t));
+    declaraciones = combinarIdTipo();
+    RESULT = declaraciones;
+    //parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
+
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:
+    listaIdDeclareSec.add(new NodoIdentificador(id));
+    listaTipoDeclareSec.add(new NodoTipo(t));
+    RESULT = da;
+    reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + t + coma + " " + "\n";
+    //RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";
+    :}
+    | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:
+    reglas += "Regla 14: DECLARACION_AUX --> " + cc2 + d + aco + "\n";
+    RESULT = cc2.toString() + d.toString() + aco.toString();:};
 
 type::= FLOAT:f {:reglas += "Regla 15: TYPE --> " + f + "\n"; RESULT=f; :}
     | INTEGER:i {:reglas += "Regla 16: TYPE --> " + i + "\n"; RESULT=i;:}
     | STRING:s {:reglas += "Regla 17: TYPE --> " + s + "\n"; RESULT=s;:};
+
+/* [a,b,c] := [string,float,int] */
+
 
 sentencia::= asignacion:asig {: RESULT = asig;
                                 reglas += "Regla 18: SENTENCIA --> ASIGNACION\n";:}

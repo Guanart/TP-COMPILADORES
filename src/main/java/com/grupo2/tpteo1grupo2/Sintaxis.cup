@@ -117,7 +117,8 @@ start with pgm;
 pgm::= declare_sec program_sec {:reglas += "Regla 00: pgm ; Compilación completa\n";:}
     | program_write {:reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
 
-declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
+declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:
+    reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
 
 declaracion_n::= declaracion_n declaracion {:reglas += "Regla 03: DECLARACIONES --> DECLARACIONES DECLARACION\n";:}
     | declaracion {:reglas += "Regla 04: DECLARACIONES --> DECLARACION\n";:};
