@@ -10,6 +10,6 @@ public class NodoConstanteString extends NodoExpresion {
 
     @Override
     public String getDescripcionNodo() {
-        return "CONST_STRING: " + valor.toString();
+        return "CONST_STRING: " + valor;
     }
 }

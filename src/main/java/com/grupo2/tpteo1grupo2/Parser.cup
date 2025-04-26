@@ -107,6 +107,15 @@ public NodoExpresionBooleana obtenerNodoExpresionBooleana(String con, NodoCompar
            return new NodoOr(comp1, comp2);
 }
 
+public String operadorOplist;
+
+public NodoExpresionBinaria operacionOplist(NodoExpresion izquierda, NodoExpresion derecha) {
+    if operadorOplist == "+" {
+        return new NodoSuma(izquierda, derecha);
+    } else {
+        return new NodoMultiplicacion(izquierda, derecha);
+    }
+}
 
 :}
 
@@ -133,7 +142,7 @@ non terminal NodoCiclo iteracion;
 */
 
 non terminal declare_sec, declaracion_n, program_sec, program_write, sentencia_write, write_constante, declaracion,
-    declaracion_aux, type, comparador, conector, escritura, parametro_escritura, oplist, oplist_operaciones, oplist_const, const_numerica;
+    declaracion_aux, type, comparador, conector, escritura, parametro_escritura, oplist, oplist_operacion, oplist_const, const_numerica;
 
 start with pgm;
 
@@ -186,7 +195,7 @@ sentencia::= asignacion:asig {: RESULT = asig;
 
 asignacion::= ID:id ASIGN:a expresion:expr {:   RESULT = new NodoAsignacion(new NodoIdentificador(id), expr);
                                                 reglas += "Regla 23: ASIGNACION --> " + id + " " + a + " EXPRESION \n";:}
-    | ID:id ASIGN:a CONST_STRING:cs {:  /*QUE HAGO EN ESTA? UNA NUEVA CLASE QUE EN VEZ DE RECIBIR UNA EXPRESION RECIBA UN STRING??*/
+    | ID:id ASIGN:a CONST_STRING:cs {:  RESULT = new NodoAsignacion(new NodoIdentificador(id), new NodoConstanteString(cs.toString()));
                                         reglas += "Regla 24: ASIGNACION --> " + id + " " + a + " " + cs + "\n";:};
 
 /* ss: sentencias , s: sentencia */
@@ -232,8 +241,8 @@ expresion::= expresion:expr OP_SUMA:os termino:term {:  RESULT = new NodoSuma(ex
                                                         reglas += "Regla 39: EXPRESION --> EXPRESION " + os + " TERMINO\n"; :}
     | expresion:expr OP_RESTA:or termino:term {:RESULT = new NodoResta(expr, term);
                                                 reglas += "Regla 40: EXPRESION --> EXPRESION " + or + " TERMINO\n";:}
-    | termino:term {:  RESULT = term;
-                    reglas += "Regla 41: EXPRESION --> TERMINO\n";:};
+    | termino:term {:   RESULT = term;
+                        reglas += "Regla 41: EXPRESION --> TERMINO\n";:};
 
 termino::= termino:term OP_MULT:om factor:fact {:   RESULT = new NodoMultiplicacion(term, fact);
                                                     reglas += "Regla 42: TERMINO --> TERMINO " + om + " FACTOR\n";:}
@@ -259,13 +268,22 @@ parametro_escritura::= ID:id {: RESULT = new NodoIdentificador(id);
     | CONST_STRING:const_string {:  RESULT = new NodoConstanteString(const_string.toString());
                                     reglas += "Regla 50: CONSTANTE STRING --> " + const_string + "\n"; RESULT=const_string; :};
 
-oplist::= OPLIST:ol ABRIR_CORCHETE:ac oplist_operaciones:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:reglas += "Regla 51: OPLIST --> " + ol + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
+oplist::= OPLIST:ol ABRIR_CORCHETE:ac oplist_operacion:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:
+    RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2), operacionOplist(id, oc)) );
+    reglas += "Regla 51: OPLIST --> " + ol + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
 
-oplist_operaciones::= OP_SUMA:os {:reglas += "Regla 52: OPLIST_OPERACIONES --> " + os + "\n"; RESULT=os; :}
-    | OP_MULT:om {:reglas += "Regla 53: OPLIST_OPERACIONES --> " + om + "\n"; RESULT=om; :};
+oplist_operacion::= OP_SUMA:os {:   RESULT = os;
+                                    operadorOplist = os.toString();
+                                    reglas += "Regla 52: OPLIST_OPERACION --> " + os + "\n"; RESULT=os; :}
+    | OP_MULT:om {: RESULT = om;
+                    operadorOplist = om.toString();
+                    reglas += "Regla 53: OPLIST_OPERACION --> " + om + "\n"; RESULT=om; :};
 
-oplist_const::= oplist_const:oc PUNTO_Y_COMA:pyc const_numerica:cons {:reglas += "Regla 54: OPLIST_CONST --> " + oc + pyc + cons + "\n"; RESULT=oc.toString() + pyc.toString() + cons.toString(); :}
-    | const_numerica:cn {:reglas += "Regla 55: OPLIST_CONST --> " + cn + "\n"; RESULT=cn; :};
+oplist_const::= oplist_const:oc PUNTO_Y_COMA:pyc const_numerica:cons {:
+    RESULT = operacionOplist(oc, cons);
+    reglas += "Regla 54: OPLIST_CONST --> " + oc + pyc + cons + "\n"; RESULT=oc.toString() + pyc.toString() + cons.toString(); :}
+    | const_numerica:cn {:  RESULT = cn;
+                            reglas += "Regla 55: OPLIST_CONST --> " + cn + "\n"; RESULT=cn; :};
 
 const_numerica::= CONST_B:const_b {:RESULT = new NodoConstanteBinaria(Integer.parseInt(const_b.substring(2), 2), const_b);
                                     reglas += "Regla 56: CONSTANTE BINARIA --> " + const_b + "\n"; RESULT=const_b;:}
@@ -273,4 +291,3 @@ const_numerica::= CONST_B:const_b {:RESULT = new NodoConstanteBinaria(Integer.pa
                                 reglas += "Regla 57: CONSTANTE REAL --> " + const_real + "\n"; RESULT=const_real; :}
     | CONST_INT:const_int {:RESULT = new NodoConstanteEntera(Integer.parseInt(const_int));
                             reglas += "Regla 58: CONSTANTE ENTERA --> " + const_int + "\n"; RESULT=const_int; :};
-

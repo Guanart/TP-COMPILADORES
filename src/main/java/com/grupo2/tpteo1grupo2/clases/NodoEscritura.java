@@ -7,4 +7,11 @@ public class NodoEscritura extends NodoSentencia {
         super("WRITE");
         this.parametro = parametro;
     }
+
+    @Override
+    protected String graficar(String idPadre) {
+        final String miId = this.getIdNodo();
+        return super.graficar(idPadre) +
+                parametro.graficar(miId);
+    }
 }
