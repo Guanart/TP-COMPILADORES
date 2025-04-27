@@ -1,7 +1,12 @@
-package com.grupo2.tpteo1grupo2.clases;
+package com.grupo2.tpteo1grupo2;
 
 public class NodoDeclaracion extends Nodo{
-    public NodoDeclaracion(String nombre) {
-            super(nombre);
-        }
+    private NodoIdentificador identificador;
+    private NodoTipo tipo;
+
+    public NodoDeclaracion(NodoIdentificador identificador, NodoTipo tipo) {
+        super(":=");
+        this.identificador = identificador;
+        this.tipo = tipo;
+    }
 }

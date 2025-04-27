@@ -1,13 +1,15 @@
-package com.grupo2.tpteo1grupo2.clases;
+package com.grupo2.tpteo1grupo2;
 
 import java.util.List;
 
 public class NodoPrograma extends Nodo {
     private final List<NodoSentencia> sentencias;
+    private final List<NodoDeclaracion> declaraciones;
 
-    public NodoPrograma(List<NodoSentencia> sentencias) {
+    public NodoPrograma(List<NodoSentencia> sentencias, List<NodoDeclaracion> declaraciones) {
         super("PGM");
         this.sentencias = sentencias;
+        this.declaraciones = declaraciones;
     }
 
     public String graficar() {
@@ -27,9 +29,12 @@ public class NodoPrograma extends Nodo {
         for (NodoSentencia sentencia : this.sentencias) {
             resultado.append(sentencia.graficar(miId));
         }
-
+        if (this.declaraciones != null){
+            for (NodoDeclaracion declaracion : this.declaraciones) {
+                resultado.append(declaracion.graficar(miId));
+            }
+        }
         resultado.append("}");
-
         return resultado.toString();
     }
 }

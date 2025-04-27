@@ -1,4 +1,4 @@
-package com.grupo2.tpteo1grupo2.clases;
+package com.grupo2.tpteo1grupo2;
 
 public class NodoOplist extends NodoSentencia {
     private final NodoAsignacion asignacion;
