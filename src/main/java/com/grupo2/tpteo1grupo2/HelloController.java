@@ -109,11 +109,11 @@ public class HelloController extends Component {
             File tempDir = new File(System.getProperty("java.io.tmpdir"));
             FileReader f = new FileReader(new File(tempDir, "prueba.txt"));
             Lexico Lexer = new Lexico(f);
-            // parser sintaxis = new parser(Lexer);
-            // sintaxis.parse();
-            // String reglas = sintaxis.getReglas();
-            // reglas = reglas.replace("null", "");
-            // Resultado.getInstance().setContenido(reglas);
+            parser sintaxis = new parser(Lexer);
+            sintaxis.parse();
+            String reglas = sintaxis.getReglas();
+            reglas = reglas.replace("null", "");
+            Resultado.getInstance().setContenido(reglas);
             //Lexer.next_token();
 
         } catch (FileNotFoundException ex) {

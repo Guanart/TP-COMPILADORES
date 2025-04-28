@@ -1,4 +1,4 @@
-package com.grupo2.tpteo1grupo2;
+package com.grupo2.tpteo1grupo2.clases;
 
 public class NodoConstanteBinaria extends NodoExpresion {
     private final int valor;
