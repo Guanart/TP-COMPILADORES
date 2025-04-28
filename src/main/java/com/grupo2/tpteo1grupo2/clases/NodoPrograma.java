@@ -4,10 +4,12 @@ import java.util.List;
 
 public class NodoPrograma extends Nodo {
     private final List<NodoSentencia> sentencias;
+    private final List<NodoDeclaracion> declaraciones;
 
-    public NodoPrograma(List<NodoSentencia> sentencias) {
+    public NodoPrograma(List<NodoSentencia> sentencias, List<NodoDeclaracion> declaraciones) {
         super("PGM");
         this.sentencias = sentencias;
+        this.declaraciones = declaraciones;
     }
 
     public String graficar() {
@@ -26,6 +28,12 @@ public class NodoPrograma extends Nodo {
         resultado.append(miId + " [label=\"Programa\"]\n");
         for (NodoSentencia sentencia : this.sentencias) {
             resultado.append(sentencia.graficar(miId));
+        }
+
+        if (this.declaraciones != null) {
+            for (NodoDeclaracion declaracion : this.declaraciones) {
+                resultado.append(declaracion.graficar(miId));
+            }
         }
 
         resultado.append("}");
