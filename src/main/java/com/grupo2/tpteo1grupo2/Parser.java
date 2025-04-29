@@ -310,6 +310,8 @@ public class Parser extends java_cup.runtime.lr_parser {
     public void syntax_error(Symbol s) {
         System.out.println("Error en la linea " + (s.right+1) + " columna " + (s.left+1) + ". "
             + s + " no reconocido, VALOR: " + s.value );
+        Utils utils = new Utils();
+        utils.mostrarSintaxisError();
     }
 
    public void actualizarTipo(ArrayList<NodoDeclaracion> declaraciones) {
