@@ -5,4 +5,9 @@ public class NodoMultiplicacion extends NodoExpresionBinaria {
     public NodoMultiplicacion(NodoExpresion izquierda, NodoExpresion derecha) {
         super("*", izquierda, derecha);
     }
+
+    @Override
+    public String toString() {
+        return izquierda.toString() + "*" + derecha.toString();
+    }
 }

@@ -1,8 +1,8 @@
 package com.grupo2.tpteo1grupo2.clases;
 
 public class NodoExpresionBinaria extends NodoExpresion {
-    private final NodoExpresion izquierda;
-    private final NodoExpresion derecha;
+    protected final NodoExpresion izquierda;
+    protected final NodoExpresion derecha;
 
     public NodoExpresionBinaria(String nombre, NodoExpresion izquierda, NodoExpresion derecha) {
         super(nombre);

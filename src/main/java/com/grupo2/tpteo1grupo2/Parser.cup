@@ -202,7 +202,7 @@ declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCH
     listaIdDeclareSec.add(new NodoIdentificador(id.toString()));
     listaTipoDeclareSec.add(new NodoTipo(type.toString()));
     RESULT = combinarIdTipo();
-    //parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
+    parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
 
 declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:type COMA {:
     listaIdDeclareSec.add(new NodoIdentificador(id.toString()));

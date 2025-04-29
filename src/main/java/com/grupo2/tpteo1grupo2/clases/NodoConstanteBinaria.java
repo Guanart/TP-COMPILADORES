@@ -12,4 +12,9 @@ public class NodoConstanteBinaria extends NodoExpresion {
 
     @Override
     public String getDescripcionNodo() { return "CONST_B: " + literal + " (Valor decimal: " + Integer.toString(valor) + ")"; }
+
+    @Override
+    public String toString() {
+        return String.valueOf(valor);
+    }
 }

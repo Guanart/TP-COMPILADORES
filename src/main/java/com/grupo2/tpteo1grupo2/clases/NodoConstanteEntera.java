@@ -12,4 +12,9 @@ public class NodoConstanteEntera extends NodoExpresion {
     public String getDescripcionNodo() {
         return "CONST_INT: " + Integer.toString(valor);
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(valor);
+    }
 }
