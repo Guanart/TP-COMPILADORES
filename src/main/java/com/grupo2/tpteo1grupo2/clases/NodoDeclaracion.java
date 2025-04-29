@@ -9,4 +9,21 @@ public class NodoDeclaracion extends Nodo {
         this.identificador = identificador;
         this.tipo = tipo;
     }
+
+    public String getIdentificador() {
+        return identificador.getId();
+    }
+
+    public String getTipo() {
+        return tipo.getType();
+    }
+
+    @Override
+    protected String graficar(String idPadre) {
+        final String miId = this.getIdNodo();
+        return super.graficar(idPadre) +
+                identificador.graficar(miId) +
+                tipo.graficar(miId);
+    }
+
 }

@@ -8,6 +8,10 @@ public class NodoIdentificador extends NodoExpresion {
         this.identificador = identificador;
     }
 
+    public String getId() {
+        return identificador;
+    }
+
     @Override
     public String getDescripcionNodo() {
         return "ID: " + identificador;

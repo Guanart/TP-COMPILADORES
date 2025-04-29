@@ -21,10 +21,9 @@ parser code
             + s + " no reconocido, VALOR: " + s.value );
     }
 
-   public void actualizarTipo(String RESULT) {
+   public void actualizarTipo(ArrayList<NodoDeclaracion> declaraciones) {
        // Nombre del archivo común para todos los nombres-tipos
        String archivo = "nombres_tipos.csv";
-       System.out.println("Procesando RESULT: " + RESULT);
 
        try {
            // Verificar si el archivo existe
@@ -38,31 +37,10 @@ parser code
                    writer.write("NOMBRE,TIPO\n");
                }
 
-               // Parsear RESULT
-               String[] partes = RESULT.split(":="); // Separar por `:=`
-               if (partes.length != 2) {
-                   System.err.println("Formato inválido en RESULT: " + RESULT);
-                   return;
-               }
-
-               // Procesar la lista de variables y tipos
-               String variablesStr = partes[0].trim(); // [var5, var6, var7, var8, var9]
-               String tiposStr = partes[1].trim(); // [STRING, FLOAT, INTEGER, FLOAT, STRING]
-
-               // Remover corchetes y dividir por comas
-               String[] variables = variablesStr.replace("[", "").replace("]", "").split(",");
-               String[] tipos = tiposStr.replace("[", "").replace("]", "").split(",");
-
-               if (variables.length != tipos.length) {
-                   System.err.println("Las listas de variables y tipos no coinciden en longitud.");
-                   return;
-               }
-
-               // Escribir cada variable con su tipo en el archivo
-               for (int i = 0; i < variables.length; i++) {
-                   String nombre = variables[i].trim();
-                   String tipo = tipos[i].trim();
-                   writer.write(nombre + "," + tipo + "\n");
+               for (NodoDeclaracion declaracion : declaraciones) {
+                   String id = declaracion.getIdentificador();
+                   String tipo = declaracion.getTipo();
+                   writer.write(id + "," + tipo + "\n");
                }
            }
 
@@ -115,7 +93,7 @@ public NodoExpresionBooleana obtenerNodoExpresionBooleana(String con, NodoCompar
 public String operadorOplist;
 
 public NodoExpresionBinaria operacionOplist(NodoExpresion izquierda, NodoExpresion derecha) {
-    if (operadorOplist == "+") {
+    if (operadorOplist.equals("+")) {
         return new NodoSuma(izquierda, derecha);
     } else {
         return new NodoMultiplicacion(izquierda, derecha);
@@ -164,8 +142,10 @@ non terminal declaracion_n, declaracion_aux, type, conector, oplist_operacion, c
 
 start with pgm;
 
-pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(ps,ds); reglas += "Regla 00: pgm ; Compilación completa\n";:}
-    |  program_write:pw {:RESULT = new NodoPrograma(pw, null); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
+pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(ds,ps);
+                                        parser.actualizarTipo(listaDeclaraciones);
+                                        reglas += "Regla 00: pgm ; Compilación completa\n";:}
+    |  program_write:pw {:RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
 
 declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:RESULT = listaDeclaraciones; reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
 
@@ -202,13 +182,13 @@ declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCH
     listaIdDeclareSec.add(new NodoIdentificador(id.toString()));
     listaTipoDeclareSec.add(new NodoTipo(type.toString()));
     RESULT = combinarIdTipo();
-    parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
+    //parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
 
 declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:type COMA {:
     listaIdDeclareSec.add(new NodoIdentificador(id.toString()));
     listaTipoDeclareSec.add(new NodoTipo(type.toString()));
-    RESULT = da;
     reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + type + coma + " " + "\n";
+    RESULT = da;
     //RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";
     :}
     | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:

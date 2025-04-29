@@ -7,6 +7,10 @@ public class Nodo {
         this.descripcion = descripcion;
     }
 
+    public String getDescripcion() {
+        return descripcion;
+    }
+
     protected String getIdNodo() {
         return "nodo_" + this.hashCode();
     }
