@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.io.*;
 import java.nio.file.*;
+import com.grupo2.tpteo1grupo2.clases.*;
 
 
 parser code
@@ -83,7 +84,7 @@ public String getReglas() {
     return reglas;
 }
 
-public ArrayList<NodoSentencia> listaSentencias = new ArrayList<>();
+public ArrayList<NodoSentencia> listaSentencias = new ArrayList<NodoSentencia>();
 
 public NodoComparacion obtenerNodoComparacion(String c, NodoExpresion expr1, NodoExpresion expr2) {
     switch (c) {
@@ -97,6 +98,8 @@ public NodoComparacion obtenerNodoComparacion(String c, NodoExpresion expr1, Nod
            return new NodoMenorIgual(expr1, expr2);
        case ">=":
            return new NodoMayorIgual(expr1, expr2);
+    }
+    return null;
 }
 
 public NodoExpresionBooleana obtenerNodoExpresionBooleana(String con, NodoComparacion comp1, NodoComparacion comp2) {
@@ -105,6 +108,8 @@ public NodoExpresionBooleana obtenerNodoExpresionBooleana(String con, NodoCompar
            return new NodoAnd(comp1, comp2);
        case "||":
            return new NodoOr(comp1, comp2);
+    }
+    return null;
 }
 
 public String operadorOplist;
@@ -143,35 +148,31 @@ ENDDECLARE_SECTION, PROGRAM_SECTION, ENDPROGRAM_SECTION, ABRIR_PARENTESIS, CERRA
 
 /*Declaracion de No Terminales*/
 non terminal NodoPrograma pgm;
-non terminal List<NodoSentencia> sentencia_n;
 non terminal NodoSentencia sentencia;
 non terminal NodoExpresion expresion, termino, factor;
 non terminal NodoAsignacion asignacion;
-non terminal NodoExpresionBooleana condicion, comparacion;
+non terminal NodoExpresionBooleana condicion;
 non terminal NodoIf decision;
 non terminal NodoCiclo iteracion;
-
-/* Necesitariamos crear clases java para las cosas que nos faltan, como:
- - Declaraciones
- - OPLIST
- - Write
- - ?
-*/
-
-non terminal declare_sec, declaracion_n, program_sec, program_write, sentencia_write, write_constante, declaracion,
-    declaracion_aux, type, comparador, conector, escritura, parametro_escritura, oplist, oplist_operacion, oplist_const, const_numerica;
+non terminal ArrayList<NodoDeclaracion> declare_sec, declaracion;
+non terminal ArrayList<NodoSentencia> program_sec, sentencia_write, program_write, sentencia_n;
+non terminal NodoEscritura write_constante, escritura;
+non terminal NodoExpresion parametro_escritura, oplist_const, const_numerica;
+non terminal NodoOplist oplist;
+non terminal NodoComparacion comparacion;
+non terminal declaracion_n, declaracion_aux, type, conector, oplist_operacion, comparador;
 
 start with pgm;
 
-pgm::= declare_sec program_sec {:reglas += "Regla 00: pgm ; Compilación completa\n";:}
-    | program_write {:reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
+pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(ps,ds); reglas += "Regla 00: pgm ; Compilación completa\n";:}
+    |  program_write:pw {:RESULT = new NodoPrograma(pw, null); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
 
-declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
+declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:RESULT = listaDeclaraciones; reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
 
 declaracion_n::= declaracion_n declaracion {:reglas += "Regla 03: DECLARACIONES --> DECLARACIONES DECLARACION\n";:}
     | declaracion {:reglas += "Regla 04: DECLARACIONES --> DECLARACION\n";:};
 
-program_sec::= PROGRAM_SECTION:ps sentencia_n ENDPROGRAM_SECTION:es {:reglas += "Regla 05: PROGRAM_SEC --> " + ps + " SENTENCIAS " + es + "\n";:};
+program_sec::= PROGRAM_SECTION:ps sentencia_n:sn ENDPROGRAM_SECTION:es {:RESULT = sn; reglas += "Regla 05: PROGRAM_SEC --> " + ps + " SENTENCIAS " + es + "\n";:};
 
 sentencia_n::= sentencia_n:ss sentencia:s {:ss.add(s);
                                             RESULT = ss;
@@ -198,26 +199,25 @@ write_constante::= WRITE:w CONST_STRING:c {:RESULT = new NodoEscritura(new NodoC
 
 
 declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
-    listaIdDeclareSec.add(new NodoIdentificador(id));
-    listaTipoDeclareSec.add(new NodoTipo(t));
-    declaraciones = combinarIdTipo();
-    RESULT = declaraciones;
+    listaIdDeclareSec.add(new NodoIdentificador(id.toString()));
+    listaTipoDeclareSec.add(new NodoTipo(type.toString()));
+    RESULT = combinarIdTipo();
     //parser.actualizarTipo(ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString());:};
 
-declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:t COMA {:
-    listaIdDeclareSec.add(new NodoIdentificador(id));
-    listaTipoDeclareSec.add(new NodoTipo(t));
+declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:type COMA {:
+    listaIdDeclareSec.add(new NodoIdentificador(id.toString()));
+    listaTipoDeclareSec.add(new NodoTipo(type.toString()));
     RESULT = da;
-    reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + t + coma + " " + "\n";
+    reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + type + coma + " " + "\n";
     //RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";
     :}
     | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:
     reglas += "Regla 14: DECLARACION_AUX --> " + cc2 + d + aco + "\n";
     RESULT = cc2.toString() + d.toString() + aco.toString();:};
 
-type::= FLOAT:f {:reglas += "Regla 15: TYPE --> " + f + "\n"; RESULT=f; :}
-    | INTEGER:i {:reglas += "Regla 16: TYPE --> " + i + "\n"; RESULT=i;:}
-    | STRING:s {:reglas += "Regla 17: TYPE --> " + s + "\n"; RESULT=s;:};
+type::= FLOAT:f {: RESULT=f;  reglas += "Regla 15: TYPE --> " + f + "\n";:}
+    | INTEGER:i {: RESULT=i; reglas += "Regla 16: TYPE --> " + i + "\n";:}
+    | STRING:s {: RESULT=s; reglas += "Regla 17: TYPE --> " + s + "\n";:};
 
 /* [a,b,c] := [string,float,int] */
 
@@ -233,9 +233,9 @@ sentencia::= asignacion:asig {: RESULT = asig;
     | oplist:opl {: RESULT = opl;
                     reglas += "Regla 22: SENTENCIA --> OPLIST\n";:};
 
-asignacion::= ID:id ASIGN:a expresion:expr {:   RESULT = new NodoAsignacion(new NodoIdentificador(id), expr);
+asignacion::= ID:id ASIGN:a expresion:expr {:   RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), expr);
                                                 reglas += "Regla 23: ASIGNACION --> " + id + " " + a + " EXPRESION \n";:}
-    | ID:id ASIGN:a CONST_STRING:cs {:  RESULT = new NodoAsignacion(new NodoIdentificador(id), new NodoConstanteString(cs.toString()));
+    | ID:id ASIGN:a CONST_STRING:cs {:  RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), new NodoConstanteString(cs.toString()));
                                         reglas += "Regla 24: ASIGNACION --> " + id + " " + a + " " + cs + "\n";:};
 
 /* ss: sentencias , s: sentencia */
@@ -261,21 +261,21 @@ conector::= CON_AND:and {:  RESULT = and;
     | CON_OR:or {:  RESULT = or;
                     reglas += "Regla 31: CONECTOR --> CON_OR\n";:};
 
-comparacion::= expresion:expr1 comparador:c expresion:expr2 {:  RESULT = obtnerNodoComparacion(c.toString());
+comparacion::= expresion:expr1 comparador:c expresion:expr2 {:  RESULT = obtenerNodoComparacion(c.toString(), expr1, expr2);
                                                                 reglas += "Regla 32: COMPARACION --> EXPRESION " + c + " EXPRESION\n";:}
     | ABRIR_PARENTESIS:ap comparacion:comp CERRAR_PARENTESIS:cp {:  RESULT = comp;
                                                                     reglas += "Regla 33: COMPARACION --> " + ap + " COMPARACION " + cp + "\n";:};
 
 comparador::= OP_MAYOR:ma {:RESULT = ma;
-                            reglas += "Regla 34: COMPARADOR --> " + ma + "\n"; RESULT=ma; :}
+                            reglas += "Regla 34: COMPARADOR --> " + ma + "\n";:}
     | OP_MENOR:me {:RESULT = me;
-                    reglas += "Regla 35: COMPARADOR --> " + me + "\n"; RESULT=me; :}
+                    reglas += "Regla 35: COMPARADOR --> " + me + "\n";:}
     | OP_IGUAL:i {: RESULT = i;
-                    reglas += "Regla 36: COMPARADOR --> " + i + "\n"; RESULT=i; :}
+                    reglas += "Regla 36: COMPARADOR --> " + i + "\n";:}
     | OP_MENOR_IGUAL:mei {: RESULT = mei;
-                            reglas += "Regla 37: COMPARADOR --> " + mei + "\n"; RESULT=mei; :}
+                            reglas += "Regla 37: COMPARADOR --> " + mei + "\n";:}
     | OP_MAYOR_IGUAL:mai {: RESULT = mai;
-                            reglas += "Regla 38: COMPARADOR --> " + mai + "\n"; RESULT=mai; :};
+                            reglas += "Regla 38: COMPARADOR --> " + mai + "\n";:};
 
 expresion::= expresion:expr OP_SUMA:os termino:term {:  RESULT = new NodoSuma(expr, term);
                                                         reglas += "Regla 39: EXPRESION --> EXPRESION " + os + " TERMINO\n"; :}
@@ -293,7 +293,7 @@ termino::= termino:term OP_MULT:om factor:fact {:   RESULT = new NodoMultiplicac
 
 factor::= ABRIR_PARENTESIS:a expresion:expr CERRAR_PARENTESIS:c {: RESULT = expr;
                                                                 reglas += "Regla 44: FACTOR --> " + a + " EXPRESION " + c + "\n";:}
-    | ID:id {:  RESULT = new NodoIdentificador(id);
+    | ID:id {:  RESULT = new NodoIdentificador(id.toString());
                 reglas += "Regla 45: FACTOR --> " + id + "\n";:}
     | const_numerica:cn {:  RESULT = cn;
                             reglas += "Regla 46: FACTOR --> " + cn + "\n";:};
@@ -301,33 +301,33 @@ factor::= ABRIR_PARENTESIS:a expresion:expr CERRAR_PARENTESIS:c {: RESULT = expr
 escritura::= WRITE:w parametro_escritura:param {:   RESULT = new NodoEscritura(param);
                                                     reglas += "Regla 47: ESCRITURA --> " + w + " " + param + "\n";:};
 
-parametro_escritura::= ID:id {: RESULT = new NodoIdentificador(id);
-                                reglas += "Regla 48: VARIABLE --> " + id + "\n"; RESULT=id; :}
+parametro_escritura::= ID:id {: RESULT = new NodoIdentificador(id.toString());
+                                reglas += "Regla 48: VARIABLE --> " + id + "\n";:}
     | const_numerica:const_numerica {:  RESULT = const_numerica;
-                                        reglas += "Regla 49: CONSTANTE NUMÉRICA --> " + const_numerica + "\n"; RESULT=const_numerica; :}
+                                        reglas += "Regla 49: CONSTANTE NUMÉRICA --> " + const_numerica + "\n";:}
     | CONST_STRING:const_string {:  RESULT = new NodoConstanteString(const_string.toString());
-                                    reglas += "Regla 50: CONSTANTE STRING --> " + const_string + "\n"; RESULT=const_string; :};
+                                    reglas += "Regla 50: CONSTANTE STRING --> " + const_string + "\n";:};
 
 oplist::= OPLIST:ol ABRIR_CORCHETE:ac oplist_operacion:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:
-    RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2), operacionOplist(id, oc)) );
+    RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2.toString()), operacionOplist(new NodoIdentificador(id.toString()), oc)) );
     reglas += "Regla 51: OPLIST --> " + ol + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
 
 oplist_operacion::= OP_SUMA:os {:   RESULT = os;
                                     operadorOplist = os.toString();
-                                    reglas += "Regla 52: OPLIST_OPERACION --> " + os + "\n"; RESULT=os; :}
+                                    reglas += "Regla 52: OPLIST_OPERACION --> " + os + "\n";:}
     | OP_MULT:om {: RESULT = om;
                     operadorOplist = om.toString();
-                    reglas += "Regla 53: OPLIST_OPERACION --> " + om + "\n"; RESULT=om; :};
+                    reglas += "Regla 53: OPLIST_OPERACION --> " + om + "\n"; :};
 
 oplist_const::= oplist_const:oc PUNTO_Y_COMA:pyc const_numerica:cons {:
     RESULT = operacionOplist(oc, cons);
-    reglas += "Regla 54: OPLIST_CONST --> " + oc + pyc + cons + "\n"; RESULT=oc.toString() + pyc.toString() + cons.toString(); :}
+    reglas += "Regla 54: OPLIST_CONST --> " + oc + pyc + cons + "\n";:}
     | const_numerica:cn {:  RESULT = cn;
-                            reglas += "Regla 55: OPLIST_CONST --> " + cn + "\n"; RESULT=cn; :};
+                            reglas += "Regla 55: OPLIST_CONST --> " + cn + "\n";:};
 
-const_numerica::= CONST_B:const_b {:RESULT = new NodoConstanteBinaria(Integer.parseInt(const_b.substring(2), 2), const_b);
-                                    reglas += "Regla 56: CONSTANTE BINARIA --> " + const_b + "\n"; RESULT=const_b;:}
-    | CONST_REAL:const_real {:  RESULT = new NodoConstanteReal(Double.parseDouble(const_real));
-                                reglas += "Regla 57: CONSTANTE REAL --> " + const_real + "\n"; RESULT=const_real; :}
-    | CONST_INT:const_int {:RESULT = new NodoConstanteEntera(Integer.parseInt(const_int));
-                            reglas += "Regla 58: CONSTANTE ENTERA --> " + const_int + "\n"; RESULT=const_int; :};
+const_numerica::= CONST_B:const_b {:RESULT = new NodoConstanteBinaria(Integer.parseInt(const_b.toString().substring(2), 2), const_b.toString());
+                                    reglas += "Regla 56: CONSTANTE BINARIA --> " + const_b + "\n";:}
+    | CONST_REAL:const_real {:  RESULT = new NodoConstanteReal(Double.parseDouble(const_real.toString()));
+                                reglas += "Regla 57: CONSTANTE REAL --> " + const_real + "\n";:}
+    | CONST_INT:const_int {:RESULT = new NodoConstanteEntera(Integer.parseInt(const_int.toString()));
+                            reglas += "Regla 58: CONSTANTE ENTERA --> " + const_int + "\n";:};
