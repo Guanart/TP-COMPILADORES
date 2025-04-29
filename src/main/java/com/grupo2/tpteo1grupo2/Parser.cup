@@ -178,7 +178,7 @@ write_constante::= WRITE:w CONST_STRING:c {:RESULT = new NodoEscritura(new NodoC
 
 
 
-declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARATION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
+declaracion::= ABRIR_CORCHETE:ac ID:id declaracion_aux:da type:type CERRAR_CORCHETE:cc {:reglas += "Regla 12: DECLARACION --> " + ac.toString() + id.toString() + da.toString() + type.toString() + cc.toString() + "\n";
     listaIdDeclareSec.add(new NodoIdentificador(id.toString()));
     listaTipoDeclareSec.add(new NodoTipo(type.toString()));
     RESULT = combinarIdTipo();
@@ -188,8 +188,7 @@ declaracion_aux::= COMA:coma ID:id declaracion_aux:da type:type COMA {:
     listaIdDeclareSec.add(new NodoIdentificador(id.toString()));
     listaTipoDeclareSec.add(new NodoTipo(type.toString()));
     reglas += "Regla 13: DECLARACION_AUX --> " + coma + " " + id  + da + type + coma + " " + "\n";
-    RESULT = da;
-    //RESULT= coma.toString()+ " " +id.toString() + da.toString() + t.toString() + coma.toString() + " ";
+    RESULT = coma.toString()+ " " +id.toString() + da.toString() + type.toString() + coma.toString() + " ";
     :}
     | CERRAR_CORCHETE:cc2 DECLARACION:d ABRIR_CORCHETE:aco {:
     reglas += "Regla 14: DECLARACION_AUX --> " + cc2 + d + aco + "\n";
@@ -288,22 +287,22 @@ parametro_escritura::= ID:id {: RESULT = new NodoIdentificador(id.toString());
     | CONST_STRING:const_string {:  RESULT = new NodoConstanteString(const_string.toString());
                                     reglas += "Regla 50: CONSTANTE STRING --> " + const_string + "\n";:};
 
-oplist::= OPLIST:ol ABRIR_CORCHETE:ac oplist_operacion:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:
+oplist::= OPLIST:opl ABRIR_CORCHETE:ac oplist_operacion:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:
     RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2.toString()), operacionOplist(new NodoIdentificador(id.toString()), oc)) );
-    reglas += "Regla 51: OPLIST --> " + ol + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
+    reglas += "Regla 51: OPLIST --> " + opl + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
 
-oplist_operacion::= OP_SUMA:os {:   RESULT = os;
-                                    operadorOplist = os.toString();
-                                    reglas += "Regla 52: OPLIST_OPERACION --> " + os + "\n";:}
-    | OP_MULT:om {: RESULT = om;
-                    operadorOplist = om.toString();
-                    reglas += "Regla 53: OPLIST_OPERACION --> " + om + "\n"; :};
+oplist_operacion::= OP_SUMA:suma {:   RESULT = suma;
+                                    operadorOplist = suma.toString();
+                                    reglas += "Regla 52: OPLIST_OPERACION --> " + suma + "\n";:}
+    | OP_MULT:mult {: RESULT = mult;
+                    operadorOplist = mult.toString();
+                    reglas += "Regla 53: OPLIST_OPERACION --> " + mult + "\n"; :};
 
-oplist_const::= oplist_const:oc PUNTO_Y_COMA:pyc const_numerica:cons {:
-    RESULT = operacionOplist(oc, cons);
-    reglas += "Regla 54: OPLIST_CONST --> " + oc + pyc + cons + "\n";:}
-    | const_numerica:cn {:  RESULT = cn;
-                            reglas += "Regla 55: OPLIST_CONST --> " + cn + "\n";:};
+oplist_const::= oplist_const:opl_const PUNTO_Y_COMA:pyc const_numerica:const_num {:
+    RESULT = operacionOplist(opl_const, const_num);
+    reglas += "Regla 54: OPLIST_CONST --> " + opl_const + pyc + const_num + "\n";:}
+    | const_numerica:const_num {:  RESULT = const_num;
+                            reglas += "Regla 55: OPLIST_CONST --> " + const_num + "\n";:};
 
 const_numerica::= CONST_B:const_b {:RESULT = new NodoConstanteBinaria(Integer.parseInt(const_b.toString().substring(2), 2), const_b.toString());
                                     reglas += "Regla 56: CONSTANTE BINARIA --> " + const_b + "\n";:}
