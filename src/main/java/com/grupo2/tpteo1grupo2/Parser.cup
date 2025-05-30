@@ -6,14 +6,16 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.*;
 import java.io.*;
 import java.nio.file.*;
 import com.grupo2.tpteo1grupo2.clases.*;
+import com.grupo2.tpteo1grupo2.Utils;
+import com.grupo2.tpteo1grupo2.TablaSimbolos;
 
 
 parser code
 {:
-
     public String getReglas(){return action_obj.getReglas();}
 
     public void syntax_error(Symbol s) {
@@ -22,48 +24,47 @@ parser code
 
     }
 
-   public void actualizarTipo(ArrayList<NodoDeclaracion> declaraciones) {
-       // Nombre del archivo común para todos los nombres-tipos
-       String archivo = "nombres_tipos.csv";
-
-       try {
-           // Verificar si el archivo existe
-           File file = new File(archivo);
-           boolean archivoExiste = file.exists();
-
-           // Abrir el archivo para escribir (con append)
-           try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-               // Si el archivo no existía, escribir la cabecera
-               if (!archivoExiste) {
-                   writer.write("NOMBRE,TIPO\n");
-               }
-
-               for (NodoDeclaracion declaracion : declaraciones) {
-                   String id = declaracion.getIdentificador();
-                   String tipo = declaracion.getTipo();
-                   writer.write(id + "," + tipo + "\n");
-               }
-           }
-
-           System.out.println("Archivo actualizado: " + archivo);
-
-       } catch (IOException e) {
-           System.err.println("Error al actualizar el archivo CSV: " + e.getMessage());
-       }
-   }
-
-
 :}
 
 action code
 {:
+public String pathTablaSimbolos = "tabla_de_simbolos.csv";
+public List<Map<String, String>> tablaSimbolosA;
 public String reglas;
+private final Utils utils = new Utils();
+private TablaSimbolos tablaSimbolos = new TablaSimbolos();
 
 public String getReglas() {
     return reglas;
 }
 
 public ArrayList<NodoSentencia> listaSentencias = new ArrayList<NodoSentencia>();
+
+   public void imprimirTabla() {
+        for (Map<String, String> fila : tablaSimbolos) {
+            for (Map.Entry<String, String> entrada : fila.entrySet()) {
+                System.out.println(entrada.getKey() + ": " + entrada.getValue());
+            }
+            System.out.println("------");
+        }
+   }
+
+   public static void verificarID(String nombre) {
+       if (!tablaSimbolos.contieneIdentificador(nombre)) {
+           throw new RuntimeException("Error semántico: la variable '" + nombre + "' no fue declarada.");
+       }
+   }
+
+   public boolean existeVariable(List<Map<String, String>> datos, String nombreBuscado) {
+       for (Map<String, String> fila : datos) {
+           if (nombreBuscado.equals(fila.get("NOMBRE"))) {
+               return true;
+           }
+       }
+       return false;
+   }
+
+
 
 public NodoComparacion obtenerNodoComparacion(String c, NodoExpresion expr1, NodoExpresion expr2) {
     switch (c) {
@@ -112,6 +113,7 @@ public ArrayList<NodoDeclaracion> combinarIdTipo() {
                         listaIdDeclareSec.get(i),
                         listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i));
         listaDeclaraciones.add(nodo);
+        tablaSimbolos.agregarIdentificador(nodo.getIdentificador(), nodo.getTipo());
     }
     listaIdDeclareSec.clear();
     listaTipoDeclareSec.clear();
@@ -143,12 +145,11 @@ non terminal declaracion_n, declaracion_aux, type, conector, oplist_operacion, c
 
 start with pgm;
 
-pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(ds,ps);
-                                        parser.actualizarTipo(listaDeclaraciones);
+pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(null,ps);
                                         reglas += "Regla 00: pgm ; Compilación completa\n";:}
     |  program_write:pw {:RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
 
-declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:RESULT = listaDeclaraciones; reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
+declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
 
 declaracion_n::= declaracion_n declaracion {:reglas += "Regla 03: DECLARACIONES --> DECLARACIONES DECLARACION\n";:}
     | declaracion {:reglas += "Regla 04: DECLARACIONES --> DECLARACION\n";:};
@@ -174,7 +175,8 @@ sentencia_write::= sentencia_write:sws write_constante:sw {:sws.add(sw);
                             RESULT = listaSentencias;
                             reglas += "Regla 10: SENTENCIA WRITE --> WRITE_CONSTANTE\n";:};
 
-write_constante::= WRITE:w CONST_STRING:c {:RESULT = new NodoEscritura(new NodoConstanteString(c.toString()));
+write_constante::= WRITE:w CONST_STRING:c {:tablaSimbolos.agregarConstanteString(c.toString());
+                                            RESULT = new NodoEscritura(new NodoConstanteString(c.toString()));
                                             reglas += "Regla 11: WRITE CONSTANTE --> " + w + " " + c + "\n";:};
 
 
@@ -213,9 +215,12 @@ sentencia::= asignacion:asig {: RESULT = asig;
     | oplist:opl {: RESULT = opl;
                     reglas += "Regla 22: SENTENCIA --> OPLIST\n";:};
 
-asignacion::= ID:id ASIGN:a expresion:expr {:   RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), expr);
+asignacion::= ID:id ASIGN:a expresion:expr {:   if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
+                                                RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), expr);
                                                 reglas += "Regla 23: ASIGNACION --> " + id + " " + a + " EXPRESION \n";:}
-    | ID:id ASIGN:a CONST_STRING:cs {:  RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), new NodoConstanteString(cs.toString()));
+    | ID:id ASIGN:a CONST_STRING:cs {:  if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
+                                        tablaSimbolos.agregarConstanteString(cs.toString());
+                                        RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), new NodoConstanteString(cs.toString()));
                                         reglas += "Regla 24: ASIGNACION --> " + id + " " + a + " " + cs + "\n";:};
 
 /* ss: sentencias , s: sentencia */
@@ -273,7 +278,8 @@ termino::= termino:term OP_MULT:om factor:fact {:   RESULT = new NodoMultiplicac
 
 factor::= ABRIR_PARENTESIS:a expresion:expr CERRAR_PARENTESIS:c {: RESULT = expr;
                                                                 reglas += "Regla 44: FACTOR --> " + a + " EXPRESION " + c + "\n";:}
-    | ID:id {:  RESULT = new NodoIdentificador(id.toString());
+    | ID:id {:  if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
+                RESULT = new NodoIdentificador(id.toString());
                 reglas += "Regla 45: FACTOR --> " + id + "\n";:}
     | const_numerica:cn {:  RESULT = cn;
                             reglas += "Regla 46: FACTOR --> " + cn + "\n";:};
@@ -281,14 +287,18 @@ factor::= ABRIR_PARENTESIS:a expresion:expr CERRAR_PARENTESIS:c {: RESULT = expr
 escritura::= WRITE:w parametro_escritura:param {:   RESULT = new NodoEscritura(param);
                                                     reglas += "Regla 47: ESCRITURA --> " + w + " " + param + "\n";:};
 
-parametro_escritura::= ID:id {: RESULT = new NodoIdentificador(id.toString());
+parametro_escritura::= ID:id {: if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
+                                RESULT = new NodoIdentificador(id.toString());
                                 reglas += "Regla 48: VARIABLE --> " + id + "\n";:}
     | const_numerica:const_numerica {:  RESULT = const_numerica;
                                         reglas += "Regla 49: CONSTANTE NUMÉRICA --> " + const_numerica + "\n";:}
-    | CONST_STRING:const_string {:  RESULT = new NodoConstanteString(const_string.toString());
+    | CONST_STRING:const_string {:  tablaSimbolos.agregarConstanteString(const_string.toString());
+                                    RESULT = new NodoConstanteString(const_string.toString());
                                     reglas += "Regla 50: CONSTANTE STRING --> " + const_string + "\n";:};
 
 oplist::= OPLIST:opl ABRIR_CORCHETE:ac oplist_operacion:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:
+    if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
+    if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id2.toString());}
     RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2.toString()), operacionOplist(new NodoIdentificador(id.toString()), oc)) );
     reglas += "Regla 51: OPLIST --> " + opl + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
 
@@ -305,9 +315,12 @@ oplist_const::= oplist_const:opl_const PUNTO_Y_COMA:pyc const_numerica:const_num
     | const_numerica:const_num {:  RESULT = const_num;
                             reglas += "Regla 55: OPLIST_CONST --> " + const_num + "\n";:};
 
-const_numerica::= CONST_B:const_b {:RESULT = new NodoConstanteBinaria(Integer.parseInt(const_b.toString().substring(2), 2), const_b.toString());
+const_numerica::= CONST_B:const_b {:tablaSimbolos.agregarConstanteBinaria(const_b.toString());
+                                    RESULT = new NodoConstanteBinaria(Integer.parseInt(const_b.toString().substring(2), 2), const_b.toString());
                                     reglas += "Regla 56: CONSTANTE BINARIA --> " + const_b + "\n";:}
-    | CONST_REAL:const_real {:  RESULT = new NodoConstanteReal(Double.parseDouble(const_real.toString()));
+    | CONST_REAL:const_real {:  tablaSimbolos.agregarConstanteReal(Double.parseDouble(const_real.toString()));
+                                RESULT = new NodoConstanteReal(Double.parseDouble(const_real.toString()));
                                 reglas += "Regla 57: CONSTANTE REAL --> " + const_real + "\n";:}
-    | CONST_INT:const_int {:RESULT = new NodoConstanteEntera(Integer.parseInt(const_int.toString()));
+    | CONST_INT:const_int {:tablaSimbolos.agregarConstanteEntera(Integer.parseInt(const_int.toString()));
+                            RESULT = new NodoConstanteEntera(Integer.parseInt(const_int.toString()));
                             reglas += "Regla 58: CONSTANTE ENTERA --> " + const_int + "\n";:};

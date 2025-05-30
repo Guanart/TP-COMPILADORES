@@ -80,4 +80,12 @@ public class Utils {
         alert.setContentText("Una constante natural puede valer hasta 1000");
         alert.showAndWait();
     }
+
+    void mostrarVariableInvalida(String variable) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Variable inválida");
+        alert.setHeaderText(null);
+        alert.setContentText("La variable " + variable + " no ha sido declarada");
+        alert.showAndWait();
+    }
 }

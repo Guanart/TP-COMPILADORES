@@ -1,5 +1,7 @@
 package com.grupo2.tpteo1grupo2.clases;
 
+import com.grupo2.tpteo1grupo2.TablaSimbolos;
+
 public class NodoAsignacion extends NodoSentencia {
     private final NodoIdentificador identificador;
     private final NodoExpresion expresion;
@@ -17,4 +19,9 @@ public class NodoAsignacion extends NodoSentencia {
                 identificador.graficar(miId) +
                 expresion.graficar(miId);
     }
+
+    public void chequearValidezTipos(NodoIdentificador identificador, NodoExpresion expresion, TablaSimbolos tablaSimbolos) {
+
+    }
+
 }

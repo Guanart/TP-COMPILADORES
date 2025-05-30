@@ -17,4 +17,17 @@ public class NodoExpresionBinaria extends NodoExpresion {
                 izquierda.graficar(miId) +
                 derecha.graficar(miId);
     }
+
+    public String getTipoValorExpresion() {
+        String tipo1 = izquierda.getTipoValorExpresion();
+        String tipo2 = derecha.getTipoValorExpresion();
+        if (tipo1.equals("STRING") || tipo2.equals("STRING")) {
+            // Lamar a un utils que muestre un mensaje en pantalla
+            throw new RuntimeException("No se pueden hacer operaciones con STRING");
+        } else if (tipo1.equals("FLOAT") || tipo2.equals("FLOAT")) {
+            return "FLOAT";
+        } else {
+            return "INTEGER";
+        }
+    }
 }

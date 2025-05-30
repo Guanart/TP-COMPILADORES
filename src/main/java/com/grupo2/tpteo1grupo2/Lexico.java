@@ -626,10 +626,10 @@ public class Lexico implements java_cup.runtime.Scanner {
       zzEOFDone = true;
         resultado.setContenido(resultados);
     guardarEnArchivo(resultado.getContenido(), nombreArchivo);
-    SymbolTableGenerator prueba = new SymbolTableGenerator();
-    String outputFilePath = "tabla_de_simbolos.csv";
-    List<SymbolTableGenerator.Symbol> symbols = prueba.parseFile(nombreArchivo);
-    prueba.saveToCSV(symbols, outputFilePath);
+    //SymbolTableGenerator prueba = new SymbolTableGenerator();
+    //String outputFilePath = "tabla_de_simbolos.csv";
+    //List<SymbolTableGenerator.Symbol> symbols = prueba.parseFile(nombreArchivo);
+    //prueba.saveToCSV(symbols, outputFilePath);
   yyclose();
     }
   }
