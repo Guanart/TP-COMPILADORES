@@ -143,7 +143,7 @@ non terminal declaracion_n, declaracion_aux, type, conector, oplist_operacion, c
 
 start with pgm;
 
-pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(ds,ps);
+pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(null,ps);
                                         parser.actualizarTipo(listaDeclaraciones);
                                         reglas += "Regla 00: pgm ; Compilación completa\n";:}
     |  program_write:pw {:RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
