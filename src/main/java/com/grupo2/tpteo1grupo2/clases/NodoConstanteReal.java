@@ -17,5 +17,10 @@ public class NodoConstanteReal extends NodoExpresion {
     public String toString() {
         return String.valueOf(valor);
     }
+
+    @Override
+    public String getTipoValorExpresion() {
+        return "";
+    }
 }
 

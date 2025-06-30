@@ -17,4 +17,9 @@ public class NodoConstanteBinaria extends NodoExpresion {
     public String toString() {
         return String.valueOf(valor);
     }
+
+    @Override
+    public String getTipoValorExpresion() {
+        return "";
+    }
 }

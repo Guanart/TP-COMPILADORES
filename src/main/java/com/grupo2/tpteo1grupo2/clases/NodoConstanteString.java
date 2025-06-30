@@ -9,6 +9,11 @@ public class NodoConstanteString extends NodoExpresion {
     }
 
     @Override
+    public String getTipoValorExpresion() {
+        return "";
+    }
+
+    @Override
     public String getDescripcionNodo() {
         return "CONST_STRING: " + valor.replace("\"", "'");
     }
@@ -17,4 +22,6 @@ public class NodoConstanteString extends NodoExpresion {
     public String toString() {
         return String.valueOf(valor);
     }
+
+
 }

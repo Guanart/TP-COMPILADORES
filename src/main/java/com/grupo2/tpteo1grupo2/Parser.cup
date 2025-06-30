@@ -28,98 +28,84 @@ parser code
 
 action code
 {:
-public String pathTablaSimbolos = "tabla_de_simbolos.csv";
-public List<Map<String, String>> tablaSimbolosA;
-public String reglas;
-private final Utils utils = new Utils();
-private TablaSimbolos tablaSimbolos = new TablaSimbolos();
+    public String reglas;
+    private final Utils utils = new Utils();
+    private TablaSimbolos tablaSimbolos = new TablaSimbolos();
 
-public String getReglas() {
-    return reglas;
-}
+    public String getReglas() {
+        return reglas;
+    }
 
-public ArrayList<NodoSentencia> listaSentencias = new ArrayList<NodoSentencia>();
+    public ArrayList<NodoSentencia> listaSentencias = new ArrayList<NodoSentencia>();
 
-   public void imprimirTabla() {
-        for (Map<String, String> fila : tablaSimbolos) {
-            for (Map.Entry<String, String> entrada : fila.entrySet()) {
-                System.out.println(entrada.getKey() + ": " + entrada.getValue());
-            }
-            System.out.println("------");
-        }
-   }
-
-   public static void verificarID(String nombre) {
+    public void verificarID(String nombre) {
        if (!tablaSimbolos.contieneIdentificador(nombre)) {
            throw new RuntimeException("Error semántico: la variable '" + nombre + "' no fue declarada.");
        }
-   }
+    }
 
-   public boolean existeVariable(List<Map<String, String>> datos, String nombreBuscado) {
+    public boolean existeVariable(List<Map<String, String>> datos, String nombreBuscado) {
        for (Map<String, String> fila : datos) {
            if (nombreBuscado.equals(fila.get("NOMBRE"))) {
                return true;
            }
        }
        return false;
-   }
-
-
-
-public NodoComparacion obtenerNodoComparacion(String c, NodoExpresion expr1, NodoExpresion expr2) {
-    switch (c) {
-       case "<":
-           return new NodoMenor(expr1, expr2);
-       case ">":
-           return new NodoMayor(expr1, expr2);
-       case "=":
-           return new NodoIgual(expr1, expr2);
-       case "<=":
-           return new NodoMenorIgual(expr1, expr2);
-       case ">=":
-           return new NodoMayorIgual(expr1, expr2);
     }
-    return null;
-}
 
-public NodoExpresionBooleana obtenerNodoExpresionBooleana(String con, NodoComparacion comp1, NodoComparacion comp2) {
-    switch (con) {
-       case "&&":
-           return new NodoAnd(comp1, comp2);
-       case "||":
-           return new NodoOr(comp1, comp2);
+    public NodoComparacion obtenerNodoComparacion(String c, NodoExpresion expr1, NodoExpresion expr2) {
+        switch (c) {
+           case "<":
+               return new NodoMenor(expr1, expr2);
+           case ">":
+               return new NodoMayor(expr1, expr2);
+           case "=":
+               return new NodoIgual(expr1, expr2);
+           case "<=":
+               return new NodoMenorIgual(expr1, expr2);
+           case ">=":
+               return new NodoMayorIgual(expr1, expr2);
+        }
+        return null;
     }
-    return null;
-}
 
-public String operadorOplist;
-
-public NodoExpresionBinaria operacionOplist(NodoExpresion izquierda, NodoExpresion derecha) {
-    if (operadorOplist.equals("+")) {
-        return new NodoSuma(izquierda, derecha);
-    } else {
-        return new NodoMultiplicacion(izquierda, derecha);
+    public NodoExpresionBooleana obtenerNodoExpresionBooleana(String con, NodoComparacion comp1, NodoComparacion comp2) {
+        switch (con) {
+           case "&&":
+               return new NodoAnd(comp1, comp2);
+           case "||":
+               return new NodoOr(comp1, comp2);
+        }
+        return null;
     }
-}
 
-public ArrayList<NodoDeclaracion> listaDeclaraciones = new ArrayList<NodoDeclaracion>();
-public ArrayList<NodoIdentificador> listaIdDeclareSec = new ArrayList<NodoIdentificador>();
-public ArrayList<NodoTipo> listaTipoDeclareSec = new ArrayList<NodoTipo>();
+    public String operadorOplist;
 
-public ArrayList<NodoDeclaracion> combinarIdTipo() {
-    ArrayList<NodoDeclaracion> output = new ArrayList<NodoDeclaracion>();
-    for (int i = 0; i < listaIdDeclareSec.size(); i++) {
-        NodoDeclaracion nodo = new NodoDeclaracion(
-                        listaIdDeclareSec.get(i),
-                        listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i));
-        listaDeclaraciones.add(nodo);
-        tablaSimbolos.agregarIdentificador(nodo.getIdentificador(), nodo.getTipo());
+    public NodoExpresionBinaria operacionOplist(NodoExpresion izquierda, NodoExpresion derecha) {
+        if (operadorOplist.equals("+")) {
+            return new NodoSuma(izquierda, derecha);
+        } else {
+            return new NodoMultiplicacion(izquierda, derecha);
+        }
     }
-    listaIdDeclareSec.clear();
-    listaTipoDeclareSec.clear();
-    return listaDeclaraciones;
-}
 
+    public ArrayList<NodoDeclaracion> listaDeclaraciones = new ArrayList<NodoDeclaracion>();
+    public ArrayList<NodoIdentificador> listaIdDeclareSec = new ArrayList<NodoIdentificador>();
+    public ArrayList<NodoTipo> listaTipoDeclareSec = new ArrayList<NodoTipo>();
+
+    public ArrayList<NodoDeclaracion> combinarIdTipo() {
+        ArrayList<NodoDeclaracion> output = new ArrayList<NodoDeclaracion>();
+        for (int i = 0; i < listaIdDeclareSec.size(); i++) {
+            NodoDeclaracion nodo = new NodoDeclaracion(
+                            listaIdDeclareSec.get(i),
+                            listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i));
+            listaDeclaraciones.add(nodo);
+            tablaSimbolos.agregarIdentificador(nodo.getIdentificador(), nodo.getTipo());
+        }
+        listaIdDeclareSec.clear();
+        listaTipoDeclareSec.clear();
+        return listaDeclaraciones;
+    }
 :}
 
 /*Declaracion de Terminales */
@@ -146,8 +132,11 @@ non terminal declaracion_n, declaracion_aux, type, conector, oplist_operacion, c
 start with pgm;
 
 pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(null,ps);
-                                        reglas += "Regla 00: pgm ; Compilación completa\n";:}
-    |  program_write:pw {:RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
+                                        reglas += "Regla 00: pgm ; Compilación completa\n";
+                                        tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");:}
+
+    |  program_write:pw {:  RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";
+                            tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");:};
 
 declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
 

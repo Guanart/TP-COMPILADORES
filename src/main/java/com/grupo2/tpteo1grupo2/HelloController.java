@@ -74,16 +74,6 @@ public class HelloController extends Component {
 
         String fileContent = content.toString();
         codeTextArea.setText(fileContent);
-
-        /*
-        Platform.runLater(() -> {
-            Stage stage = (Stage) codeTextArea.getScene().getWindow();
-            stage.setWidth(800);
-            stage.setHeight(600);
-        });
-
-         */
-        // currentStage = (Stage) codeTextArea.getScene().getWindow();
     }
 
     @FXML
@@ -175,8 +165,6 @@ public class HelloController extends Component {
         currentStage.setOnCloseRequest(event -> this.exitApplication(null));
 
         slideOut.play();
-        SymbolTableGenerator prueba = new SymbolTableGenerator();
-        prueba.editTypes("nombres_tipos.csv","tabla_de_simbolos.csv");
     }   else {
             this.utils.mostrarAlertError();
         }

@@ -23,14 +23,6 @@ public class HelloApplication extends Application {
             stage.setTitle("Compilador Grupo 2");
             stage.setScene(scene);
             stage.show(); // Mostrar la escena primero
-
-
-            SymbolTableGenerator prueba = new SymbolTableGenerator();
-            String outputFilePath = "tabla_de_simbolos.csv";
-
-            // Leer archivo y generar tabla de símbolos
-            prueba.saveToCSV(null, outputFilePath);
-
             HelloController controller = fxmlLoader.getController(); // Obtener el controlador desde el FXMLLoader
             stage.setOnCloseRequest(event -> controller.exitApplication(null));
         } catch (IOException e) {
