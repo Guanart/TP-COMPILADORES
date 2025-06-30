@@ -38,4 +38,14 @@ public class NodoIdentificador extends NodoExpresion {
         return this.getTipo();
     }
 
+    public boolean soyHoja() {
+        return true; // Un identificador es una hoja en el árbol de sintaxis
+    }
+
+    @Override
+    public String generarAssembler() {
+        String assembler = "";
+
+        return identificador;
+    }
 }

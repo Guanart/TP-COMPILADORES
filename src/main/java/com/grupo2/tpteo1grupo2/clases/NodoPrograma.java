@@ -41,4 +41,21 @@ public class NodoPrograma extends Nodo {
 
         return resultado.toString();
     }
+
+    @Override
+    public String generarAssembler() {
+        StringBuilder assembler = new StringBuilder();
+
+        // Generar código ensamblador para las declaraciones
+        // for (NodoDeclaracion declaracion : declaraciones) {
+        //     assembler.append(declaracion.generarAssembler());
+        // }
+
+        // Generar código ensamblador para las sentencias
+        for (NodoSentencia sentencia : sentencias) {
+            assembler.append(sentencia.generarAssembler());
+        }
+
+        return assembler.toString();
+    }
 }

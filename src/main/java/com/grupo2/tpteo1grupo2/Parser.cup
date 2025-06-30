@@ -131,9 +131,15 @@ non terminal declaracion_n, declaracion_aux, type, conector, oplist_operacion, c
 
 start with pgm;
 
-pgm::= declare_sec:ds program_sec:ps {: RESULT = new NodoPrograma(null,ps);
+pgm::= declare_sec:ds program_sec:ps {:
+                                        NodoPrograma root = new NodoPrograma(null, ps);
+                                        RESULT = root;
                                         reglas += "Regla 00: pgm ; Compilación completa\n";
-                                        tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");:}
+                                        tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");
+                                        root.generarAssembler();
+                                        :}
+
+    |  program_write:pw {:RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
 
     |  program_write:pw {:  RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";
                             tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");:};

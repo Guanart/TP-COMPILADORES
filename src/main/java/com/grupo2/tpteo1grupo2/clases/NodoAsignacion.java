@@ -24,4 +24,13 @@ public class NodoAsignacion extends NodoSentencia {
 
     }
 
+    @Override
+    public String generarAssembler() {
+        StringBuilder assembler = new StringBuilder();
+
+        // Generar código ensamblador para la asignación
+        assembler.append("MOV ").append(identificador.getId()).append(", ").append(expresion.generarAssembler()).append("\n");
+
+        return assembler.toString();
+    }
 }

@@ -22,4 +22,9 @@ public class NodoConstanteEntera extends NodoExpresion {
     public String getTipoValorExpresion() {
         return "";
     }
+    
+    public boolean soyHoja() {
+        return true; // Una constante entera es una hoja en el árbol de sintaxis
+    }
+
 }
