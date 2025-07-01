@@ -25,12 +25,11 @@ public class NodoAsignacion extends NodoSentencia {
     }
 
     @Override
-    public String generarAssembler() {
-        StringBuilder assembler = new StringBuilder();
-
-        // Generar código ensamblador para la asignación
-        assembler.append("MOV ").append(identificador.getId()).append(", ").append(expresion.generarAssembler()).append("\n");
-
-        return assembler.toString();
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        String code = "";
+        // Asignar el valor de la expresión al identificador
+        code += "FLD _@" + expresion.getIdNodo() + "\n";
+        code += "FSTP _" + identificador.getIdNodo() + "\n";
+        codeSection.append(code);
     }
 }

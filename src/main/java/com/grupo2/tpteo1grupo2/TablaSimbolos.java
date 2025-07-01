@@ -1,30 +1,11 @@
 package com.grupo2.tpteo1grupo2;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class TablaSimbolos {
-
-    private static class Simbolo {
-        String nombre;
-        String valor;
-        String token;
-        String longitud;
-        String tipo;
-
-        public Simbolo(String nombre, String valor, String token, String longitud, String tipo) {
-            this.nombre = nombre;
-            this.valor = valor;
-            this.token = token;
-            this.longitud = longitud;
-            this.tipo = tipo;
-        }
-
-        public String toCSVLine() {
-            return nombre + "," + valor + "," + token + "," + longitud + "," + tipo;
-        }
-    }
-
     private final Map<String, Simbolo> tabla;
 
     public TablaSimbolos() {
@@ -95,6 +76,10 @@ public class TablaSimbolos {
             return s.tipo;
         }
         return null; // o lanzar una excepción si querés controlar mejor
+    }
+
+    public Map<String, Simbolo> getTabla() {
+        return Collections.unmodifiableMap(tabla);
     }
 
 }
