@@ -10,7 +10,7 @@ public class NodoConstanteString extends NodoExpresion {
 
     @Override
     public String getTipoValorExpresion() {
-        return "";
+        return "STRING";
     }
 
     @Override

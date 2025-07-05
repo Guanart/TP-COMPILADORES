@@ -23,6 +23,11 @@ public class NodoIdentificador extends NodoExpresion {
         return tipo;
     }
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+
     @Override
     public String getDescripcionNodo() {
         return "ID: " + identificador;
@@ -35,6 +40,7 @@ public class NodoIdentificador extends NodoExpresion {
 
     @Override
     public String getTipoValorExpresion() {
+        System.out.println("NODO IDENTIFICADOR:" + this.getTipo() + ", " + this.getId());
         return this.getTipo();
     }
 

@@ -27,6 +27,8 @@ public class HelloApplication extends Application {
             stage.setOnCloseRequest(event -> controller.exitApplication(null));
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

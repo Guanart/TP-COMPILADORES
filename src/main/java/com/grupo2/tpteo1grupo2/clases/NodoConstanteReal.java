@@ -20,7 +20,7 @@ public class NodoConstanteReal extends NodoExpresion {
 
     @Override
     public String getTipoValorExpresion() {
-        return "";
+        return "FLOAT";
     }
 
     @Override

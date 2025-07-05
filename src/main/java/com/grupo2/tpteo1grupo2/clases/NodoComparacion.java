@@ -10,6 +10,9 @@ private final NodoExpresion  derecha;
         this.izquierda = izquierda;
         this.derecha = derecha;
 
+        if (!(isValid(izquierda, derecha))) {
+            throw new RuntimeException("Comparación inválida");
+        }
     }
      @Override
     protected String graficar(String idPadre) {
@@ -17,6 +20,19 @@ private final NodoExpresion  derecha;
         return super.graficar(idPadre) +
                 izquierda.graficar(miId) +
                 derecha.graficar(miId);
+    }
+
+    public static Boolean isValid(NodoExpresion izquierda, NodoExpresion derecha) {
+        String izType = izquierda.getTipoValorExpresion();
+        String derType = derecha.getTipoValorExpresion();
+
+        if ( (izType == null) || (derType == null) ) {
+            System.out.println("NODO COMPARACION: uno de los hijos devuelve tipo nulo");
+            System.out.println("izType: " + izType);
+            System.out.println("derType: " + derType);
+            return false;
+        }
+        return !izType.equals("STRING") && !derType.equals("STRING");
     }
     
 }

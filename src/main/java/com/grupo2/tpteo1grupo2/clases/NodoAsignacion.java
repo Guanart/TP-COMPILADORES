@@ -10,6 +10,10 @@ public class NodoAsignacion extends NodoSentencia {
         super("::=");
         this.identificador = identificador;
         this.expresion = expresion;
+
+        if (!(isValid(identificador, expresion))) {
+            throw new RuntimeException("Asignacion inválida");
+        }
     }
 
     @Override
@@ -18,10 +22,6 @@ public class NodoAsignacion extends NodoSentencia {
         return super.graficar(idPadre) +
                 identificador.graficar(miId) +
                 expresion.graficar(miId);
-    }
-
-    public void chequearValidezTipos(NodoIdentificador identificador, NodoExpresion expresion, TablaSimbolos tablaSimbolos) {
-
     }
 
     @Override
@@ -37,5 +37,18 @@ public class NodoAsignacion extends NodoSentencia {
         code += "FLD _@" + expresion.getIdNodo() + "\n";
         code += "FSTP _" + identificador.getId() + "\n";
         codeSection.append(code);
+    }
+
+    public static Boolean isValid(NodoExpresion id, NodoExpresion exp) {
+        String idType = id.getTipoValorExpresion();
+        String expType = exp.getTipoValorExpresion();
+
+        if ( (idType == null) || (expType == null) ) {
+            System.out.println("NODO ASIGNACION: uno de los hijos devuelve tipo nulo");
+            System.out.println("idType: " + idType);
+            System.out.println("expType: " + expType);
+            return false;
+        }
+        return idType.equals(expType);
     }
 }

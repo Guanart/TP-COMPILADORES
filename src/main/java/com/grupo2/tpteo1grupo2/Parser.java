@@ -334,17 +334,9 @@ class CUP$Parser$actions {
 
     public void verificarID(String nombre) {
        if (!tablaSimbolos.contieneIdentificador(nombre)) {
+           utils.mostrarVariableInvalida(nombre);
            throw new RuntimeException("Error semántico: la variable '" + nombre + "' no fue declarada.");
        }
-    }
-
-    public boolean existeVariable(List<Map<String, String>> datos, String nombreBuscado) {
-       for (Map<String, String> fila : datos) {
-           if (nombreBuscado.equals(fila.get("NOMBRE"))) {
-               return true;
-           }
-       }
-       return false;
     }
 
     public NodoComparacion obtenerNodoComparacion(String c, NodoExpresion expr1, NodoExpresion expr2) {
@@ -390,9 +382,12 @@ class CUP$Parser$actions {
     public ArrayList<NodoDeclaracion> combinarIdTipo() {
         ArrayList<NodoDeclaracion> output = new ArrayList<NodoDeclaracion>();
         for (int i = 0; i < listaIdDeclareSec.size(); i++) {
+            NodoIdentificador idNode = listaIdDeclareSec.get(i);
+            NodoTipo idType = listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i);
+            idNode.setTipo(idType.getType());
             NodoDeclaracion nodo = new NodoDeclaracion(
-                            listaIdDeclareSec.get(i),
-                            listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i));
+                            idNode,
+                            idType);
             listaDeclaraciones.add(nodo);
             tablaSimbolos.agregarIdentificador(nodo.getIdentificador(), nodo.getTipo());
         }
@@ -554,9 +549,11 @@ class CUP$Parser$actions {
 		int ocright = ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)).right;
 		NodoExpresion oc = (NodoExpresion)((java_cup.runtime.Symbol) CUP$Parser$stack.elementAt(CUP$Parser$top-2)).value;
 		
-    if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-    if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id2.toString());}
-    RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2.toString()), operacionOplist(new NodoIdentificador(id.toString()), oc)) );
+    verificarID(id.toString());
+    verificarID(id2.toString());
+    String tipo = tablaSimbolos.obtenerTipo(id.toString());
+    String tipo2 = tablaSimbolos.obtenerTipo(id2.toString());
+    RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2.toString(), tipo2), operacionOplist(new NodoIdentificador(id.toString(), tipo), oc)) );
     reglas += "Regla 51: OPLIST --> " + opl + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("oplist",20, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-11)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -596,8 +593,9 @@ class CUP$Parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		 if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-                                RESULT = new NodoIdentificador(id.toString());
+		 verificarID(id.toString());
+                                String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                                RESULT = new NodoIdentificador(id.toString(), tipo);
                                 reglas += "Regla 48: VARIABLE --> " + id + "\n";
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("parametro_escritura",17, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -639,8 +637,9 @@ class CUP$Parser$actions {
 		int idleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int idright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object id = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		  if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-                RESULT = new NodoIdentificador(id.toString());
+		  verificarID(id.toString());
+                String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                RESULT = new NodoIdentificador(id.toString(), tipo);
                 reglas += "Regla 45: FACTOR --> " + id + "\n";
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("factor",4, ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1043,9 +1042,10 @@ class CUP$Parser$actions {
 		int csleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int csright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		Object cs = (Object)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		  if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
+		  verificarID(id.toString());
                                         tablaSimbolos.agregarConstanteString(cs.toString());
-                                        RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), new NodoConstanteString(cs.toString()));
+                                        String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                                        RESULT = new NodoAsignacion(new NodoIdentificador(id.toString(), tipo), new NodoConstanteString(cs.toString()));
                                         reglas += "Regla 24: ASIGNACION --> " + id + " " + a + " " + cs + "\n";
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("asignacion",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }
@@ -1064,8 +1064,9 @@ class CUP$Parser$actions {
 		int exprleft = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).left;
 		int exprright = ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()).right;
 		NodoExpresion expr = (NodoExpresion)((java_cup.runtime.Symbol) CUP$Parser$stack.peek()).value;
-		   if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-                                                RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), expr);
+		   verificarID(id.toString());
+                                                String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                                                RESULT = new NodoAsignacion(new NodoIdentificador(id.toString(), tipo), expr);
                                                 reglas += "Regla 23: ASIGNACION --> " + id + " " + a + " EXPRESION \n";
               CUP$Parser$result = parser.getSymbolFactory().newSymbol("asignacion",5, ((java_cup.runtime.Symbol)CUP$Parser$stack.elementAt(CUP$Parser$top-2)), ((java_cup.runtime.Symbol)CUP$Parser$stack.peek()), RESULT);
             }

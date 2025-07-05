@@ -40,17 +40,9 @@ action code
 
     public void verificarID(String nombre) {
        if (!tablaSimbolos.contieneIdentificador(nombre)) {
+           utils.mostrarVariableInvalida(nombre);
            throw new RuntimeException("Error semántico: la variable '" + nombre + "' no fue declarada.");
        }
-    }
-
-    public boolean existeVariable(List<Map<String, String>> datos, String nombreBuscado) {
-       for (Map<String, String> fila : datos) {
-           if (nombreBuscado.equals(fila.get("NOMBRE"))) {
-               return true;
-           }
-       }
-       return false;
     }
 
     public NodoComparacion obtenerNodoComparacion(String c, NodoExpresion expr1, NodoExpresion expr2) {
@@ -96,9 +88,12 @@ action code
     public ArrayList<NodoDeclaracion> combinarIdTipo() {
         ArrayList<NodoDeclaracion> output = new ArrayList<NodoDeclaracion>();
         for (int i = 0; i < listaIdDeclareSec.size(); i++) {
+            NodoIdentificador idNode = listaIdDeclareSec.get(i);
+            NodoTipo idType = listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i);
+            idNode.setTipo(idType.getType());
             NodoDeclaracion nodo = new NodoDeclaracion(
-                            listaIdDeclareSec.get(i),
-                            listaTipoDeclareSec.get(listaIdDeclareSec.size()-1-i));
+                            idNode,
+                            idType);
             listaDeclaraciones.add(nodo);
             tablaSimbolos.agregarIdentificador(nodo.getIdentificador(), nodo.getTipo());
         }
@@ -209,12 +204,14 @@ sentencia::= asignacion:asig {: RESULT = asig;
     | oplist:opl {: RESULT = opl;
                     reglas += "Regla 22: SENTENCIA --> OPLIST\n";:};
 
-asignacion::= ID:id ASIGN:a expresion:expr {:   if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-                                                RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), expr);
+asignacion::= ID:id ASIGN:a expresion:expr {:   verificarID(id.toString());
+                                                String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                                                RESULT = new NodoAsignacion(new NodoIdentificador(id.toString(), tipo), expr);
                                                 reglas += "Regla 23: ASIGNACION --> " + id + " " + a + " EXPRESION \n";:}
-    | ID:id ASIGN:a CONST_STRING:cs {:  if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
+    | ID:id ASIGN:a CONST_STRING:cs {:  verificarID(id.toString());
                                         tablaSimbolos.agregarConstanteString(cs.toString());
-                                        RESULT = new NodoAsignacion(new NodoIdentificador(id.toString()), new NodoConstanteString(cs.toString()));
+                                        String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                                        RESULT = new NodoAsignacion(new NodoIdentificador(id.toString(), tipo), new NodoConstanteString(cs.toString()));
                                         reglas += "Regla 24: ASIGNACION --> " + id + " " + a + " " + cs + "\n";:};
 
 /* ss: sentencias , s: sentencia */
@@ -272,8 +269,9 @@ termino::= termino:term OP_MULT:om factor:fact {:   RESULT = new NodoMultiplicac
 
 factor::= ABRIR_PARENTESIS:a expresion:expr CERRAR_PARENTESIS:c {: RESULT = expr;
                                                                 reglas += "Regla 44: FACTOR --> " + a + " EXPRESION " + c + "\n";:}
-    | ID:id {:  if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-                RESULT = new NodoIdentificador(id.toString());
+    | ID:id {:  verificarID(id.toString());
+                String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                RESULT = new NodoIdentificador(id.toString(), tipo);
                 reglas += "Regla 45: FACTOR --> " + id + "\n";:}
     | const_numerica:cn {:  RESULT = cn;
                             reglas += "Regla 46: FACTOR --> " + cn + "\n";:};
@@ -281,8 +279,9 @@ factor::= ABRIR_PARENTESIS:a expresion:expr CERRAR_PARENTESIS:c {: RESULT = expr
 escritura::= WRITE:w parametro_escritura:param {:   RESULT = new NodoEscritura(param);
                                                     reglas += "Regla 47: ESCRITURA --> " + w + " " + param + "\n";:};
 
-parametro_escritura::= ID:id {: if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-                                RESULT = new NodoIdentificador(id.toString());
+parametro_escritura::= ID:id {: verificarID(id.toString());
+                                String tipo = tablaSimbolos.obtenerTipo(id.toString());
+                                RESULT = new NodoIdentificador(id.toString(), tipo);
                                 reglas += "Regla 48: VARIABLE --> " + id + "\n";:}
     | const_numerica:const_numerica {:  RESULT = const_numerica;
                                         reglas += "Regla 49: CONSTANTE NUMÉRICA --> " + const_numerica + "\n";:}
@@ -291,9 +290,11 @@ parametro_escritura::= ID:id {: if (!tablaSimbolos.contieneIdentificador(id.toSt
                                     reglas += "Regla 50: CONSTANTE STRING --> " + const_string + "\n";:};
 
 oplist::= OPLIST:opl ABRIR_CORCHETE:ac oplist_operacion:oo ABRIR_CORCHETE ID:id PUNTO_Y_COMA:pyc ID:id2 CERRAR_CORCHETE:cc ABRIR_CORCHETE oplist_const:oc CERRAR_CORCHETE CERRAR_CORCHETE {:
-    if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id.toString());}
-    if (!tablaSimbolos.contieneIdentificador(id.toString())) {utils.mostrarVariableInvalida(id2.toString());}
-    RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2.toString()), operacionOplist(new NodoIdentificador(id.toString()), oc)) );
+    verificarID(id.toString());
+    verificarID(id2.toString());
+    String tipo = tablaSimbolos.obtenerTipo(id.toString());
+    String tipo2 = tablaSimbolos.obtenerTipo(id2.toString());
+    RESULT = new NodoOplist( new NodoAsignacion(new NodoIdentificador(id2.toString(), tipo2), operacionOplist(new NodoIdentificador(id.toString(), tipo), oc)) );
     reglas += "Regla 51: OPLIST --> " + opl + " " + ac + oo + " " + ac + id + pyc + id2 + cc + " " + ac + oc + cc + cc + "\n";:};
 
 oplist_operacion::= OP_SUMA:suma {:   RESULT = suma;

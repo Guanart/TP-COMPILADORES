@@ -20,7 +20,7 @@ public class NodoConstanteEntera extends NodoExpresion {
 
     @Override
     public String getTipoValorExpresion() {
-        return "";
+        return "INTEGER";
     }
     
     public boolean soyHoja() {
