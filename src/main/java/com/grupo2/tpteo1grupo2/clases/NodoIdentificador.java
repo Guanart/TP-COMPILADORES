@@ -43,9 +43,6 @@ public class NodoIdentificador extends NodoExpresion {
     }
 
     @Override
-    public String generarAssembler() {
-        String assembler = "";
-
-        return identificador;
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
     }
 }

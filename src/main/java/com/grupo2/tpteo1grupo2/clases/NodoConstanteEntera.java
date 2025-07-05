@@ -4,7 +4,7 @@ public class NodoConstanteEntera extends NodoExpresion {
     private final int valor;
 
     public NodoConstanteEntera(int valor) {
-        super("CONST_INT");
+        super(Integer.toString(valor));
         this.valor = valor;
     }
 
@@ -25,6 +25,10 @@ public class NodoConstanteEntera extends NodoExpresion {
     
     public boolean soyHoja() {
         return true; // Una constante entera es una hoja en el árbol de sintaxis
+    }
+
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
     }
 
 }

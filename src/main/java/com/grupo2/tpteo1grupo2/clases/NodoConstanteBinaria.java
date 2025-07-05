@@ -5,7 +5,7 @@ public class NodoConstanteBinaria extends NodoExpresion {
     private final String literal;
 
     public NodoConstanteBinaria(int valor, String literal) {
-        super("CONST_B");
+        super(literal);
         this.valor = valor;
         this.literal = literal;
     }
@@ -21,5 +21,9 @@ public class NodoConstanteBinaria extends NodoExpresion {
     @Override
     public String getTipoValorExpresion() {
         return "";
+    }
+
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
     }
 }

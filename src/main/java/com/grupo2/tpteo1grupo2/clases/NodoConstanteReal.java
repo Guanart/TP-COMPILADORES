@@ -4,7 +4,7 @@ public class NodoConstanteReal extends NodoExpresion {
     private final double valor;
 
     public NodoConstanteReal(double valor) {
-        super("CONST_REAL");
+        super(Double.toString(valor));
         this.valor = valor;
     }
 
@@ -21,6 +21,10 @@ public class NodoConstanteReal extends NodoExpresion {
     @Override
     public String getTipoValorExpresion() {
         return "";
+    }
+
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
     }
 }
 

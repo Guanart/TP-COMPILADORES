@@ -30,4 +30,9 @@ public class NodoExpresionBinaria extends NodoExpresion {
             return "INTEGER";
         }
     }
+
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+
+    }
 }

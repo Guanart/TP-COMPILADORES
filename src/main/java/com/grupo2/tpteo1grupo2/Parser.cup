@@ -139,8 +139,6 @@ pgm::= declare_sec:ds program_sec:ps {:
                                         root.generarAssembler(tablaSimbolos);
                                         :}
 
-    |  program_write:pw {:RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";:};
-
     |  program_write:pw {:  RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";
                             tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");:};
 

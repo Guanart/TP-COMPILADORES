@@ -1,5 +1,8 @@
 package com.grupo2.tpteo1grupo2.clases;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -85,26 +88,47 @@ _0b1011,11,CONST_B,,-
 
      */
 
-    public String generarAssembler(TablaSimbolos tablaSimbolos) {
+    public void generarAssembler(TablaSimbolos tablaSimbolos) {
         StringBuilder codeSection = new StringBuilder();
         StringBuilder dataSection = new StringBuilder();
 
         Map<String, Simbolo> tabla = tablaSimbolos.getTabla();
         for (Map.Entry<String, Simbolo> entry : tabla.entrySet()) {
             Simbolo simbolo = entry.getValue();
-            switch (simbolo.tipo) {
-                case "INTEGER":
-                    dataSection.append("_").append(simbolo.nombre).append(" DD 0.0\n");
+            System.out.println(
+                    "Generando código ensamblador para el símbolo: " + simbolo.nombre + " de tipo: " + simbolo.tipo);
+            switch (simbolo.token) {
+                case "ID":
+                    // Si es un identificador, ahora miramos el tipo
+                    switch (simbolo.tipo) {
+                        case "INTEGER":
+                            dataSection.append("_").append(simbolo.nombre).append(" DD 0.0\n");
+                            break;
+                        case "FLOAT":
+                            dataSection.append("_").append(simbolo.nombre).append(" DD 0.0\n");
+                            break;
+                        case "STRING":
+                            dataSection.append("_").append(simbolo.nombre).append(" DB \"\", 0\n");
+                            break;
+                        default:
+                            // Otros tipos si los hubiera
+                            break;
+                    }
                     break;
-                case "FLOAT":
-                    dataSection.append("_").append(simbolo.nombre).append(" DD 0.0\n");
+                case "CONST_INT":
+                    dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append("\n");
                     break;
-                case "STRING":
-                    dataSection.append("_").append(simbolo.nombre).append(" DB \"\", 0\n");
-                    // DB: "Define Byte", reserva espacio byte a byte (usado para strings).
-                    // "", 0: inicializa la variable con una cadena vacía y un byte nulo al final (fin de string).
+                case "CONST_REAL":
+                    dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append("\n");
+                    break;
+                case "CONST_STRII":
+                    dataSection.append(simbolo.nombre).append(" DB ").append(simbolo.valor).append(", 0\n");
+                    break;
+                case "CONST_B":
+                    dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append("\n");
                     break;
                 default:
+                    // Otros tokens si los hubiera
                     break;
             }
         }
@@ -131,7 +155,17 @@ _0b1011,11,CONST_B,,-
         assembler.append("\nMOV EAX,4C00h ; Indica que debe finalizar la ejecución\n");
         assembler.append("INT 21h\n");
         assembler.append("END START\n");
-                
-        return assembler.toString();
+
+        guardarAssemblerEnArchivo(assembler.toString(), "programa.asm");
+
+        System.out.println("Código ensamblador generado y guardado en programa.asm");
     }
+    
+    public static void guardarAssemblerEnArchivo(String assemblerCode, String filePath) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(assemblerCode);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }    
 }

@@ -1,3 +1,8 @@
+arbol.dot
+arbol.png
+output.txt
+
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
@@ -36,3 +41,18 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+pom.xml
+programa.asm
+.gitignore
+tabla_de_simbolos.csv
+.idea/misc.xml
+tabla_de_simbolos.csv
+.idea/misc.xml
+.idea/remote-targets.xml
+arbol.dot
+arbol.png
+output.txt
+pom.xml
+tabla_de_simbolos.csv
+.idea/misc.xml

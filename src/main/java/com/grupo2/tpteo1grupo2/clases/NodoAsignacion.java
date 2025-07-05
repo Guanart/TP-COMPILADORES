@@ -26,10 +26,16 @@ public class NodoAsignacion extends NodoSentencia {
 
     @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
         String code = "";
         // Asignar el valor de la expresión al identificador
+        // Primero, generar el código ensamblador para la expresión
+        expresion.generarAssembler(dataSection, codeSection);
+        // Luego, almacenar el resultado de la expresión en el identificador
+        // Se asume que el identificador ya tiene su variable auxiliar creada en la data section
+
         code += "FLD _@" + expresion.getIdNodo() + "\n";
-        code += "FSTP _" + identificador.getIdNodo() + "\n";
+        code += "FSTP _" + identificador.getId() + "\n";
         codeSection.append(code);
     }
 }

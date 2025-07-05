@@ -4,7 +4,7 @@ public class NodoConstanteString extends NodoExpresion {
     private final String valor;
 
     public NodoConstanteString(String valor) {
-        super("CONST_STRING");
+        super(valor);
         this.valor = valor;
     }
 
@@ -21,6 +21,10 @@ public class NodoConstanteString extends NodoExpresion {
     @Override
     public String toString() {
         return String.valueOf(valor);
+    }
+
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
     }
 
 
