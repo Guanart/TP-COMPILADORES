@@ -20,6 +20,6 @@ public class NodoConstanteBinaria extends NodoExpresion {
 
     @Override
     public String getTipoValorExpresion() {
-        return "";
+        return "INTEGER";
     }
 }

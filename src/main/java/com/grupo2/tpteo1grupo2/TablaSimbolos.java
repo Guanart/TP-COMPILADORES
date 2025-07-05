@@ -75,7 +75,7 @@ public class TablaSimbolos {
         if (s != null && s.token.equals("ID")) {
             return s.tipo;
         }
-        return null; // o lanzar una excepción si querés controlar mejor
+        return null;
     }
 
     public Map<String, Simbolo> getTabla() {

@@ -14,4 +14,5 @@ public class NodoOplist extends NodoSentencia {
         return super.graficar(idPadre) +
                 asignacion.graficar(miId);
     }
+
 }
