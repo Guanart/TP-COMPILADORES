@@ -41,7 +41,7 @@ public class Utils {
         alert.showAndWait();
     }
 
-    void mostrarSintaxisError(){
+    void mostrarSintaxError(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
@@ -87,5 +87,9 @@ public class Utils {
         alert.setHeaderText(null);
         alert.setContentText("La variable " + variable + " no ha sido declarada");
         alert.showAndWait();
+    }
+
+    void mostrarTipoInvalido() {
+
     }
 }

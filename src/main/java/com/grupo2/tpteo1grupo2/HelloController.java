@@ -81,75 +81,72 @@ public class HelloController extends Component {
         if (codeTextArea == null) {
             return;
         }
-
         Stage currentStage = (Stage) codeTextArea.getScene().getWindow();
-
         String contenidoACompilar = codeTextArea.getText();
-        if (!contenidoACompilar.isEmpty()){
+
+        if (!contenidoACompilar.isEmpty()) {
             this.utils.crearArchivo(contenidoACompilar);
-        try {
-            File tempDir = new File(System.getProperty("java.io.tmpdir"));
-            FileReader f = new FileReader(new File(tempDir, "prueba.txt"));
-            Lexico Lexer = new Lexico(f);
-            Parser parser = new Parser(Lexer);
+            try {
+                // Cargar prueba.txt
+                File tempDir = new File(System.getProperty("java.io.tmpdir"));
+                FileReader f = new FileReader(new File(tempDir, "prueba.txt"));
 
-            // Parsear y obtener el AST (NodoPrograma)
-            NodoPrograma programa = (NodoPrograma) parser.parse().value;
+                // Obtener Léxico a partir del texto a compilar
+                Lexico Lexer = new Lexico(f);
 
-            // Graficar el AST en un archivo .dot
-            try (PrintWriter pw = new PrintWriter(new FileWriter("arbol.dot"))) {
-                pw.println(programa.graficar());
+                // Instanciar parser
+                Parser parser = new Parser(Lexer);
+
+                // Parsear y obtener el AST
+                NodoPrograma programa = (NodoPrograma) parser.parse().value;
+
+                // Graficar el AST en un archivo .dot
+                try (PrintWriter pw = new PrintWriter(new FileWriter("arbol.dot"))) {
+                    pw.println(programa.graficar());
+                }
+
+                // Generar imagen PNG usando Graphviz
+                String cmd = "dot -Tpng arbol.dot -o arbol.png";
+                Process p = Runtime.getRuntime().exec(cmd);
+
+                // Esperar a que termine la ejecución de "dot"
+                int exitCode = p.waitFor();
+
+                // Verificar si se creó el archivo
+                File arbolPng = new File("arbol.png");
+                if (exitCode == 0 && arbolPng.exists()) {
+                    System.out.println("✅ Árbol AST generado correctamente: " + arbolPng.getAbsolutePath());
+                } else {
+                    System.err.println("❌ Error al generar el árbol AST.");
+                }
+
+                // Obtener reglas de sintaxis
+                String reglas = parser.getReglas();
+                reglas = reglas.replace("null", "");
+                Resultado.getInstance().setContenido(reglas);
+
+            } catch (FileNotFoundException ex) {
+                this.utils.mostrarAlertError();
+            } catch (SintaxException ex) {
+                this.utils.mostrarSintaxError();
+                throw ex;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
 
-            // Generar imagen PNG usando Graphviz
-            String cmd = "dot -Tpng arbol.dot -o arbol.png";
-            Process p = Runtime.getRuntime().exec(cmd);
-
-            // Esperar a que termine la ejecución de "dot"
-            int exitCode = p.waitFor();
-
-            // Verificar si se creó el archivo
-            File arbolPng = new File("arbol.png");
-            if (exitCode == 0 && arbolPng.exists()) {
-                System.out.println("✅ Árbol AST generado correctamente: " + arbolPng.getAbsolutePath());
-            } else {
-                System.err.println("❌ Error al generar el árbol AST.");
-            }
-            String reglas = parser.getReglas();
-            reglas = reglas.replace("null", "");
-            Resultado.getInstance().setContenido(reglas);
-
-        } catch (FileNotFoundException ex) {
-            this.utils.mostrarAlertError();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloController.class.getResource("/com/grupo2/tpteo1grupo2/ResultadoCompilacion.fxml"));
-        Parent newRoot = fxmlLoader.load();
-        Scene resultadoCompilacion = new Scene(newRoot, 600, 700);
-
-
-        // Crear la transición de deslizamiento hacia la izquierda para la escena actual
-        TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), currentStage.getScene().getRoot());
-        //slideOut.setFromX(0);
-        //slideOut.setToX(-currentStage.getScene().getWidth());
-
-        // Crear la transición de deslizamiento desde la derecha para la nueva escena
-        //newRoot.translateXProperty().set(currentStage.getScene().getWidth());
-        TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), newRoot);
-        //slideIn.setFromX(currentStage.getScene().getWidth());
-        //slideIn.setToX(0);
-
-        // Configurar el cambio de escena después de la transición de deslizamiento de salida
-        slideOut.setOnFinished(event -> {
-            currentStage.setScene(resultadoCompilacion);
-            slideIn.play();
-        });
-        currentStage.setOnCloseRequest(event -> this.exitApplication(null));
-
-        slideOut.play();
-    }   else {
+            // Mostrar reglas
+            FXMLLoader fxmlLoader = new FXMLLoader(HelloController.class.getResource("/com/grupo2/tpteo1grupo2/ResultadoCompilacion.fxml"));
+            Parent newRoot = fxmlLoader.load();
+            Scene resultadoCompilacion = new Scene(newRoot, 600, 700);
+            TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), currentStage.getScene().getRoot());
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), newRoot);
+            slideOut.setOnFinished(event -> {
+                currentStage.setScene(resultadoCompilacion);
+                slideIn.play();
+            });
+            currentStage.setOnCloseRequest(event -> this.exitApplication(null));
+            slideOut.play();
+        } else {
             this.utils.mostrarAlertError();
         }
     }
