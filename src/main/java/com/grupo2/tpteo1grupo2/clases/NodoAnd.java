@@ -19,5 +19,36 @@ public class NodoAnd extends NodoExpresionBooleana {
                 derecha.graficar(miId);
     }
 
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
+        String code = "";
+
+        if (!izquierda.soyHoja()) {
+            izquierda.generarAssembler(dataSection, codeSection);
+        }
+        if (!derecha.soyHoja()) {
+            derecha.generarAssembler(dataSection, codeSection);
+        }
+
+        // Cargar operandos y aplicar AND lógico
+        if (!izquierda.soyHoja()) {
+            code += "MOV EAX, _@" + izquierda.getIdNodo() + "\n";
+        } else {
+            code += "MOV EAX, _" + izquierda.getDescripcion() + "\n";
+        }
+
+        if (!derecha.soyHoja()) {
+            code += "MOV EBX, _@" + derecha.getIdNodo() + "\n";
+        } else {
+            code += "MOV EBX, _" + derecha.getDescripcion() + "\n";
+        }
+
+        code += "AND EAX, EBX\n"; // AND lógico
+        code += "MOV _@" + this.getIdNodo() + ", EAX\n\n";
+
+        dataSection.append("_@" + this.getIdNodo() + " DD ?\n");
+        codeSection.append(code);
+    }
 }
 

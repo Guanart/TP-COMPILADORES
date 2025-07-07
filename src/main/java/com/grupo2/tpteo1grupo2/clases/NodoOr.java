@@ -19,5 +19,37 @@ public class NodoOr extends NodoExpresionBooleana {
                 derecha.graficar(miId);
     }
 
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
+        String code = "";
+
+        if (!izquierda.soyHoja()) {
+            izquierda.generarAssembler(dataSection, codeSection);
+        }
+        if (!derecha.soyHoja()) {
+            derecha.generarAssembler(dataSection, codeSection);
+        }
+
+        // Cargar operandos y aplicar OR lógico
+        if (!izquierda.soyHoja()) {
+            code += "MOV EAX, _@" + izquierda.getIdNodo() + "\n";
+        } else {
+            code += "MOV EAX, _" + izquierda.getDescripcion() + "\n";
+        }
+
+        if (!derecha.soyHoja()) {
+            code += "MOV EBX, _@" + derecha.getIdNodo() + "\n";
+        } else {
+            code += "MOV EBX, _" + derecha.getDescripcion() + "\n";
+        }
+
+        code += "OR EAX, EBX\n"; // OR lógico
+        code += "MOV _@" + this.getIdNodo() + ", EAX\n\n";
+
+        dataSection.append("_@" + this.getIdNodo() + " DD ?\n");
+        codeSection.append(code);
+    }
+
 }
 

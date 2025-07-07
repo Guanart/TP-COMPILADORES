@@ -7,7 +7,9 @@ public class NodoExpresionBooleana extends Nodo {
         
         
     }
-      
+    
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+    }
 }
 
     

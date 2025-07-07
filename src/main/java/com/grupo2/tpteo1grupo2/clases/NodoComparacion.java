@@ -2,8 +2,8 @@ package com.grupo2.tpteo1grupo2.clases;
 
 
 public class NodoComparacion extends NodoExpresionBooleana {
-private final NodoExpresion  izquierda;
-private final NodoExpresion  derecha;
+protected final NodoExpresion  izquierda;
+protected final NodoExpresion  derecha;
 
     public NodoComparacion (String nombre,NodoExpresion izquierda, NodoExpresion derecha) {
         super(nombre);
@@ -35,4 +35,8 @@ private final NodoExpresion  derecha;
         return !izType.equals("STRING") && !derType.equals("STRING");
     }
     
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+
+    }
 }
