@@ -8,4 +8,4 @@
 - También están disponibles en este mismo repositorio dos archivos de prueba: [```prueba.txt```](prueba.txt) y [```prueba_write.txt```](prueba_write.txt)
 
 # Development
-- Compilar .cup: java -jar ./java-cup-11.jar -parser Parser -symbols Sym Parser.cup
+- Compilar .cup: java -jar ./java-cup-11.jar -parser Parser -symbols sym Parser.cup
