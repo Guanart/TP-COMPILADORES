@@ -50,4 +50,45 @@ public class NodoIf extends NodoSentencia {
 
         return resultado.toString();
     }
+
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        System.out.println("Generando código assembler para IF");
+        String code = "";
+
+        // Etiquetas únicas para el salto
+        String labelElse = "ELSE_" + this.getIdNodo();
+        String labelEndIf = "ENDIF_" + this.getIdNodo();
+
+        // Generar assembler de la condición booleana
+        condicion.generarAssembler(dataSection, codeSection);
+
+        // La condición dejó su resultado en _@condicion.getIdNodo()
+        code += "MOV EAX, _@" + condicion.getIdNodo() + "\n";
+        code += "CMP EAX, 0\n";
+        if (sentenciasElse != null && !sentenciasElse.isEmpty()) {
+            code += "JE " + labelElse + "\n"; // Si es falso, va al else
+        } else {
+            code += "JE " + labelEndIf + "\n"; // Si no hay else, salta al fin del if
+        }
+
+        // THEN: generar assembler de cada sentencia en la lista
+        for (NodoSentencia sentencia : sentenciasThen) {
+            sentencia.generarAssembler(dataSection, codeSection);
+        }
+
+        // Si hay ELSE, se hace salto incondicional al final
+        if (sentenciasElse != null && !sentenciasElse.isEmpty()) {
+            code += "JMP " + labelEndIf + "\n";
+            code += labelElse + ":\n";
+            for (NodoSentencia sentencia : sentenciasElse) {
+                sentencia.generarAssembler(dataSection, codeSection);
+            }
+        }
+
+        code += labelEndIf + ":\n\n";
+
+        codeSection.append(code);
+    }
 }

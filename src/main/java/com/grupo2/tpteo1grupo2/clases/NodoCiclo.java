@@ -50,6 +50,40 @@ public class NodoCiclo extends NodoSentencia {
 */
         return resultado.toString();
     }
+
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        System.out.println("Generando código assembler para WHILE");
+        String code = "";
+
+        // Etiquetas únicas por nodo
+        String labelInicio = "WHILE_START_" + this.getIdNodo();
+        String labelFin = "WHILE_END_" + this.getIdNodo();
+
+        code += labelInicio + ":\n";
+
+        // Generar assembler de la condición
+        condicion.generarAssembler(dataSection, codeSection);
+
+        // Evaluar la condición (resultado debe estar en _@condicion.getIdNodo())
+        code += "MOV EAX, _@" + condicion.getIdNodo() + "\n";
+        code += "CMP EAX, 0\n";
+        code += "JE " + labelFin + "\n"; // Si la condición es falsa, salta al final
+
+        // Generar el código del cuerpo del ciclo
+        for (NodoSentencia sentencia : cuerpo) {
+            sentencia.generarAssembler(dataSection, codeSection);
+        }
+
+        // Volver al inicio del ciclo
+        code += "JMP " + labelInicio + "\n";
+
+        // Etiqueta de fin
+        code += labelFin + ":\n\n";
+
+        codeSection.append(code);
+    }
 }
 
 

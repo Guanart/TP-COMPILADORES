@@ -15,4 +15,10 @@ public class NodoOplist extends NodoSentencia {
                 asignacion.graficar(miId);
     }
 
+    @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
+        asignacion.generarAssembler(dataSection, codeSection);
+    }
 }
