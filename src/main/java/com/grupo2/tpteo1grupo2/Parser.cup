@@ -39,8 +39,7 @@ action code
 
     public void verificarID(String nombre) {
        if (!tablaSimbolos.contieneIdentificador(nombre)) {
-           utils.mostrarVariableInvalida(nombre);
-           throw new RuntimeException("Error semántico: la variable '" + nombre + "' no fue declarada.");
+           throw new InvalidIDException("La variable '" + nombre + "' no fue declarada");
        }
     }
 

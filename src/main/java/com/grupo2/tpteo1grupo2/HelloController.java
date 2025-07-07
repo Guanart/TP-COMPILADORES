@@ -77,7 +77,7 @@ public class HelloController extends Component {
     }
 
     @FXML
-    protected void onCompilar() throws IOException {
+    protected void onCompilar() throws Exception {
         if (codeTextArea == null) {
             return;
         }
@@ -127,11 +127,18 @@ public class HelloController extends Component {
 
             } catch (FileNotFoundException ex) {
                 this.utils.mostrarAlertError();
+                return;
             } catch (SintaxException ex) {
                 this.utils.mostrarSintaxError();
-                throw ex;
+                return;
+            } catch (InvalidTypeException ex) {
+                this.utils.mostrarTipoInvalido(ex.getMessage());
+                return;
+            } catch (InvalidIDException ex) {
+                this.utils.mostrarVariableInvalida(ex.getMessage());
+                return;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                return;
             }
 
             // Mostrar reglas

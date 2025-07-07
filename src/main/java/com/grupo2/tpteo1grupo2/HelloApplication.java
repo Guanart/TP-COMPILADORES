@@ -25,10 +25,8 @@ public class HelloApplication extends Application {
             stage.show(); // Mostrar la escena primero
             HelloController controller = fxmlLoader.getController(); // Obtener el controlador desde el FXMLLoader
             stage.setOnCloseRequest(event -> controller.exitApplication(null));
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error");
         }
     }
 

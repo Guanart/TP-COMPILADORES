@@ -81,15 +81,19 @@ public class Utils {
         alert.showAndWait();
     }
 
-    void mostrarVariableInvalida(String variable) {
+    void mostrarVariableInvalida(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Variable inválida");
         alert.setHeaderText(null);
-        alert.setContentText("La variable " + variable + " no ha sido declarada");
+        alert.setContentText(mensaje);
         alert.showAndWait();
     }
 
-    void mostrarTipoInvalido() {
-
+    void mostrarTipoInvalido(String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Tipo inválido");
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }

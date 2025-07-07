@@ -71,6 +71,9 @@ Token CONST_REAL encontrado, Lexema: 99.9
 Token ID encontrado, Lexema mensaje
 Token ASIGN encontrado, Lexema ::=
 Token CONST_STRING encontrado, Lexema: "Hola Mundo"
+Token ID encontrado, Lexema var2
+Token ASIGN encontrado, Lexema ::=
+Token ID encontrado, Lexema var1
 Token WHILE encontrado, Lexema WHILE
 Token ABRIR_PARENTESIS encontrado, Lexema (
 Token ID encontrado, Lexema var1

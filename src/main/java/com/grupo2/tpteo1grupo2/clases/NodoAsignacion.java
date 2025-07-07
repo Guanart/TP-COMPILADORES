@@ -1,5 +1,6 @@
 package com.grupo2.tpteo1grupo2.clases;
 
+import com.grupo2.tpteo1grupo2.InvalidTypeException;
 import com.grupo2.tpteo1grupo2.TablaSimbolos;
 
 public class NodoAsignacion extends NodoSentencia {
@@ -10,10 +11,15 @@ public class NodoAsignacion extends NodoSentencia {
         super("::=");
         this.identificador = identificador;
         this.expresion = expresion;
-
         if (!(isValid(identificador, expresion))) {
-            throw new RuntimeException("Asignacion inválida");
+            throw new InvalidTypeException("Asignacion inválida: La variable <" + this.identificador.getId() + "> ha sido declarada con el tipo " + this.identificador.getTipoValorExpresion() + ", pero se le asigna un valor de tipo " + this.expresion.getTipoValorExpresion());
         }
+    }
+
+    public static Boolean isValid(NodoExpresion id, NodoExpresion exp) {
+        String idType = id.getTipoValorExpresion();
+        String expType = exp.getTipoValorExpresion();
+        return (idType.equals("FLOAT") && (expType.equals("INTEGER"))) || idType.equals(expType);
     }
 
     @Override
@@ -37,18 +43,5 @@ public class NodoAsignacion extends NodoSentencia {
         code += "FLD _@" + expresion.getIdNodo() + "\n";
         code += "FSTP _" + identificador.getId() + "\n";
         codeSection.append(code);
-    }
-
-    public static Boolean isValid(NodoExpresion id, NodoExpresion exp) {
-        String idType = id.getTipoValorExpresion();
-        String expType = exp.getTipoValorExpresion();
-
-        if ( (idType == null) || (expType == null) ) {
-            System.out.println("NODO ASIGNACION: uno de los hijos devuelve tipo nulo");
-            System.out.println("idType: " + idType);
-            System.out.println("expType: " + expType);
-            return false;
-        }
-        return idType.equals(expType);
     }
 }
