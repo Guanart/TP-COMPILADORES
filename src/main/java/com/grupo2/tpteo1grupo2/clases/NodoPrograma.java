@@ -116,7 +116,7 @@ _0b1011,11,CONST_B,,-
                     }
                     break;
                 case "CONST_INT":
-                    dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append("\n");
+                    dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append(".0").append("\n");
                     break;
                 case "CONST_REAL":
                     dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append("\n");
@@ -141,6 +141,7 @@ _0b1011,11,CONST_B,,-
         // Generar la sección de datos y código ensamblador modelo MASM/TASM - MASM (Microsoft Macro Assembler) y TASM (Turbo Assembler) -> compilar con Turbo Assembler (TASM)
         StringBuilder assembler = new StringBuilder();
         assembler.append("include macros2.asm\n");
+        assembler.append("include number.asm\n");
         assembler.append(".MODEL LARGE\n");
         assembler.append(".386\n");
         assembler.append(".STACK 200h\n\n");

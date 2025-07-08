@@ -14,4 +14,40 @@ public class NodoEscritura extends NodoSentencia {
         return super.graficar(idPadre) +
                 parametro.graficar(miId);
     }
+
+    @Override
+    public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
+        String variable;
+        String prefijo;
+        if (!parametro.soyHoja()){
+                parametro.generarAssembler(dataSection, codeSection);
+                prefijo = "_@"; // Se utiliza el prefijo del nodo intermedio
+        } else {
+            prefijo = "_"; // Prefijo para variables o nodos hoja (constantes)
+        }
+
+        if (parametro instanceof NodoIdentificador)
+            variable = prefijo + ((NodoIdentificador) parametro).getId(); // Si es una variable, se utiliza el nombre de la misma
+        else
+            variable = prefijo + parametro.getIdNodo();
+        
+        String tipo = parametro.getTipoValorExpresion();
+        
+            
+        if (null == tipo) {
+            throw new RuntimeException("Tipo no soportado para escritura: " + tipo);
+        } else switch (tipo) {
+            case "INTEGER":
+                codeSection.append("DisplayFloat ").append(variable).append(",2\n");
+                break;
+            case "FLOAT":
+                codeSection.append("DisplayFloat ").append(variable).append(",2\n");
+                break;
+            case "STRING":
+                codeSection.append("DisplayString ").append(variable).append("\n");
+                break;
+            default:
+                throw new RuntimeException("Tipo no soportado para escritura: " + tipo);
+        }
+    }
 }
