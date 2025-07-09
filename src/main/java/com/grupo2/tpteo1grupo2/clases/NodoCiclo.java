@@ -64,7 +64,9 @@ public class NodoCiclo extends NodoSentencia {
         code += labelInicio + ":\n";
 
         // Generar assembler de la condición
-        condicion.generarAssembler(dataSection, codeSection);
+        StringBuilder condicionCode = new StringBuilder();
+        condicion.generarAssembler(dataSection, condicionCode); // genera código para evaluar y guardar resultado
+        code += condicionCode.toString();
 
         // Evaluar la condición (resultado debe estar en _@condicion.getIdNodo())
         code += "MOV EAX, _@" + condicion.getIdNodo() + "\n";
@@ -72,9 +74,11 @@ public class NodoCiclo extends NodoSentencia {
         code += "JE " + labelFin + "\n"; // Si la condición es falsa, salta al final
 
         // Generar el código del cuerpo del ciclo
+        StringBuilder cuerpoCode = new StringBuilder();
         for (NodoSentencia sentencia : cuerpo) {
-            sentencia.generarAssembler(dataSection, codeSection);
+            sentencia.generarAssembler(dataSection, cuerpoCode);
         }
+        code += cuerpoCode.toString();
 
         // Volver al inicio del ciclo
         code += "JMP " + labelInicio + "\n";
