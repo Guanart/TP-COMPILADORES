@@ -55,40 +55,56 @@ public class NodoIf extends NodoSentencia {
     @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
         System.out.println("Generando código assembler para IF");
-        String code = "";
+        StringBuilder code = new StringBuilder();
 
         // Etiquetas únicas para el salto
         String labelElse = "ELSE_" + this.getIdNodo();
         String labelEndIf = "ENDIF_" + this.getIdNodo();
 
         // Generar assembler de la condición booleana
-        condicion.generarAssembler(dataSection, codeSection);
+        StringBuilder condicionCode = new StringBuilder();
+        condicion.generarAssembler(dataSection, condicionCode);
+        code.append(condicionCode);
 
-        // La condición dejó su resultado en _@condicion.getIdNodo()
-        code += "MOV EAX, _@" + condicion.getIdNodo() + "\n";
-        code += "CMP EAX, 0\n";
-        if (sentenciasElse != null && !sentenciasElse.isEmpty()) {
-            code += "JE " + labelElse + "\n"; // Si es falso, va al else
+        code.append("MOV EAX, _@" + condicion.getIdNodo() + "\n");
+        code.append("CMP EAX, 0\n");
+
+        boolean tieneElse = sentenciasElse != null && !sentenciasElse.isEmpty();
+        if (tieneElse) {
+            code.append("JE " + labelElse + "\n");
         } else {
-            code += "JE " + labelEndIf + "\n"; // Si no hay else, salta al fin del if
+            code.append("JE " + labelEndIf + "\n");
         }
 
-        // THEN: generar assembler de cada sentencia en la lista
+        // THEN
+        StringBuilder thenCode = new StringBuilder();
         for (NodoSentencia sentencia : sentenciasThen) {
-            sentencia.generarAssembler(dataSection, codeSection);
+            sentencia.generarAssembler(dataSection, thenCode);
         }
+        code.append(thenCode);
 
-        // Si hay ELSE, se hace salto incondicional al final
-        if (sentenciasElse != null && !sentenciasElse.isEmpty()) {
-            code += "JMP " + labelEndIf + "\n";
-            code += labelElse + ":\n";
+        if (tieneElse) {
+            code.append("JMP " + labelEndIf + "\n");
+            code.append(labelElse + ":\n");
+
+            StringBuilder elseCode = new StringBuilder();
             for (NodoSentencia sentencia : sentenciasElse) {
-                sentencia.generarAssembler(dataSection, codeSection);
+                sentencia.generarAssembler(dataSection, elseCode);
             }
+            code.append(elseCode);
         }
 
-        code += labelEndIf + ":\n\n";
-
+        code.append(labelEndIf + ":\n\n");
         codeSection.append(code);
+    }
+
+    @Override
+    public String getDescripcionNodo() {
+        return "IF";
+    }
+
+    @Override
+    public boolean soyHoja() {
+        return false; // Un nodo IF no es una hoja, ya que tiene hijos (condición y sentencias)
     }
 }
