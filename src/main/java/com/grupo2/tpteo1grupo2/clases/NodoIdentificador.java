@@ -5,12 +5,12 @@ public class NodoIdentificador extends NodoExpresion {
     private String tipo;
 
     public NodoIdentificador(String identificador) {
-        super("ID");
+        super(identificador);
         this.identificador = identificador;
     }
 
     public NodoIdentificador(String identificador, String tipo) {
-        super("ID");
+        super(identificador);
         this.identificador = identificador;
         this.tipo = tipo;
     }
@@ -43,6 +43,7 @@ public class NodoIdentificador extends NodoExpresion {
         return this.getTipo();
     }
 
+    @Override
     public boolean soyHoja() {
         return true; // Un identificador es una hoja en el árbol de sintaxis
     }

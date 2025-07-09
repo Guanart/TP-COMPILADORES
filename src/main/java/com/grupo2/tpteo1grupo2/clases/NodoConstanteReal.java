@@ -4,7 +4,7 @@ public class NodoConstanteReal extends NodoExpresion {
     private final double valor;
 
     public NodoConstanteReal(double valor) {
-        super(Double.toString(valor));
+        super(Double.toString(valor).replace(".", "_"));
         this.valor = valor;
     }
 
@@ -21,6 +21,11 @@ public class NodoConstanteReal extends NodoExpresion {
     @Override
     public String getTipoValorExpresion() {
         return "FLOAT";
+    }
+
+    @Override
+    public boolean soyHoja() {
+        return true; // Una constante real es una hoja en el árbol de sintaxis
     }
 
     @Override

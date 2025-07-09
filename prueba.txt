@@ -7,19 +7,24 @@ ENDDECLARE_SECTION
 PROGRAM_SECTION
 //* Asignaciones numericas y de string //* comentario multilinea de 1 nivel *//  *//
 var1 ::= 15
-var2 ::= 99.9
+var2 ::= 20.9
 mensaje ::= "Hola Mundo"
 
 //* Declaracion de un ciclo WHILE *//
-WHILE (var1 < limite) THEN
-    contador ::= contador + 1
+WHILE (var1 < var2) THEN
+    contador ::= contador + 1  //* contador por defecto se inicializa en 0 *//
+    WRITE "Valor contador: "
+    WRITE contador
     IF (contador >= 10) THEN
         WRITE "Contador alcanzo el limite"
         mensaje ::= "Limite alcanzado"
         IF ((var2 = (98.9 + 1)/2 * 5) && (var1 * 2 + 1 >= 20)) THEN
             WRITE "Limite alcanzado :)"
         ELSE
+            b ::= 2
             OPLIST [* [a;b] [10;3;3;5]]
+            WRITE "Resultado OPLIST: "
+            WRITE a
         ENDIF
     ELSE
         WRITE contador //* Muestra el valor de contador *//
@@ -27,8 +32,11 @@ WHILE (var1 < limite) THEN
 ENDWHILE
 
 var3 ::= 0b1101
+WRITE "Asignación variable binaria: "
 WRITE var3
 
+WRITE "Valor de a antes de OPLIST: "
+WRITE a
 OPLIST [+ [a;b] [2;3;5;9;234;53;2;123;3]]
 OPLIST [+ [a;b] [20]]
 

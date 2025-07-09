@@ -1,7 +1,6 @@
 package com.grupo2.tpteo1grupo2.clases;
 
 import com.grupo2.tpteo1grupo2.InvalidTypeException;
-import com.grupo2.tpteo1grupo2.TablaSimbolos;
 
 public class NodoAsignacion extends NodoSentencia {
     private final NodoIdentificador identificador;
@@ -36,12 +35,26 @@ public class NodoAsignacion extends NodoSentencia {
         String code = "";
         // Asignar el valor de la expresión al identificador
         // Primero, generar el código ensamblador para la expresión
-        expresion.generarAssembler(dataSection, codeSection);
-        // Luego, almacenar el resultado de la expresión en el identificador
-        // Se asume que el identificador ya tiene su variable auxiliar creada en la data section
-
-        code += "FLD _@" + expresion.getIdNodo() + "\n";
-        code += "FSTP _" + identificador.getId() + "\n";
+        if (!expresion.soyHoja()) {
+            // Si la expresión no es una hoja, se genera su código ensamblador
+            expresion.generarAssembler(dataSection, codeSection);
+            // Se asume que la expresión ha generado una variable auxiliar en la data section
+            code += "FLD _@" + expresion.getIdNodo() + "\n";
+            code += "FSTP _" + identificador.getId() + "\n";
+        } else {
+            // Si es una hoja, se carga directamente su valor
+            // Si es string, se carga su dirección
+            // Si es un número, se carga su valor
+            if (expresion.getTipoValorExpresion().equals("STRING")) {
+                // code += "FLD _" + expresion.getDescripcion() + "\n";
+                code += "LEA SI, _" + expresion.getDescripcion() + "\n"; // SI apunta al string fuente
+                code += "LEA DI, _" + identificador.getId() + "\n"; // DI apunta al string destino
+                code += "STRCPY\n"; // Llama a la macro para copiar el string
+            } else {
+                code += "FLD _" + expresion.getDescripcion() + "\n";
+                code += "FSTP _" + identificador.getId() + "\n";
+            }
+        }
         codeSection.append(code);
     }
 }

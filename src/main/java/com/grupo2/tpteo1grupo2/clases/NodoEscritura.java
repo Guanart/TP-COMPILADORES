@@ -29,25 +29,27 @@ public class NodoEscritura extends NodoSentencia {
         if (parametro instanceof NodoIdentificador)
             variable = prefijo + ((NodoIdentificador) parametro).getId(); // Si es una variable, se utiliza el nombre de la misma
         else
-            variable = prefijo + parametro.getIdNodo();
+            variable = prefijo + parametro.getDescripcion();
         
         String tipo = parametro.getTipoValorExpresion();
         
             
         if (null == tipo) {
             throw new RuntimeException("Tipo no soportado para escritura: " + tipo);
-        } else switch (tipo) {
-            case "INTEGER":
-                codeSection.append("DisplayFloat ").append(variable).append(",2\n");
-                break;
-            case "FLOAT":
-                codeSection.append("DisplayFloat ").append(variable).append(",2\n");
-                break;
-            case "STRING":
-                codeSection.append("DisplayString ").append(variable).append("\n");
-                break;
-            default:
-                throw new RuntimeException("Tipo no soportado para escritura: " + tipo);
-        }
+        } else
+            switch (tipo) {
+                case "INTEGER":
+                    codeSection.append("DisplayFloat ").append(variable).append(",2\n");
+                    break;
+                case "FLOAT":
+                    codeSection.append("DisplayFloat ").append(variable).append(",2\n");
+                    break;
+                case "STRING":
+                    codeSection.append("DisplayString ").append(variable).append("\n");
+                    break;
+                default:
+                    throw new RuntimeException("Tipo no soportado para escritura: " + tipo);
+            }
+        codeSection.append("newLine").append("\n");
     }
 }

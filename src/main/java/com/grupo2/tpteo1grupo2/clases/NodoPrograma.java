@@ -108,7 +108,7 @@ _0b1011,11,CONST_B,,-
                             dataSection.append("_").append(simbolo.nombre).append(" DD 0.0\n");
                             break;
                         case "STRING":
-                            dataSection.append("_").append(simbolo.nombre).append(" DB \"\", 0\n");
+                            dataSection.append("_").append(simbolo.nombre).append(" DB \"\", '$'\n");
                             break;
                         default:
                             // Otros tipos si los hubiera
@@ -121,7 +121,7 @@ _0b1011,11,CONST_B,,-
                 case "CONST_REAL":
                     dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append("\n");
                     break;
-                case "CONST_STRII":
+                case "CONST_STRING":
                     dataSection.append(simbolo.nombre).append(" DB ").append(simbolo.valor).append(", 0\n");
                     break;
                 case "CONST_B":
@@ -140,6 +140,7 @@ _0b1011,11,CONST_B,,-
 
         // Generar la sección de datos y código ensamblador modelo MASM/TASM - MASM (Microsoft Macro Assembler) y TASM (Turbo Assembler) -> compilar con Turbo Assembler (TASM)
         StringBuilder assembler = new StringBuilder();
+        assembler.append("include macros.asm\n");
         assembler.append("include macros2.asm\n");
         assembler.append("include number.asm\n");
         assembler.append(".MODEL LARGE\n");
@@ -168,5 +169,5 @@ _0b1011,11,CONST_B,,-
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }    
+    }
 }

@@ -24,6 +24,11 @@ public class NodoConstanteBinaria extends NodoExpresion {
     }
 
     @Override
+    public boolean soyHoja() {
+        return true; // Una constante real es una hoja en el árbol de sintaxis
+    }
+
+    @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
     }
 }

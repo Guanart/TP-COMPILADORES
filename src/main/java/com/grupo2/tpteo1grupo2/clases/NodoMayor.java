@@ -6,6 +6,7 @@ public class NodoMayor extends NodoComparacion {
     }
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
+    @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
         System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
         String code = "";

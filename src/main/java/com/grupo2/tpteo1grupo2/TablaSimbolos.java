@@ -1,4 +1,5 @@
 package com.grupo2.tpteo1grupo2;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Collections;
@@ -11,7 +12,6 @@ public class TablaSimbolos {
     public TablaSimbolos() {
         this.tabla = new LinkedHashMap<>();
     }
-
 
     // Agregar identificador
     public void agregarIdentificador(String nombre, String tipo) {
@@ -28,16 +28,33 @@ public class TablaSimbolos {
 
     // Agregar constante real
     public void agregarConstanteReal(double valor) {
-        String nombre = "_" + valor;
+        String nombre = "_" + String.valueOf(valor).replace(".", "_");
         agregarConstante(nombre, String.valueOf(valor), "CONST_REAL");
     }
 
     // Agregar constante string
+    // Método estático para limpiar nombres de variables según las reglas de Turbo Assembler
+    public static String limpiarNombreAssembler(String valor) {
+        // Elimina las comillas si están presentes
+        if (valor.startsWith("\"") && valor.endsWith("\"") && valor.length() >= 2) {
+            valor = valor.substring(1, valor.length() - 1);
+        }
+        // Reemplaza caracteres no válidos por guion bajo
+        String nombreLimpio = valor.replaceAll("[^A-Za-z0-9_?]", "_");
+        // Asegura que el primer carácter sea letra, guion bajo o símbolo de
+        // interrogación
+        if (!nombreLimpio.matches("^[A-Za-z_?].*")) {
+            nombreLimpio = "_" + nombreLimpio;
+        }
+        return nombreLimpio;
+    }
+
+    // Agregar constante string
     public void agregarConstanteString(String valor) {
-        String nombre = "_" + valor.replace(" ", "_");
+        String nombre = "_" + limpiarNombreAssembler(valor);
         String longitud = String.valueOf(valor.length());
         if (!tabla.containsKey(nombre)) {
-            tabla.put(nombre, new Simbolo(nombre, valor, "CONST_STRII", longitud, "-"));
+            tabla.put(nombre, new Simbolo(nombre, valor, "CONST_STRING", longitud, "-"));
         }
     }
 
@@ -48,7 +65,7 @@ public class TablaSimbolos {
         agregarConstante(nombre, String.valueOf(decimal), "CONST_B");
     }
 
-    // AgregarConstante  genérico
+    // AgregarConstante genérico
     private void agregarConstante(String nombre, String valor, String token) {
         if (!tabla.containsKey(nombre)) {
             tabla.put(nombre, new Simbolo(nombre, valor, token, "", "-"));
