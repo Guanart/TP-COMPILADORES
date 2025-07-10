@@ -7,41 +7,50 @@ public class NodoMayorIgual extends NodoComparacion {
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
-        String code = "";
-        String labelTrue = "LT_TRUE_" + this.getIdNodo();
-        String labelEnd = "LT_END_" + this.getIdNodo();
+        System.out.println("Generando código ensamblador para la comparación: " + this.getDescripcionNodo());
+        StringBuilder code = new StringBuilder();
 
-        // Generar código de los hijos si no son hojas
+        String etiquetaTrue = "CMP_TRUE_" + this.getIdNodo();
+        String etiquetaEnd = "CMP_END_" + this.getIdNodo();
+
+        // Evaluar lado izquierdo
         if (!izquierda.soyHoja()) {
             izquierda.generarAssembler(dataSection, codeSection);
+            code.append("FLD _@" + izquierda.getIdNodo() + "\n");
+        } else {
+            code.append("FLD _" + izquierda.getDescripcion() + "\n");
         }
+
+        // Comparar con lado derecho
         if (!derecha.soyHoja()) {
             derecha.generarAssembler(dataSection, codeSection);
-        }
-
-        // Cargar valores en registros y comparar
-        if (!izquierda.soyHoja()) {
-            code += "MOV EAX, _@" + izquierda.getIdNodo() + "\n";
+            code.append("FCOM _@" + derecha.getIdNodo() + "\n");
         } else {
-            code += "MOV EAX, _" + izquierda.getDescripcion() + "\n";
+            code.append("FCOM _" + derecha.getDescripcion() + "\n");
         }
 
-        if (!derecha.soyHoja()) {
-            code += "CMP EAX, _@" + derecha.getIdNodo() + "\n";
-        } else {
-            code += "CMP EAX, _" + derecha.getDescripcion() + "\n";
-        }
+        // Procesar flags del coprocesador
+        code.append("FSTSW AX\n");
+        code.append("SAHF\n");
 
-        // Instrucciones condicionales
-        code += "JGE " + labelTrue + "\n"; // salto si EAX >= valor comparado
-        code += "MOV DWORD PTR _@" + this.getIdNodo() + ", 0\n"; // falso
-        code += "JMP " + labelEnd + "\n";
-        code += labelTrue + ":\n";
-        code += "MOV DWORD PTR _@" + this.getIdNodo() + ", 1\n"; // verdadero
-        code += labelEnd + ":\n\n";
+        // Si izquierda > derecha --> salta a etiquetaTrue
+        code.append("JAE " + etiquetaTrue + "\n");
 
+        // Falso: poner 0
+        code.append("MOV _@" + this.getIdNodo() + ", 0\n");
+        code.append("JMP " + etiquetaEnd + "\n");
+
+        // Verdadero: poner 1
+        code.append(etiquetaTrue + ":\n");
+        code.append("MOV _@" + this.getIdNodo() + ", 1\n");
+
+        // Fin de la comparación
+        code.append(etiquetaEnd + ":\n\n");
+
+        // Declarar variable auxiliar donde se guarda el booleano
         dataSection.append("_@" + this.getIdNodo() + " DD ?\n");
+
+        // Añadir a la sección de código final
         codeSection.append(code);
     }
 }
