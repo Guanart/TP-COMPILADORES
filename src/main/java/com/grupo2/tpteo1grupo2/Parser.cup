@@ -132,8 +132,13 @@ pgm::= declare_sec:ds program_sec:ps {:
                                         root.generarAssembler(tablaSimbolos);
                                         :}
 
-    |  program_write:pw {:  RESULT = new NodoPrograma(null, pw); reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";
-                            tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");:};
+    |  program_write:pw {:
+                                    NodoPrograma root = new NodoPrograma(null, pw);
+                                    RESULT = root;
+                                    reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";
+                                    tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");
+                                    root.generarAssembler(tablaSimbolos);
+                            :};
 
 declare_sec::= DECLARE_SECTION:ds declaracion_n ENDDECLARE_SECTION:es {:reglas += "Regla 02: DECLARE_SEC --> " + ds + " DECLARACIONES " + es + "\n";:};
 

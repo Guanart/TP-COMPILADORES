@@ -50,6 +50,6 @@ public class NodoEscritura extends NodoSentencia {
                 default:
                     throw new RuntimeException("Tipo no soportado para escritura: " + tipo);
             }
-        codeSection.append("newLine").append("\n");
+        codeSection.append("newLine 1").append("\n");
     }
 }
