@@ -1,7 +1,6 @@
 DECLARE_SECTION
 [a,var1,var2,b]:=[FLOAT,INTEGER,FLOAT,FLOAT]
 [var3,var4,mensaje,contador]:=[INTEGER,FLOAT,STRING,INTEGER]
-[var5,var6,var7,var8,var9]:=[STRING,FLOAT,INTEGER,FLOAT,STRING]
 ENDDECLARE_SECTION
 
 PROGRAM_SECTION
@@ -34,12 +33,16 @@ var3 ::= 0b1101
 WRITE "Asignacion variable binaria: "
 WRITE var3
 
-WRITE "'a' antes de OPLIST: "
+a ::= 5
+WRITE "Valor de 'a':"
 WRITE a
+
+WRITE "'b' antes de OPLIST: "
+WRITE b
+
 OPLIST [+ [a;b] [2;3;5;9;234;53;2;123;3]]
-WRITE "'a' despues de OPLIST: "
-WRITE a
-OPLIST [+ [a;b] [20]]
+WRITE "'b' despues de OPLIST: "
+WRITE b
 
 //* Salidas de prueba *// //* Salidas de prueba *//
 WRITE mensaje
