@@ -125,7 +125,7 @@ _0b1011,11,CONST_B,,-
                     dataSection.append(simbolo.nombre).append(" DB ").append(simbolo.valor).append(", '$'\n");
                     break;
                 case "CONST_B":
-                    dataSection.append("_").append(simbolo.valor).append(" DD ").append(simbolo.valor).append(".0").append("\n");
+                    dataSection.append(simbolo.nombre).append(" DD ").append(simbolo.valor).append(".0").append("\n");
                     break;
                 default:
                     // Otros tokens si los hubiera
