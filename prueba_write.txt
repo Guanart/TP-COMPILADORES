@@ -1,6 +1,6 @@
 PROGRAM_SECTION
 WRITE "1"
 WRITE "hola"
-WRITE "uwu"
+WRITE "chau"
 WRITE "Prueba de programa solo writes"
 ENDPROGRAM_SECTION

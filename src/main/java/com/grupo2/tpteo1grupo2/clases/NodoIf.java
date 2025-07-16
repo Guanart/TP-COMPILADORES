@@ -54,7 +54,6 @@ public class NodoIf extends NodoSentencia {
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código assembler para IF");
         StringBuilder code = new StringBuilder();
 
         // Etiquetas únicas para el salto

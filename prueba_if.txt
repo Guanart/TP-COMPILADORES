@@ -1,0 +1,18 @@
+DECLARE_SECTION
+    [float1, float2, float3]:=[FLOAT, FLOAT, FLOAT]
+    [int1, int2, int3]:=[INTEGER, INTEGER, INTEGER]
+ENDDECLARE_SECTION
+
+PROGRAM_SECTION
+    float1 ::= 13.75
+    IF (float1 > (4.5 + 1)/2 * 5 && float1 <= 300 * 5 - 500) THEN
+        WRITE "Entra en el primer IF"
+    ELSE
+        WRITE "Entra en el primer ELSE"
+        IF (float1 < (4.5 + 1)/2 * 5) THEN
+            WRITE "Entra en el segundo IF"
+        ELSE
+            WRITE "Entra en el segundo ELSE"
+        ENDIF
+    ENDIF
+ENDPROGRAM_SECTION

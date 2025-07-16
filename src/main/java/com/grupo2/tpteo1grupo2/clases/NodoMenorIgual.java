@@ -7,7 +7,6 @@ public class NodoMenorIgual extends NodoComparacion {
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código ensamblador para la comparación: " + this.getDescripcionNodo());
         StringBuilder code = new StringBuilder();
 
         String etiquetaTrue = "CMP_TRUE_" + this.getIdNodo();

@@ -19,8 +19,6 @@ parser code
     public String getReglas(){return action_obj.getReglas();}
 
     public void syntax_error(Symbol s) {
-        //System.out.println("Error en la linea " + (s.right+1) + " columna " + (s.left+1) + ". "
-        //    + s + " no reconocido, VALOR: " + s.value );
         throw new SintaxException("Error de sintaxis");
     }
 :}
@@ -125,7 +123,7 @@ non terminal declaracion_n, declaracion_aux, type, conector, oplist_operacion, c
 start with pgm;
 
 pgm::= declare_sec:ds program_sec:ps {:
-                                        NodoPrograma root = new NodoPrograma(null, ps);
+                                        NodoPrograma root = new NodoPrograma(ps);
                                         RESULT = root;
                                         reglas += "Regla 00: pgm ; Compilación completa\n";
                                         tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");
@@ -133,7 +131,7 @@ pgm::= declare_sec:ds program_sec:ps {:
                                         :}
 
     |  program_write:pw {:
-                                    NodoPrograma root = new NodoPrograma(null, pw);
+                                    NodoPrograma root = new NodoPrograma(pw);
                                     RESULT = root;
                                     reglas += "Regla 01: pgm --> PROGRAM WRITE; Compilación completa\n";
                                     tablaSimbolos.guardarComoCSV("tabla_de_simbolos.csv");

@@ -8,7 +8,6 @@ public class NodoResta extends NodoExpresionBinaria {
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
         String code = "";
 
         // TO DO: Verificar que ambos hijos sean hojas (constantes o identificadores) antes de generar el código ensamblador. 

@@ -31,7 +31,6 @@ public class NodoAsignacion extends NodoSentencia {
 
     @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
         String code = "";
         // Asignar el valor de la expresión al identificador
         // Primero, generar el código ensamblador para la expresión
@@ -41,16 +40,17 @@ public class NodoAsignacion extends NodoSentencia {
             // Se asume que la expresión ha generado una variable auxiliar en la data section
             code += "FLD _@" + expresion.getIdNodo() + "\n";
             code += "FSTP _" + identificador.getId() + "\n";
-        } else {
-            // Si es una hoja, se carga directamente su valor
+        }
+        // Si es una hoja, se carga directamente su valor
+        else {
             // Si es string, se carga su dirección
-            // Si es un número, se carga su valor
             if (expresion.getTipoValorExpresion().equals("STRING")) {
-                // code += "FLD _" + expresion.getDescripcion() + "\n";
                 code += "LEA SI, _" + expresion.getDescripcion() + "\n"; // SI apunta al string fuente
                 code += "LEA DI, _" + identificador.getId() + "\n"; // DI apunta al string destino
                 code += "STRCPY\n"; // Llama a la macro para copiar el string
-            } else {
+            }
+            // Si es un número, se carga su valor (co-procesador)
+            else {
                 code += "FLD _" + expresion.getDescripcion() + "\n";
                 code += "FSTP _" + identificador.getId() + "\n";
             }

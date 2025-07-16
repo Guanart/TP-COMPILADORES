@@ -22,13 +22,6 @@ public class ResultadoCompilacion {
     public void initialize() {
 
         codeTextArea.setText(Resultado.getInstance().getContenido());
-        /*
-        Platform.runLater(() -> {
-            Stage stage = (Stage) codeTextArea.getScene().getWindow();
-            stage.setWidth(800);
-            stage.setHeight(600);
-        });
-        */
     }
     @FXML
     public void onNavBack(MouseEvent mouseEvent) throws IOException {
@@ -41,14 +34,11 @@ public class ResultadoCompilacion {
 
         // Crear la transición de deslizamiento hacia la derecha para la escena actual
         TranslateTransition slideOut = new TranslateTransition(Duration.millis(300), currentStage.getScene().getRoot());
-        //slideOut.setFromX(0);
-        //slideOut.setToX(currentStage.getScene().getWidth());
+
 
 // Crear la transición de deslizamiento desde la izquierda para la nueva escena
-        //newRoot.translateXProperty().set(-currentStage.getScene().getWidth());
         TranslateTransition slideIn = new TranslateTransition(Duration.millis(300), newRoot);
-        //slideIn.setFromX(-currentStage.getScene().getWidth());
-        //slideIn.setToX(0);
+
 
 // Configurar el cambio de escena después de la transición de deslizamiento de salida
         slideOut.setOnFinished(event -> {

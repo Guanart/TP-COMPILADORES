@@ -18,7 +18,6 @@ public class NodoOplist extends NodoSentencia {
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
         asignacion.generarAssembler(dataSection, codeSection);
     }
 }

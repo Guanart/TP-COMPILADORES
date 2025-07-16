@@ -13,10 +13,8 @@ public class NodoSuma extends NodoExpresionBinaria {
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
         String code = "";
-        
-        // TO DO: Verificar que ambos hijos sean hojas (constantes o identificadores) antes de generar el código ensamblador. Si uno de los hijos no es una hoja, se debe llamar su metodo generarAssembler() para obtener su código ensamblador, y que incluya su variable tipo _@aux a la dataSection.
+
         // Verificar que ambos hijos sean hojas
         if (!izquierda.soyHoja()) {
             izquierda.generarAssembler(dataSection, codeSection);

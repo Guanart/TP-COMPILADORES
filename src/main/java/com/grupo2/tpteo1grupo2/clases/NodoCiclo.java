@@ -35,26 +35,12 @@ public class NodoCiclo extends NodoSentencia {
             resultado.append(sentencia.graficar(idNodoThen));
         }
 
-        /* Si hay sentencias asociadas al "else"...
-        if (sentenciasElse != null) {
-            // Agrega un nodo ficticio "ELSE" colgando del nodo IF
-            Nodo nodoElse = new Nodo("Else");
-            resultado.append(nodoElse.graficar(miId));
-
-            // Grafica las sentencias asociadas al "else" colgando del nodo ficticio ELSE
-            String idNodoElse = nodoElse.getIdNodo();
-            for (NodoSentencia sentencia: sentenciasElse) {
-                resultado.append(sentencia.graficar(idNodoElse));
-            }
-        }
-*/
         return resultado.toString();
     }
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     @Override
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código assembler para WHILE");
         String code = "";
 
         // Etiquetas únicas por nodo

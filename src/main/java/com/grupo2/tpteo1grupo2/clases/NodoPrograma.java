@@ -10,17 +10,14 @@ import com.grupo2.tpteo1grupo2.Simbolo;
 import com.grupo2.tpteo1grupo2.TablaSimbolos;
 
 public class NodoPrograma extends Nodo {
-    //private final ArrayList<NodoDeclaracion> declaraciones;
     private final ArrayList<NodoSentencia> sentencias;
 
-    public NodoPrograma(ArrayList<NodoDeclaracion> declaraciones, ArrayList<NodoSentencia> sentencias) {
+    public NodoPrograma(ArrayList<NodoSentencia> sentencias) {
         super("PGM");
-        //this.declaraciones = declaraciones;
         this.sentencias = sentencias;
     }
 
     public String graficar() {
-        // Acá se dispara la invocación a los métodos graficar() de los nodos.
         // Como un NodoPrograma no tiene padre, se inicia pasando null.
         return this.graficar(null);
     }
@@ -28,65 +25,16 @@ public class NodoPrograma extends Nodo {
     @Override
     protected String graficar(String idPadre) {
         final String miId = this.getIdNodo();
-
         StringBuilder resultado = new StringBuilder();
         resultado.append("graph G {");
-
         resultado.append(miId + " [label=\"Programa\"]\n");
-
-        // if (this.declaraciones != null) {
-        //     for (NodoDeclaracion declaracion : this.declaraciones) {
-        //         resultado.append(declaracion.graficar(miId));
-        //     }
-        // }
-
+        // Graficamos cada sentencia
         for (NodoSentencia sentencia : this.sentencias) {
             resultado.append(sentencia.graficar(miId));
         }
-
         resultado.append("}");
-
         return resultado.toString();
     }
-
-    /*
-     * EJEMPLO DE TABLA DE SIMBOLOS
-     * NOMBRE,VALOR,TOKEN,LONGITUD,TIPO
-b,b,ID,,FLOAT
-var2,var2,ID,,FLOAT
-var1,var1,ID,,INTEGER
-a,a,ID,,FLOAT
-contador,contador,ID,,INTEGER
-mensaje,mensaje,ID,,STRING
-var4,var4,ID,,FLOAT
-var3,var3,ID,,INTEGER
-var9,var9,ID,,STRING
-var8,var8,ID,,FLOAT
-var7,var7,ID,,INTEGER
-var6,var6,ID,,FLOAT
-var5,var5,ID,,STRING
-_15,15,CONST_INT,,-
-_99.9,99.9,CONST_REAL,,-
-_"Hola_Mundo","Hola Mundo",CONST_STRII,12,-
-_1,1,CONST_INT,,-
-_10,10,CONST_INT,,-
-_"Contador_alcanzo_el_limite","Contador alcanzo el limite",CONST_STRII,28,-
-_"Limite_alcanzado","Limite alcanzado",CONST_STRII,18,-
-_98.9,98.9,CONST_REAL,,-
-_2,2,CONST_INT,,-
-_5,5,CONST_INT,,-
-_20,20,CONST_INT,,-
-_"Limite_alcanzado_:)","Limite alcanzado :)",CONST_STRII,21,-
-_3,3,CONST_INT,,-
-_0b1101,13,CONST_B,,-
-_9,9,CONST_INT,,-
-_234,234,CONST_INT,,-
-_53,53,CONST_INT,,-
-_123,123,CONST_INT,,-
-_123.45,123.45,CONST_REAL,,-
-_0b1011,11,CONST_B,,-
-
-     */
 
     public void generarAssembler(TablaSimbolos tablaSimbolos) {
         StringBuilder codeSection = new StringBuilder();
@@ -108,6 +56,7 @@ _0b1011,11,CONST_B,,-
                             dataSection.append("_").append(simbolo.nombre).append(" DD 0.0\n");
                             break;
                         case "STRING":
+                            // 30 porque es el límite definido para cada string
                             dataSection.append("_").append(simbolo.nombre).append(" DB 30 DUP (?), '$'\n");
                             break;
                         default:

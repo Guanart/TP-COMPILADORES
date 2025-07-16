@@ -1,0 +1,24 @@
+DECLARE_SECTION
+    [float1, float2, float3]:=[FLOAT, FLOAT, FLOAT]
+    [int1, int2, int3]:=[INTEGER, INTEGER, INTEGER]
+ENDDECLARE_SECTION
+
+PROGRAM_SECTION
+    //* 
+        Asignaciones numericas y float  //* Este es un comentario dentro de un comentario *//                          
+     *//
+    float1 ::= .85
+    int1 ::= 10
+    int2 ::= 0
+
+    //* Declaracion de un ciclo WHILE *//
+    WHILE (int2 <= int1) THEN
+        int2 ::= int2 + 1
+        WRITE int2
+        IF (int2 = 5) THEN
+            WRITE "Estamos en el 5"
+        ELSE
+            WRITE "No estamos en el 5"
+        ENDIF
+    ENDWHILE
+ENDPROGRAM_SECTION

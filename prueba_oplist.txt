@@ -1,12 +1,23 @@
 DECLARE_SECTION
-[a,var1,var2,b]:=[FLOAT,INTEGER,FLOAT,FLOAT]
+    [float1, float2, int1, int2] := [FLOAT, FLOAT, INTEGER, INTEGER]
 ENDDECLARE_SECTION
 
 PROGRAM_SECTION
-WRITE b
-OPLIST [+ [a;b] [2;3;5;9;234;53;2;123;3]]
-WRITE b
-OPLIST [+ [a;b] []]
-WRITE b
+    WRITE "float1 antes de oplist:"
+    WRITE float1
+    int1 ::= 5
+    OPLIST [+ [int1;float1] [10;20;30;40;100]]
+    WRITE ""
+    WRITE "float1 despues de oplist:"
+    WRITE float1
+    
+    WRITE ""
 
+    WRITE "float2 antes de oplist:"
+    WRITE float2
+    int2 ::= 5
+    OPLIST [* [int2;float2] [2;3;4;5;10]]
+    WRITE ""
+    WRITE "float2 despues de oplist:"
+    WRITE float2
 ENDPROGRAM_SECTION

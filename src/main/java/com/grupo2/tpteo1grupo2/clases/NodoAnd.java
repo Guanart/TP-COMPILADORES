@@ -21,7 +21,6 @@ public class NodoAnd extends NodoExpresionBooleana {
 
     @SuppressWarnings("StringConcatenationInsideStringBufferAppend")
     public void generarAssembler(StringBuilder dataSection, StringBuilder codeSection) {
-        System.out.println("Generando código ensamblador para la expresión: " + this.getDescripcionNodo());
         String code = "";
 
         if (!izquierda.soyHoja()) {

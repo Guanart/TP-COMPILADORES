@@ -31,28 +31,6 @@ public class Nodo {
     }
 
     public String generarAssembler() {
-        String assembler = "";
-        return assembler;
+        return  "";
     }
-
-    // public String generarAssembler(AtomicInteger auxCount, ArrayList<SymbolMe> symbols_table, String tabs, Map<String, String> parameters) {
-    //     ConstanteDataASM.data.append(this.getId()).append(" dd, ?\n");
-
-    //     String assembler = "";
-
-    //     if (!this.izquierda.soyHoja()) {
-    //         assembler += this.izquierda.generarAssembler(auxCount, symbols_table, tabs, parameters);
-    //     }
-
-    //     if (!this.derecha.soyHoja()) {
-    //         assembler += this.derecha.generarAssembler(auxCount, symbols_table, tabs, parameters);
-    //     }
-
-    //     assembler += tabs + "fld " + this.izquierda.getId() + "\n";
-    //     assembler += tabs + "fld " + this.derecha.getId() + "\n";
-    //     assembler += tabs + "fdiv\n";
-    //     assembler += tabs + "fstp " + this.getId() + "\n";
-    //     assembler += "\n";
-    //     return assembler;
-    // }
 }
